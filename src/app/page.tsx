@@ -31,10 +31,10 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.08}>
               <h1 className="mt-6 text-balance text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-bold tracking-tight leading-[0.98] text-white">
-                Western Slope water,{" "}
+                test{" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 bg-gradient-to-r from-sun-300 via-sun-400 to-sun-300 bg-clip-text text-transparent">
-                    finally clean.
+                    test.
                   </span>
                   <svg
                     className="absolute -bottom-2 left-0 w-full"
