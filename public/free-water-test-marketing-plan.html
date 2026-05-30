@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Williamson Water — Free In-Home Water Test · Marketing Automation Plan</title>
+<style>
+  :root{
+    --brand-50:#eef6ff;--brand-100:#d9eaff;--brand-200:#bcdbff;--brand-300:#8ec3ff;
+    --brand-400:#589fff;--brand-500:#2f7bff;--brand-600:#1a5ee6;--brand-700:#154bc0;
+    --brand-800:#133f99;--brand-900:#0c2f76;--brand-950:#081d4d;
+    --sun-300:#ffd24a;--sun-400:#ffc21f;--sun-500:#f4ac00;
+    --ink-50:#f6f8fb;--ink-100:#ecf0f6;--ink-200:#d8dfeb;--ink-300:#b6c1d4;
+    --ink-400:#8b97b1;--ink-500:#66728d;--ink-600:#4a566f;--ink-700:#38425a;
+    --ink-800:#232c42;--ink-900:#131a2c;--ink-950:#07091a;
+    --green:#0f9d6e;--red:#d9534f;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:"Inter",ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--ink-900);background:var(--ink-50);line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+  h1,h2,h3,h4{line-height:1.2;margin:0 0 .4em;letter-spacing:-.01em}
+  h2{font-size:1.7rem;margin-top:0}
+  h3{font-size:1.18rem;color:var(--brand-900)}
+  p{margin:0 0 1rem}
+  a{color:var(--brand-600);text-decoration:none}
+  small{color:var(--ink-500)}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-600)}
+
+  /* Cover */
+  .cover{
+    background:linear-gradient(135deg,var(--brand-700) 0%,var(--brand-900) 60%,#06122e 100%);
+    color:#fff;padding:64px 0 72px;position:relative;overflow:hidden;
+  }
+  .cover::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;
+    background:radial-gradient(circle,rgba(255,194,31,.22),transparent 70%);border-radius:50%}
+  .cover .wrap{position:relative;z-index:1}
+  .brandrow{display:flex;align-items:center;gap:12px;margin-bottom:34px}
+  .drop{width:38px;height:38px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+    background:linear-gradient(160deg,#9ed0ff,#2f7bff);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .brandname{font-weight:800;font-size:1.15rem;letter-spacing:.01em}
+  .brandname small{display:block;color:var(--brand-200);font-weight:500;letter-spacing:.18em;font-size:.62rem;text-transform:uppercase}
+  .cover h1{font-size:2.7rem;max-width:18ch;margin-bottom:.3em}
+  .cover .lede{font-size:1.18rem;color:var(--brand-100);max-width:60ch}
+  .pill{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+    color:#eaf3ff;border-radius:999px;padding:6px 14px;font-size:.78rem;font-weight:600;margin:4px 6px 4px 0}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:26px;font-size:.82rem;color:var(--brand-200)}
+  .meta b{display:block;color:#fff;font-size:.95rem;font-weight:700}
+
+  /* Sections */
+  section{padding:46px 0;border-bottom:1px solid var(--ink-200)}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;
+    background:var(--brand-600);color:#fff;font-weight:800;font-size:.95rem;margin-right:10px;vertical-align:2px}
+  .card{background:#fff;border:1px solid var(--ink-200);border-radius:14px;padding:22px 24px;margin:14px 0;
+    box-shadow:0 1px 2px rgba(19,26,44,.04)}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr 1fr}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+  .kpi{background:#fff;border:1px solid var(--ink-200);border-radius:14px;padding:18px 20px;text-align:center}
+  .kpi .big{font-size:1.9rem;font-weight:800;color:var(--brand-700);line-height:1}
+  .kpi .lab{font-size:.78rem;color:var(--ink-500);margin-top:6px}
+
+  table{width:100%;border-collapse:collapse;font-size:.9rem;background:#fff;border-radius:12px;overflow:hidden;
+    border:1px solid var(--ink-200)}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--ink-100);vertical-align:top}
+  th{background:var(--brand-50);color:var(--brand-900);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  .right{text-align:right}
+  .tag{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em}
+  .t-sms{background:#e7f7f0;color:#0c7a55}
+  .t-email{background:var(--brand-50);color:var(--brand-700)}
+  .t-call{background:#fff2d6;color:#9a6500}
+  .t-task{background:var(--ink-100);color:var(--ink-700)}
+
+  .flow{position:relative;margin:8px 0}
+  .step{display:flex;gap:16px;padding:14px 0;border-bottom:1px dashed var(--ink-200)}
+  .step:last-child{border-bottom:none}
+  .step .when{flex:0 0 120px;font-weight:700;color:var(--brand-700);font-size:.86rem}
+  .step .body{flex:1}
+  .step .body b{color:var(--ink-900)}
+
+  .stack{display:flex;flex-wrap:wrap;gap:10px}
+  .stack span{background:#fff;border:1px solid var(--ink-200);border-radius:10px;padding:8px 13px;font-size:.84rem;font-weight:600}
+
+  .copybox{background:var(--ink-900);color:#dce6f5;border-radius:12px;padding:16px 18px;font-size:.86rem;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;margin:10px 0}
+  .copybox .label{display:block;color:var(--sun-400);font-weight:700;font-family:inherit;margin-bottom:8px;
+    font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{padding-left:26px;position:relative;margin-bottom:8px}
+  ul.clean li::before{content:"✓";position:absolute;left:0;top:0;color:var(--green);font-weight:800}
+  ul.arrow li::before{content:"→";color:var(--brand-500)}
+
+  .callout{border-left:4px solid var(--sun-400);background:#fffaf0;padding:14px 18px;border-radius:0 10px 10px 0;margin:16px 0}
+  .callout.blue{border-color:var(--brand-500);background:var(--brand-50)}
+
+  .foot{background:var(--ink-900);color:var(--ink-300);padding:34px 0;font-size:.85rem}
+  .foot b{color:#fff}
+
+  @media print{
+    body{background:#fff}
+    section{page-break-inside:avoid;border-bottom:1px solid #ccc}
+    .cover{padding:40px 0}
+    .card,.kpi,table{box-shadow:none}
+    a{color:var(--ink-900)}
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<header class="cover">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="drop"></div>
+      <div class="brandname">Williamson Water<small>Pure water. Promised.</small></div>
+    </div>
+    <div class="eyebrow" style="color:var(--sun-300)">Lead-Generation Playbook · Prepared for the client</div>
+    <h1>The Free In-Home Water Test Marketing Automation Plan</h1>
+    <p class="lede">A done-for-you funnel that turns paid traffic into booked, in-home water tests — and turns those tests into softener, RO, and whole-house installs across Colorado's Western Slope.</p>
+    <div style="margin-top:22px">
+      <span class="pill">Offer: $0 In-Home Water Test</span>
+      <span class="pill">Run leads → booked appointments</span>
+      <span class="pill">Fully automated follow-up</span>
+      <span class="pill">Montrose · Delta · Ouray · San Miguel</span>
+    </div>
+    <div class="meta">
+      <div><b>Williamson Water Co.</b>Ken Williamson, Owner</div>
+      <div><b>Service radius</b>75 miles of Montrose, CO</div>
+      <div><b>Goal</b>Predictable booked installs</div>
+      <div><b>Prepared</b>May 2026</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- WHY THE OFFER -->
+<section id="offer">
+  <div class="eyebrow">The Strategy in One Line</div>
+  <h2>Why the free in-home water test is the right tip of the spear</h2>
+  <p>People don't wake up wanting to buy a $2,200 water softener. They wake up annoyed about dry skin, orange stains, chlorine taste, or a rotten-egg smell — and worried something might be in their water. A <b>free, no-obligation in-home water test</b> is the perfect bridge: it's a low-friction "yes," it's genuinely valuable, and it puts a Williamson Water expert at the kitchen sink with a quote in hand.</p>
+
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card"><h3>Low-friction yes</h3><p style="margin:0">"Free 30-minute test" converts far better than "get a quote." It removes price anxiety and commitment at the top of the funnel.</p></div>
+    <div class="card"><h3>High intent, qualified</h3><p style="margin:0">Anyone who books a test into their home has a real water concern and is a homeowner in your service area — the only two things that matter.</p></div>
+    <div class="card"><h3>Sells itself on-site</h3><p style="margin:0">Hardness, TDS, chlorine, iron, and pH results on the kitchen counter make the problem undeniable — and the solution obvious.</p></div>
+  </div>
+
+  <div class="callout blue">
+    <b>The whole engine in one sentence:</b> Run paid + organic traffic → a single-purpose landing page → instant automated follow-up books a test → reminder automation gets them to show → Ken (or a tech) tests, educates, and quotes → nurture automation closes the rest.
+  </div>
+</section>
+
+<!-- FUNNEL -->
+<section id="funnel">
+  <div class="eyebrow">The Funnel</div>
+  <h2><span class="num">1</span>The end-to-end funnel</h2>
+  <p>Every lead you run moves through six stages. Automation owns the hand-offs so no lead goes cold and Ken's time is spent only where a human is needed — in the home and on the close.</p>
+
+  <table>
+    <thead><tr><th style="width:30px">#</th><th>Stage</th><th>What happens</th><th>Owned by</th><th class="right">Target rate</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>Traffic</b></td><td>Paid ads + organic + referral drive clicks/calls</td><td>Ad platforms</td><td class="right">—</td></tr>
+      <tr><td>2</td><td><b>Capture</b></td><td>Landing page form / click-to-call captures the lead</td><td>Landing page</td><td class="right">8–15% of visitors</td></tr>
+      <tr><td>3</td><td><b>Booked</b></td><td>Speed-to-lead automation books the in-home test</td><td>Automation + CRM calendar</td><td class="right">45–60% of leads</td></tr>
+      <tr><td>4</td><td><b>Show</b></td><td>Reminder sequence gets them to keep the appointment</td><td>Automation</td><td class="right">75–85% of booked</td></tr>
+      <tr><td>5</td><td><b>Quote</b></td><td>On-site test → personalized report → quote</td><td>Ken / technician</td><td class="right">85%+ of shows</td></tr>
+      <tr><td>6</td><td><b>Sold</b></td><td>Close on-site or via nurture + financing</td><td>Ken + nurture automation</td><td class="right">25–40% of quotes</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px"><small>Rates are realistic targets for a local home-services water test funnel; we'll calibrate them to your real numbers after the first 30 days.</small></p>
+</section>
+
+<!-- TRAFFIC SOURCES -->
+<section id="traffic">
+  <div class="eyebrow">Where the Leads Come From</div>
+  <h2><span class="num">2</span>Lead sources to run traffic to</h2>
+  <p>Start with the two channels that produce booked tests fastest, then layer the rest. Everything points at the same landing page so tracking and follow-up stay clean.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>Tier 1 — Launch first</h3>
+      <ul class="clean">
+        <li><b>Meta (Facebook/Instagram) lead ads</b> — "Is your Western Slope water hard? Free in-home test." Hyper-local, homeowner-targeted, image of stained fixtures vs. clean glass.</li>
+        <li><b>Google Search ads</b> — high-intent keywords: "water test near me," "hard water Montrose," "well water testing Delta CO," "rotten egg smell water."</li>
+        <li><b>Google Local Services Ads (LSA)</b> — pay-per-lead, "Google Guaranteed" badge, top of local results. Best ROI for trades.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tier 2 — Scale & compound</h3>
+      <ul class="clean">
+        <li><b>Retargeting</b> — anyone who hit the landing page but didn't book, on Meta + Google display.</li>
+        <li><b>Your own site</b> — add a "Free Water Test" CTA banner to williamsonwater.co (you already have /schedule + /quote to plug in).</li>
+        <li><b>Nextdoor + local Facebook groups</b> — neighborhood-level trust; great for Montrose, Olathe, Cedaredge.</li>
+        <li><b>Database reactivation</b> — past quotes & no-decisions get re-offered the free test (cheapest leads you'll ever get).</li>
+        <li><b>Referral + review engine</b> — every install triggers a referral ask and a review request.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>One tracked number, one page.</b> Use a tracking phone number (CallRail) and a single landing page so every dollar is attributable. If you can't measure cost-per-booked-test by channel, you can't scale it.
+  </div>
+</section>
+
+<!-- LANDING PAGE -->
+<section id="landing">
+  <div class="eyebrow">The Conversion Asset</div>
+  <h2><span class="num">3</span>The landing page leads run to</h2>
+  <p>A dedicated, single-goal page — <b>williamsonwater.co/free-water-test</b> — with one job: book the test. No top nav, no distractions, one offer. (Your Next.js site can host this as a new route alongside the existing pages.)</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>Above the fold</h3>
+      <ul class="clean">
+        <li>Headline: <i>"Find out exactly what's in your water — free, in your home."</i></li>
+        <li>Sub: 30 minutes · no obligation · same-week appointments</li>
+        <li>One CTA button → embedded calendar / short form (name, phone, ZIP, biggest concern)</li>
+        <li>Trust strip: WQA Certified · CO Master Plumber #ML-204881 · 4.9★ local reviews · Serving the Western Slope since 2009</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Below the fold</h3>
+      <ul class="clean">
+        <li><b>What we test:</b> hardness (gpg), TDS, chlorine/chloramine, iron, pH, plus a bacteria screen for wells</li>
+        <li><b>What to expect:</b> 3-step "we test → we explain → you decide" — zero pressure</li>
+        <li><b>Social proof:</b> 2–3 local reviews with town names (Montrose, Ridgway, Paonia)</li>
+        <li><b>Risk reversal:</b> "No sales pressure. No cost. Keep the results either way."</li>
+        <li><b>Scarcity:</b> "Limited test slots each week within 75 miles of Montrose"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout blue"><b>Qualify on the form, not on the phone.</b> Two questions — "Do you own your home?" and "City or well water?" — plus ZIP let automation auto-route renters/out-of-area leads to a soft no and book the rest instantly.</div>
+</section>
+
+<!-- AUTOMATION FLOWS -->
+<section id="automation">
+  <div class="eyebrow">The Engine</div>
+  <h2><span class="num">4</span>The marketing automation flows</h2>
+  <p>This is the part that makes it a <i>machine</i>. Five automations run the lead from click to closed — and rescue the ones that stall.</p>
+
+  <h3 style="margin-top:18px">A · Speed-to-lead (the most important 5 minutes)</h3>
+  <div class="card flow">
+    <div class="step"><div class="when">0–2 min</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;<b>Auto-text the second the form submits.</b> "Hi {name}, it's Williamson Water — thanks for requesting your free water test! What day works best, {date A} or {date B}?"</div></div>
+    <div class="step"><div class="when">0–2 min</div><div class="body"><span class="tag t-email">Email</span> &nbsp;Confirmation + "what to expect" + reviews. Reinforces it's free and legit.</div></div>
+    <div class="step"><div class="when">2 min</div><div class="body"><span class="tag t-call">Call task</span> &nbsp;Ring the lead while intent is hot. <b>Calling within 5 min can lift contact rates dramatically vs. waiting an hour.</b></div></div>
+    <div class="step"><div class="when">+1 hr / +1 day</div><div class="body"><span class="tag t-sms">SMS</span> <span class="tag t-email">Email</span> &nbsp;If not booked: gentle nudge sequence over 5 days, then drop to long-term nurture.</div></div>
+    <div class="step"><div class="when">Always-on</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;<b>Missed-call text-back.</b> Any missed inbound call auto-texts: "Sorry we missed you — want to grab a free water test slot?"</div></div>
+  </div>
+
+  <h3>B · Appointment confirmation & reminders (kill no-shows)</h3>
+  <div class="card flow">
+    <div class="step"><div class="when">On booking</div><div class="body"><span class="tag t-sms">SMS</span> <span class="tag t-email">Email</span> &nbsp;Instant confirmation + add-to-calendar + Ken's photo so they know who's coming.</div></div>
+    <div class="step"><div class="when">T–24 hrs</div><div class="body"><span class="tag t-email">Email</span> &nbsp;Reminder + "how to prep" (we just need access to your kitchen sink &amp; main line).</div></div>
+    <div class="step"><div class="when">T–2 hrs</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;"See you at {time} today! Reply C to confirm or R to reschedule."</div></div>
+    <div class="step"><div class="when">T–30 min</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;"On our way — be there shortly. 🚐💧"</div></div>
+  </div>
+
+  <h3>C · No-show & reschedule recovery</h3>
+  <div class="card flow">
+    <div class="step"><div class="when">+15 min late</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;"We're here / tried to reach you — still want your free test? Rebook here: {link}"</div></div>
+    <div class="step"><div class="when">Same day</div><div class="body"><span class="tag t-call">Call task</span> &nbsp;Personal call to reschedule before the lead goes cold.</div></div>
+    <div class="step"><div class="when">Day 2–7</div><div class="body"><span class="tag t-email">Email</span> <span class="tag t-sms">SMS</span> &nbsp;Two-touch recovery, then move to nurture if no response.</div></div>
+  </div>
+
+  <h3>D · Post-test quote nurture (where the money is)</h3>
+  <div class="card flow">
+    <div class="step"><div class="when">Same day</div><div class="body"><span class="tag t-email">Email</span> &nbsp;Send the digital <b>water report + quote</b> with a clear scope (e.g., softener + RO) and financing options.</div></div>
+    <div class="step"><div class="when">Day 1</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;"Any questions on your water results, {name}? Happy to walk through it."</div></div>
+    <div class="step"><div class="when">Day 2</div><div class="body"><span class="tag t-email">Email</span> &nbsp;Value email tied to <i>their</i> result — e.g., "What 18 gpg hardness is doing to your water heater" or "Why your iron stains keep coming back."</div></div>
+    <div class="step"><div class="when">Day 4</div><div class="body"><span class="tag t-email">Email</span> &nbsp;Proof: before/after photos + a local review from their town. Financing reminder ($X/mo, not $X,XXX).</div></div>
+    <div class="step"><div class="when">Day 7</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;Soft deadline / install-calendar nudge: "We have an install slot opening next week — want me to hold it?"</div></div>
+    <div class="step"><div class="when">Day 14 → 90</div><div class="body"><span class="tag t-task">Drip</span> &nbsp;Drop unsold quotes into a monthly value newsletter (water tips, seasonal snowmelt sediment, PFAS news) until they buy.</div></div>
+  </div>
+
+  <h3>E · Won → review, referral & reactivation</h3>
+  <div class="card flow">
+    <div class="step"><div class="when">Install +1 day</div><div class="body"><span class="tag t-sms">SMS</span> &nbsp;Thank-you + 1-tap review link (Google). Timing right after a great install = best review rate.</div></div>
+    <div class="step"><div class="when">Install +7 days</div><div class="body"><span class="tag t-email">Email</span> &nbsp;"Know a neighbor with bad water?" referral offer — both sides get a perk.</div></div>
+    <div class="step"><div class="when">Ongoing</div><div class="body"><span class="tag t-task">Lifecycle</span> &nbsp;Filter-change reminders (RO at 12 mo) = service revenue + natural upsell touchpoints.</div></div>
+    <div class="step"><div class="when">Dormant leads</div><div class="body"><span class="tag t-sms">SMS</span> <span class="tag t-email">Email</span> &nbsp;Quarterly "free re-test" reactivation to every old no-decision lead.</div></div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="eyebrow">The Tools</div>
+  <h2><span class="num">5</span>Recommended tech stack</h2>
+  <p>You can run this whole engine on one all-in-one platform plus a couple of specialists. Recommended primary stack keeps it simple and affordable for a local business.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>Recommended — all-in-one</h3>
+      <div class="stack" style="margin-bottom:10px">
+        <span>GoHighLevel — CRM, pipelines, SMS/email, calendar, landing pages, missed-call text-back, review requests</span>
+      </div>
+      <p style="margin:0"><small>One login runs capture, booking, every automation above, and reporting. Ideal for a single-owner trades business that doesn't want five tools.</small></p>
+    </div>
+    <div class="card">
+      <h3>Alternative — best-of-breed</h3>
+      <div class="stack">
+        <span>HubSpot / Jobber CRM</span>
+        <span>Twilio (SMS)</span>
+        <span>Calendly</span>
+        <span>Mailchimp / ActiveCampaign</span>
+        <span>Zapier (glue)</span>
+      </div>
+      <p style="margin:8px 0 0"><small>More flexible, more moving parts. Use if you already live in one of these tools.</small></p>
+    </div>
+  </div>
+
+  <div class="grid g3" style="margin-top:6px">
+    <div class="card"><h3>Ads</h3><p style="margin:0"><small>Meta Ads Manager · Google Ads · Google Local Services Ads</small></p></div>
+    <div class="card"><h3>Tracking</h3><p style="margin:0"><small>CallRail (call tracking) · GA4 + conversion events · Meta Pixel · Google Business Profile</small></p></div>
+    <div class="card"><h3>On-site test</h3><p style="margin:0"><small>Digital test sheet / tablet form that auto-creates the quote & report PDF in the CRM</small></p></div>
+  </div>
+</section>
+
+<!-- FUNNEL MATH / KPIs -->
+<section id="math">
+  <div class="eyebrow">The Numbers</div>
+  <h2><span class="num">6</span>Funnel math, KPIs &amp; projected ROI</h2>
+  <p>Illustrative model at <b>$1,500/month ad spend</b>. These are planning assumptions — we replace them with your live data after 30 days.</p>
+
+  <table>
+    <thead><tr><th>Step</th><th>Assumption</th><th class="right">Result</th></tr></thead>
+    <tbody>
+      <tr><td>Ad spend</td><td>Monthly budget</td><td class="right">$1,500</td></tr>
+      <tr><td>Leads</td><td>~$35 cost per lead</td><td class="right">≈ 43 leads</td></tr>
+      <tr><td>Booked tests</td><td>50% of leads book</td><td class="right">≈ 21 tests</td></tr>
+      <tr><td>Completed tests</td><td>80% show rate</td><td class="right">≈ 17 in-home tests</td></tr>
+      <tr><td>Quotes</td><td>90% of shows get a quote</td><td class="right">≈ 15 quotes</td></tr>
+      <tr><td>Sales (close)</td><td>30% close rate</td><td class="right"><b>≈ 5 installs</b></td></tr>
+      <tr><td>Avg. ticket</td><td>Softener / RO / well blend</td><td class="right">≈ $2,400</td></tr>
+      <tr><td style="color:var(--green);font-weight:700">Revenue</td><td>5 installs × $2,400</td><td class="right" style="color:var(--green);font-weight:800">≈ $12,000</td></tr>
+      <tr><td style="font-weight:700">Return on ad spend</td><td>$12,000 ÷ $1,500</td><td class="right" style="font-weight:800">≈ 8×</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid g4" style="margin-top:18px">
+    <div class="kpi"><div class="big">≤$35</div><div class="lab">Cost per lead</div></div>
+    <div class="kpi"><div class="big">≤$300</div><div class="lab">Cost per booked test</div></div>
+    <div class="kpi"><div class="big">≤$900</div><div class="lab">Customer acquisition cost</div></div>
+    <div class="kpi"><div class="big">≥5×</div><div class="lab">Target ROAS</div></div>
+  </div>
+
+  <div class="callout"><b>The KPIs to watch weekly:</b> cost per lead, lead→booked %, show rate, quote→sold %, and cost per acquired install. Every one of these is a dial we can turn — the funnel tells us exactly which step is leaking.</div>
+</section>
+
+<!-- ROLLOUT -->
+<section id="rollout">
+  <div class="eyebrow">Execution</div>
+  <h2><span class="num">7</span>90-day rollout plan</h2>
+
+  <div class="grid g3">
+    <div class="card">
+      <h3>Days 1–30 · Build</h3>
+      <ul class="clean">
+        <li>Stand up CRM + pipeline stages</li>
+        <li>Build /free-water-test landing page</li>
+        <li>Wire speed-to-lead + reminder automations</li>
+        <li>Set up CallRail, Pixel, GA4, LSA verification</li>
+        <li>Launch Meta + Google Search at $1,000–1,500/mo</li>
+        <li>Write SMS/email copy + on-site quote template</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Days 31–60 · Tune</h3>
+      <ul class="clean">
+        <li>Kill losing ads, scale winners</li>
+        <li>A/B test headline &amp; landing CTA</li>
+        <li>Optimize show rate (reminder timing)</li>
+        <li>Tighten the on-site → quote → nurture handoff</li>
+        <li>Turn on retargeting + database reactivation</li>
+        <li>First weekly KPI review with real numbers</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Days 61–90 · Scale</h3>
+      <ul class="clean">
+        <li>Raise budget on proven channels</li>
+        <li>Add LSA + Nextdoor as steady feeders</li>
+        <li>Launch review &amp; referral automations</li>
+        <li>Build seasonal angles (snowmelt sediment, PFAS)</li>
+        <li>Lock in the repeatable cost-per-install number</li>
+        <li>Forecast capacity: leads vs. install schedule</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- COPY TEMPLATES -->
+<section id="copy">
+  <div class="eyebrow">Ready to Use</div>
+  <h2><span class="num">8</span>Starter message templates</h2>
+  <p>Drop-in copy in the Williamson Water voice. Personalization tokens in {curly braces}.</p>
+
+  <div class="copybox"><span class="label">SMS · Speed-to-lead (0–2 min)</span>Hi {first_name}, it's Williamson Water 💧 Thanks for requesting your FREE in-home water test! We can usually get out this week. Does {day_A} or {day_B} work better for you?</div>
+
+  <div class="copybox"><span class="label">SMS · Reminder (T–2 hrs)</span>Hi {first_name}! Reminder: your free water test with Williamson Water is today at {time}. Reply C to confirm or R to reschedule. We'll just need access to your kitchen sink. See you soon!</div>
+
+  <div class="copybox"><span class="label">Email · Post-test quote follow-up (Day 2)</span>Subject: What your water results mean for your {appliance}
+
+Hi {first_name},
+
+Great meeting you. Your test came back at {hardness} gpg hardness and {tds} TDS — on the Western Slope that's high enough to scale your water heater and leave spots on everything.
+
+The good news: the fix is straightforward. Your personalized quote (and financing as low as ${monthly}/mo) is attached. Happy to answer any questions — just reply here or call Ken directly.
+
+Pure water. Promised.
+— The Williamson Water Team</div>
+
+  <div class="copybox"><span class="label">SMS · Review request (install +1 day)</span>Hi {first_name}, thanks for trusting Williamson Water with your new {system}! If the water's already tasting better, a quick Google review would mean the world to Ken: {review_link} 🙏</div>
+</section>
+
+<!-- WHAT WE NEED -->
+<section id="next" style="border-bottom:none">
+  <div class="eyebrow">To Get Started</div>
+  <h2><span class="num">9</span>What we need from Williamson Water</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Access &amp; assets</h3>
+      <ul class="clean">
+        <li>Google Business Profile + Google Ads access (or we create them)</li>
+        <li>Meta Business / Facebook page admin</li>
+        <li>Domain access to add the /free-water-test page</li>
+        <li>Logo, 6–10 real job photos (before/after, the truck, Ken)</li>
+        <li>3–5 best customer reviews to feature</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Decisions to confirm</h3>
+      <ul class="clean">
+        <li>Service-area ZIP list inside the 75-mi radius</li>
+        <li>Weekly test-appointment capacity (how many can you run?)</li>
+        <li>Starting ad budget ($1,000–1,500/mo recommended)</li>
+        <li>Financing terms to quote in nurture</li>
+        <li>Who answers the speed-to-lead calls/texts</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <b>Bottom line:</b> a single offer, a single page, and five automations turn ad clicks into kitchen-table quotes — predictably, and measurably. We build it, you keep showing up to test water and close installs.
+  </div>
+</section>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="brandrow" style="margin-bottom:14px">
+      <div class="drop" style="width:30px;height:30px"></div>
+      <div class="brandname" style="font-size:1rem">Williamson Water Co.<small>Pure water. Promised.</small></div>
+    </div>
+    <p style="margin:0"><b>Williamson Water Co.</b> · Ken Williamson, Owner · Montrose, CO · Serving the Western Slope since 2009<br>
+    CO Master Plumber #ML-204881 · WQA Certified Installer · NSF/ANSI Trained</p>
+    <p style="margin:12px 0 0"><small>Prepared as a marketing proposal. Funnel rates, costs, and ROI figures are illustrative planning assumptions to be calibrated against live performance data within the first 30 days.</small></p>
+  </div>
+</footer>
+
+</body>
+</html>
