@@ -1,0 +1,69 @@
+{
+  "_meta": {
+    "STATUS": "BLOCKED — every null below must be filled from Ken Williamson directly. The generator MUST fail the build on any null rather than render a placeholder.",
+    "WHY": "The previous build (bannisterderik-tech/williamson-water, May 2026) filled these with invented values — a 555 phone number, a placeholder street address, an unverified license number, 15 fabricated named testimonials, and invented pricing. That is what this file exists to prevent.",
+    "rule": "No field in this file may be inferred, guessed, or 'reasonably assumed'. Research cannot produce these."
+  },
+
+  "legalName": null,
+  "_legalName_note": "Exactly as registered with Colorado DORA. No DBAs, no marketing variants. Verify by hand on the DPO License Lookup. (Copy rail 1)",
+
+  "displayName": null,
+  "tagline": null,
+  "owner": "Ken Williamson",
+
+  "phone": null,
+  "_phone_note": "Previous value (970) 555-0140 was a reserved fake exchange. Appears on ~300 pages and in every LocalBusiness JSON-LD block.",
+
+  "email": null,
+
+  "address": {
+    "line1": null,
+    "city": null,
+    "state": "CO",
+    "zip": null,
+    "hasStorefront": null,
+    "_note": "Previous value '1234 S Townsend Ave' was a placeholder. If Ken is mobile with no public storefront, set hasStorefront:false and the generator emits a service-area business rather than a street address — which is also what Google Business Profile requires."
+  },
+
+  "founded": null,
+  "_founded_note": "'Since 2009' and 'sixteen years' were invented.",
+
+  "serviceArea": {
+    "radiusMiles": null,
+    "towns": null,
+    "_note": "The previous 75-mile radius was invented. This determines whether Telluride, Norwood, Nucla and Naturita get pages at all. Candidate towns with verified water data: montrose, delta, olathe, cedaredge, paonia, hotchkiss, crawford, ridgway, ouray, telluride, mountain-village, norwood, nucla, naturita, plus the Tri-County/Chipeta/Menoken service areas."
+  },
+
+  "licenses": [],
+  "_licenses_note": "Previous value 'CO Master Plumber #ML-204881' was unverified. Colorado plumbing licenses issue from the DORA State Plumbing Board (3 CCR 720-1) and are verifiable on the DPO lookup. Ask Ken whether he holds one, and for the number. If he does not, the site must not imply he does.",
+
+  "certifications": [],
+  "_certifications_note": "Previous site claimed 'WQA Certified Installer' and 'NSF/ANSI Trained' with no verification. C.R.S. 6-1-105(c) — false representation of certification by another — is the subsection that bites hardest here. Only list what Ken can evidence.",
+
+  "brandsInstalled": [],
+  "_brandsInstalled_note": "Determines which NSF/ANSI standard claims are legitimately ours to make.",
+
+  "hours": null,
+
+  "reviews": [],
+  "_reviews_note": "STARTS EMPTY AND STAYS EMPTY until Ken supplies real Google/Facebook/BBB review URLs. Under 16 CFR Part 465 any review featured in marketing is a testimonial and the review-hosting exemption does not apply. The generator's testimonial partial refuses to render from any other source — fabrication is structurally impossible. Shipping with no reviews section is correct and safe.",
+
+  "pricing": null,
+  "_pricing_note": "All 10 previous 'startingAt' values ($1,495-$3,495) were invented. NOTE: verified research found that NO competitor in this market publishes any pricing — Colorado Water Purification, Culligan (its 'Get Pricing' page has zero dollar amounts), Kinetico SWCO, Montrose Water Factory, RooterMan. Real numbers here are the single biggest differentiator available. Ranges are fine; invented numbers are not.",
+
+  "photos": {
+    "crew": null, "trucks": null, "installs": null,
+    "_note": "Must be real or absent. Higgsfield generates Uncompahgre Valley / Grand Mesa / San Juan scenery ONLY — never Ken's crew, trucks, or completed work."
+  },
+
+  "socials": {
+    "facebook": null, "instagram": null, "youtube": null, "google": null,
+    "_note": "Previous site linked facebook.com/williamsonwater etc. with no verification that the accounts exist."
+  },
+
+  "hosting": {
+    "mode": null,
+    "_note": "'paid-client' -> Supabase CRM + Stripe, custom domain, indexed (the Mistletoe pattern). 'demo' -> static on db-demos, noindex, no backend."
+  }
+}

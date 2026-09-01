@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Water Systems | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "water",
+    title: "Water Systems",
+    sub: "Verified utility data for every town you serve — before you pick up the phone.",
+    actions: ""
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='callout'><strong>359 facts, 143 primary sources, adversarially verified.</strong> " +
+    "Every number below traces to a Consumer Confidence Report, EPA SDWIS, USGS, or CDPHE record. " +
+    "Nothing here was written by a model — 22 claims were killed in verification for lacking a source.</div>" +
+    "<div id='bar' style='margin-top:1.1rem'></div>" +
+    "<div id='out'></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search town, system, PWSID…",
+    onChange: render
+  });
+
+  var DATA = null;
+
+  function hardnessCell(sys, wholesale) {
+    if (sys.wholesaler && wholesale[sys.wholesaler]) {
+      var h = wholesale[sys.wholesaler].hardness;
+      return "<span class='badge watch'>" + h.compositeAvgGpg + " gpg</span>" +
+             "<span class='t-sub'>" + h.compositeAvgMgL + " mg/L avg · " + h.compositeMinMgL + "–" + h.compositeMaxMgL + " seasonal</span>";
+    }
+    return "<span class='badge gray'>no published data</span>" +
+           "<span class='t-sub'>field test required</span>";
+  }
+
+  function render() {
+    var out = document.getElementById("out");
+    if (!DATA) { out.innerHTML = "<div class='empty'><p>Loading verified data…</p></div>"; return; }
+
+    var wholesale = DATA.wholesale || {};
+    var rows = Object.keys(DATA.retail || {}).map(function (k) {
+      var s = DATA.retail[k]; s._slug = k; return s;
+    });
+
+    if (bar.q) {
+      var q = bar.q.toLowerCase();
+      rows = rows.filter(function (s) {
+        return (s.name + " " + (s.pwsid || "") + " " + (s.county || "") + " " + s._slug).toLowerCase().indexOf(q) > -1;
+      });
+    }
+
+    /* Project 7 summary card — the only supply with verified hardness */
+    var p7 = wholesale["project-7"];
+    var p7card = p7 ? "<div class='panel'><div class='panel-head'><h2>" + WWUI.esc(p7.name) + " <span class='t-sub'>" + WWUI.esc(p7.pwsid) + "</span></h2>" +
+      "<span class='badge blue'>" + WWUI.esc(p7.disinfectant.type) + "</span></div><div class='panel-body'>" +
+      "<div class='wt-grid'>" +
+        "<div class='wt-cell watch'><div class='wt-k'>Hardness</div><div class='wt-v'>" + p7.hardness.compositeAvgGpg + " <span class='wt-u'>gpg</span></div></div>" +
+        "<div class='wt-cell'><div class='wt-k'>TDS</div><div class='wt-v'>" + p7.tds.avgMgL + " <span class='wt-u'>mg/L</span></div></div>" +
+        "<div class='wt-cell'><div class='wt-k'>pH</div><div class='wt-v'>" + p7.ph.finishedAvg + "</div></div>" +
+        "<div class='wt-cell'><div class='wt-k'>Chloramine</div><div class='wt-v'>" + p7.disinfectant.monochloramineMgL + " <span class='wt-u'>mg/L</span></div></div>" +
+        "<div class='wt-cell'><div class='wt-k'>Iron</div><div class='wt-v'>" + p7.iron.finishedAvgMgL + " <span class='wt-u'>mg/L</span></div></div>" +
+      "</div>" +
+      "<div class='callout' style='margin-top:1rem'><strong>Two things to say on every Project 7 call.</strong> " +
+      WWUI.esc(p7.hardness.seasonalNote) + " " + WWUI.esc(p7.disinfectant.note) + "</div>" +
+      "<div class='callout warn' style='margin-top:.7rem'><strong>Do not oversell iron.</strong> " + WWUI.esc(p7.iron.salesConstraint) + "</div>" +
+      "<p class='srcnote'>Source: <a href='" + WWUI.esc(p7.hardness.sourceUrl) + "' target='_blank' rel='noopener'>2025 water quality composite</a> · " +
+      "<a href='" + WWUI.esc(p7.hardness.providerSourceUrl) + "' target='_blank' rel='noopener'>Project 7 facts page</a></p>" +
+      "</div></div>" : "";
+
+    out.innerHTML = p7card +
+      "<div class='panel'><div class='panel-head'><h2>Systems (" + rows.length + ")</h2></div>" +
+      "<div class='panel-body flush tbl-scroll'><table class='tbl'><thead><tr>" +
+      "<th>Town</th><th>PWSID</th><th>Disinfectant</th><th>Hardness</th><th>DBPs</th><th>Flag</th>" +
+      "</tr></thead><tbody id='rows'></tbody></table></div></div>";
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (s) { return "<span class='t-strong'>" + WWUI.esc(s.name) + "</span><span class='t-sub'>" + WWUI.esc(s.county || "") + " County</span>"; } },
+      { cell: function (s) { return "<span class='t-mono'>" + WWUI.esc(s.pwsid || "—") + "</span>"; } },
+      { cell: function (s) {
+          var d = s.disinfectant || (s.wholesaler && wholesale[s.wholesaler] ? wholesale[s.wholesaler].disinfectant : null);
+          if (!d) return "<span class='t-sub'>—</span>";
+          return "<span class='badge " + (d.type === "chloramine" ? "blue" : "gray") + "'>" + WWUI.esc(d.type) + "</span>"; } },
+      { cell: function (s) { return hardnessCell(s, wholesale); } },
+      { cell: function (s) {
+          if (!s.dbp) return "<span class='t-sub'>—</span>";
+          var t = s.dbp.tthmAvgPpb;
+          if (t == null) return "<span class='t-sub'>—</span>";
+          var r = t >= 80 ? "over" : t >= 40 ? "watch" : "ok";
+          return "<span class='badge " + r + "'>TTHM " + t + "</span>"; } },
+      { cell: function (s) {
+          if (s.pfas && s.pfas.status === "ABOVE-MCL") return "<span class='badge over'>PFAS &gt; MCL</span>";
+          if (s.lead && (s.lead.singleTapMaxPpb >= 15 || (s.lead.tapRangePpb2024 && s.lead.tapRangePpb2024[1] >= 15))) return "<span class='badge over'>Lead at tap</span>";
+          if (s.NOT_A_HARDNESS_PAGE) return "<span class='badge watch'>No hardness data</span>";
+          if (s.tier) return "<span class='badge sun'>" + WWUI.esc(String(s.tier).replace(/-/g, " ")) + "</span>";
+          return ""; } }
+    ], { empty: "No systems match.", onRow: function (s) { openSys(s, wholesale); } });
+  }
+
+  function openSys(s, wholesale) {
+    var w = s.wholesaler ? wholesale[s.wholesaler] : null;
+    var body = WWUI.section("System", WWUI.kv([
+      ["PWSID", s.pwsid], ["County", s.county],
+      ["Population", s.populationServed], ["Source", s.sourceType],
+      ["Wholesaler", w ? w.name : null]
+    ]));
+
+    if (s.dbp) body += WWUI.section("Disinfection byproducts", WWUI.kv([
+      ["TTHM avg", s.dbp.tthmAvgPpb != null ? s.dbp.tthmAvgPpb + " ppb (MCL 80)" : null],
+      ["TTHM max sample", s.dbp.tthmSingleSampleMaxPpb ? s.dbp.tthmSingleSampleMaxPpb + " ppb" : null],
+      ["HAA5 avg", s.dbp.haa5AvgPpb != null ? s.dbp.haa5AvgPpb + " ppb (MCL 60)" : null],
+      ["HAA5 max sample", s.dbp.haa5SingleSampleMaxPpb ? s.dbp.haa5SingleSampleMaxPpb + " ppb" : null],
+      ["Note", s.dbp.note]
+    ]));
+
+    if (s.lead) body += WWUI.section("Lead", "<div class='callout warn'>" +
+      WWUI.esc(s.lead.CRITICAL || s.lead.note || "") + "</div>");
+
+    if (s.pfas) body += WWUI.section("PFAS", "<div class='callout" + (s.pfas.status === "ABOVE-MCL" ? " warn" : "") + "'>" +
+      WWUI.esc(s.pfas.detail || s.pfas.note || s.pfas.status) + "</div>");
+
+    if (s.copper) body += WWUI.section("Copper", WWUI.kv([
+      ["90th percentile", s.copper.ninetiethPpm + " ppm"],
+      ["Action level", s.copper.actionLevelPpm + " ppm"],
+      ["Note", s.copper.note]
+    ]));
+
+    if (s.violations) body += WWUI.section("Violations",
+      "<pre style='white-space:pre-wrap;font-size:.82rem;margin:0;color:var(--ink-600)'>" +
+      WWUI.esc(JSON.stringify(s.violations, null, 2)) + "</pre>");
+
+    if (s.hooks) body += WWUI.section("Sales hooks",
+      WWUI.list(s.hooks.map(function (h) { return { main: h }; })));
+
+    if (s.hardness === null) body += WWUI.section("Hardness",
+      "<div class='callout warn'><strong>No published hardness for this system.</strong> Its CCR reports no hardness, " +
+      "TDS or pH. Do not quote a number — run a field test and log it under Water Tests.</div>");
+
+    if (s.sourceUrl) body += "<p class='srcnote'>Source: <a href='" + WWUI.esc(s.sourceUrl) + "' target='_blank' rel='noopener'>consumer confidence report</a></p>";
+
+    WWUI.open({ eyebrow: "Water system", title: s.name, subtitle: (s.county || "") + " County", bodyHTML: body });
+  }
+
+  fetch("../data/water-systems.json")
+    .then(function (r) { return r.json(); })
+    .then(function (j) { DATA = j; render(); })
+    .catch(function () {
+      document.getElementById("out").innerHTML =
+        "<div class='empty'><h3>Could not load data/water-systems.json</h3>" +
+        "<p>Opening these files directly from disk blocks the fetch. Serve the folder " +
+        "(<code>npx serve</code>) or view it on the deployment.</p></div>";
+    });
+
+  render();
+
+});
+</script>
+</body>
+</html>

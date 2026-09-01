@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Water Tests | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "tests",
+    title: "Water Tests",
+    sub: "Every reading is rated against a real regulatory threshold — never a guess.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-test'>+ Log a test</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='callout'><strong>This is the asset.</strong> Field tests are the only way to get hardness numbers " +
+    "for the towns whose utilities never publish them — Cedaredge, Paonia, Hotchkiss, Crawford, Ridgway, Ouray, " +
+    "Telluride, Mountain Village, Norwood, Nucla and Naturita all report no hardness, TDS or pH in their CCRs. " +
+    "Enough tests in one town and we can publish a sourced local average that no competitor can match.</div>" +
+    "<div id='bar' style='margin-top:1.1rem'></div>" +
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>Date</th><th>Who</th><th>Source</th><th>Hardness</th>" +
+      "<th>Flags</th><th>Tech</th></tr></thead><tbody id='rows'></tbody></table>" +
+    "</div></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search customer, tech, notes…",
+    sorts: [
+      { value: "newest", label: "Newest first" },
+      { value: "oldest", label: "Oldest first" },
+      { value: "hard",   label: "Hardest water first" }
+    ],
+    onChange: render
+  });
+
+  function who(t) {
+    if (t.customer_id) return WW.customerName(t.customer_id);
+    var l = WW.get("leads", t.lead_id);
+    return l ? l.name + " (lead)" : "—";
+  }
+
+  function render() {
+    var rows = WW.list("water_tests").map(function (t) {
+      var c = Object.create(t); c._who = who(t); return c;
+    });
+    rows = WWUI.filterSort(rows, bar, {
+      keys: ["_who", "tech", "notes", "source_type"],
+      sorts: {
+        newest: WWUI.cmp.dateDesc("date"),
+        oldest: WWUI.cmp.dateAsc("date"),
+        hard:   WWUI.cmp.numDesc("hardness_gpg")
+      }
+    });
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (t) { return "<span class='t-strong'>" + WW.fmtDate(t.date) + "</span>"; } },
+      { cell: function (t) { return WWUI.esc(t._who); } },
+      { cell: function (t) { return "<span class='badge " + (t.source_type === "well" ? "amber" : "blue") + "'>" + WWUI.esc(t.source_type || "—") + "</span>"; } },
+      { cell: function (t) {
+          if (t.hardness_gpg == null || t.hardness_gpg === "") return "—";
+          var r = WW.rate("hardness_gpg", t.hardness_gpg);
+          return "<span class='badge " + r + "'>" + t.hardness_gpg + " gpg</span>"; } },
+      { cell: function (t) {
+          var over = WW.ANALYTES.filter(function (a) { return WW.rate(a.key, t[a.key]) === "over"; });
+          if (t.bacteria === "positive") over.push({ label: "Bacteria" });
+          if (t.h2s === "yes") over.push({ label: "Sulfur" });
+          if (!over.length) return "<span class='badge ok'>Clear</span>";
+          return over.slice(0, 3).map(function (a) { return "<span class='badge over'>" + WWUI.esc(a.label) + "</span>"; }).join(" ") +
+                 (over.length > 3 ? " <span class='badge gray'>+" + (over.length - 3) + "</span>" : ""); } },
+      { cell: function (t) { return WWUI.esc(t.tech || "—"); } }
+    ], { empty: "No water tests logged yet.", onRow: openTest });
+  }
+
+  function openTest(t) {
+    var recs = WW.recommend(t);
+    WWUI.open({
+      eyebrow: "Water test · " + WW.fmtDate(t.date),
+      title: who(t),
+      subtitle: (t.source_type === "well" ? "Private well" : "Municipal") + (t.tech ? " · " + t.tech : ""),
+      bodyHTML:
+        WWUI.section("Results", WWUI.testGrid(t)) +
+        WWUI.section("What these numbers support",
+          WWUI.list(recs.map(function (r) { return { main: r.service, sub: r.why }; }),
+                    "Nothing measured above its screening level.")) +
+        (t.notes ? WWUI.section("Field notes", "<p style='margin:0'>" + WWUI.esc(t.notes) + "</p>") : "") +
+        WWUI.section("Reference",
+          "<p class='t-sub' style='margin:0'>Thresholds come from EPA primary/secondary standards and the verified " +
+          "regional dataset in <code>data/verified-facts.json</code> (359 sourced facts). Hover any result for its basis.</p>"),
+      actions: [
+        { label: "Build a proposal", kind: "primary", onClick: function () { location.href = "proposals.html?test=" + encodeURIComponent(t.id); } },
+        { label: "Delete", kind: "danger", onClick: function () {
+            WWUI.confirmDelete("this test", function () { WW.remove("water_tests", t.id); WWUI.close(); render(); WWUI.toast("Test deleted"); });
+        } }
+      ]
+    });
+  }
+
+  function testForm() {
+    var custOpts = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+    var leadOpts = WW.list("leads").map(function (l) { return "<option value='" + WWUI.esc(l.id) + "'>" + WWUI.esc(l.name) + " (lead)</option>"; }).join("");
+    var fields = WW.ANALYTES.map(function (a) {
+      return "<div><label>" + WWUI.esc(a.label) + (a.unit ? " <span class='t-sub'>(" + WWUI.esc(a.unit) + ")</span>" : "") + "</label>" +
+             "<input name='" + a.key + "' type='number' step='any' placeholder='—'></div>";
+    }).join("");
+    return "<div class='form-row'>" +
+        "<div><label>Customer</label><select name='customer_id'><option value=''>—</option>" + custOpts + "</select></div>" +
+        "<div><label>…or lead</label><select name='lead_id'><option value=''>—</option>" + leadOpts + "</select></div>" +
+      "</div><div class='form-row'>" +
+        "<div><label>Date</label><input name='date' type='date' value='" + WW.today() + "'></div>" +
+        "<div><label>Source</label><select name='source_type'><option value='well'>Private well</option><option value='municipal'>Municipal</option></select></div>" +
+        "<div><label>Disinfectant</label><select name='disinfectant'><option value=''>—</option><option value='chloramine'>Chloramine</option><option value='free chlorine'>Free chlorine</option></select></div>" +
+      "</div>" +
+      "<h4 style='margin:1.1rem 0 .5rem;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)'>Readings</h4>" +
+      "<div class='form-row'>" + fields + "</div>" +
+      "<div class='form-row'>" +
+        "<div><label>Sulfur odor</label><select name='h2s'><option value='no'>No</option><option value='yes'>Yes</option></select></div>" +
+        "<div><label>Bacteria</label><select name='bacteria'><option value='negative'>Negative</option><option value='positive'>Positive</option></select></div>" +
+        "<div><label>Turbidity</label><select name='turbidity'><option value='no'>No</option><option value='yes'>Yes</option></select></div>" +
+        "<div><label>Tech</label><input name='tech' value='" + WWUI.esc(ses.name || "") + "'></div>" +
+      "</div>" +
+      "<div><label>Field notes</label><textarea name='notes'></textarea></div>";
+  }
+
+  document.getElementById("new-test").addEventListener("click", function () {
+    WWUI.modal({
+      title: "Log a water test", wide: true, bodyHTML: testForm(), okLabel: "Save test",
+      onOk: function (f) {
+        if (!f.customer_id && !f.lead_id) { WWUI.toast("Pick a customer or a lead", "err"); return false; }
+        WW.ANALYTES.forEach(function (a) { if (f[a.key] === "") f[a.key] = null; });
+        WW.add("water_tests", f); render(); WWUI.toast("Test saved");
+      }
+    });
+  });
+
+  /* Deep link: tests.html?lead=<id> opens the form with that lead preselected */
+  render();
+  var qs = new URLSearchParams(location.search);
+  if (qs.get("lead") || qs.get("customer")) document.getElementById("new-test").click();
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Money | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "money",
+    title: "Money",
+    sub: "Revenue, recurring, and where it came from.",
+    actions: ""
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  var invs  = WW.list("invoices").filter(function (i) { return i.kind === "invoice"; });
+  var paid  = invs.filter(function (i) { return i.status === "paid"; });
+  var owed  = invs.filter(function (i) { return i.status === "sent"; });
+  var jobs  = WW.list("jobs");
+  var props = WW.list("proposals");
+
+  function sum(arr, k) { return arr.reduce(function (a, x) { return a + Number(x[k] || 0); }, 0); }
+
+  /* --- revenue by month, last 12 --- */
+  var byMonth = {};
+  paid.forEach(function (i) {
+    var m = String(i.date || "").slice(0, 7);
+    if (m) byMonth[m] = (byMonth[m] || 0) + Number(i.amount || 0);
+  });
+  var months = [];
+  for (var k = 11; k >= 0; k--) {
+    var d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - k);
+    var key = d.toISOString().slice(0, 7);
+    months.push({ key: key, label: d.toLocaleDateString("en-US", { month: "short" }), value: byMonth[key] || 0 });
+  }
+  var peak = Math.max.apply(null, months.map(function (m) { return m.value; }).concat([1]));
+
+  /* --- revenue by town --- */
+  var byTown = {};
+  paid.forEach(function (i) {
+    var c = WW.get("customers", i.customer_id);
+    var t = (c && c.city) || "Unknown";
+    byTown[t] = (byTown[t] || 0) + Number(i.amount || 0);
+  });
+  var towns = Object.keys(byTown).map(function (t) { return { town: t, value: byTown[t] }; })
+                    .sort(function (a, b) { return b.value - a.value; });
+
+  $page.innerHTML =
+    "<div class='stat-row'>" +
+      "<div class='stat'><div class='stat-label'>Collected</div><div class='stat-num'>" + WW.money(sum(paid, "amount")) + "</div><div class='stat-sub'>all time</div></div>" +
+      "<div class='stat'><div class='stat-label'>Outstanding</div><div class='stat-num'>" + WW.money(sum(owed, "amount")) + "</div><div class='stat-sub'>sent, unpaid</div></div>" +
+      "<div class='stat'><div class='stat-label'>Recurring</div><div class='stat-num'>" + WW.money(WW.mrr()) + "</div><div class='stat-sub'>per month</div></div>" +
+      "<div class='stat'><div class='stat-label'>Booked work</div><div class='stat-num'>" + WW.money(sum(jobs.filter(function (j) { return j.status !== "done"; }), "value")) + "</div><div class='stat-sub'>not yet finished</div></div>" +
+      "<div class='stat'><div class='stat-label'>Avg ticket</div><div class='stat-num'>" + WW.money(paid.length ? sum(paid, "amount") / paid.length : 0) + "</div><div class='stat-sub'>per paid invoice</div></div>" +
+    "</div>" +
+
+    "<div class='panel'><div class='panel-head'><h2>Collected by month</h2></div><div class='panel-body'>" +
+      "<div style='display:flex;align-items:flex-end;gap:.5rem;height:11rem'>" +
+        months.map(function (m) {
+          var h = Math.round(m.value / peak * 100);
+          return "<div style='flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:.35rem;height:100%'>" +
+            "<div class='t-sub' style='font-size:.7rem'>" + (m.value ? WW.money(m.value) : "") + "</div>" +
+            "<div title='" + m.key + "' style='width:100%;background:" + (m.value ? "var(--brand-500)" : "var(--ink-200)") +
+              ";height:" + Math.max(h, 2) + "%;border-radius:6px 6px 0 0;min-height:3px'></div>" +
+            "<div class='t-sub' style='font-size:.72rem'>" + m.label + "</div></div>";
+        }).join("") +
+      "</div></div></div>" +
+
+    "<div class='grid-2'>" +
+      "<div class='panel'><div class='panel-head'><h2>Revenue by town</h2></div>" +
+        "<div class='panel-body flush tbl-scroll'><table class='tbl'><thead><tr><th>Town</th><th class='num'>Collected</th><th class='num'>Share</th></tr></thead><tbody id='towns'></tbody></table></div></div>" +
+      "<div class='panel'><div class='panel-head'><h2>Proposal outcomes</h2></div>" +
+        "<div class='panel-body flush tbl-scroll'><table class='tbl'><thead><tr><th>Status</th><th class='num'>Count</th><th class='num'>Value</th></tr></thead><tbody id='outcomes'></tbody></table></div></div>" +
+    "</div>";
+
+  var total = sum(paid, "amount") || 1;
+  WWUI.table(document.getElementById("towns"), towns, [
+    { cell: function (t) { return "<span class='t-strong'>" + WWUI.esc(t.town) + "</span>"; } },
+    { cls: "num", cell: function (t) { return WW.money(t.value); } },
+    { cls: "num", cell: function (t) { return Math.round(t.value / total * 100) + "%"; } }
+  ], { empty: "No collected revenue yet." });
+
+  var statuses = ["draft", "sent", "accepted", "paid", "declined"];
+  WWUI.table(document.getElementById("outcomes"), statuses.map(function (s) {
+    var mine = props.filter(function (p) { return p.status === s; });
+    return { status: s, count: mine.length, value: sum(mine, "amount") };
+  }).filter(function (r) { return r.count; }), [
+    { cell: function (r) { return "<span class='t-strong'>" + WWUI.esc(r.status) + "</span>"; } },
+    { cls: "num", cell: function (r) { return String(r.count); } },
+    { cls: "num", cell: function (r) { return WW.money(r.value); } }
+  ], { empty: "No proposals yet." });
+
+});
+</script>
+</body>
+</html>

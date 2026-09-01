@@ -1,34 +1,46 @@
-// Central site configuration — single source of truth for navigation, services, towns, business info.
-// TODO: replace placeholder phone/email/address with real business info.
+// Central site configuration — navigation, services, towns, business info.
+//
+// BUSINESS FACTS ARE NULL UNTIL KEN WILLIAMSON SUPPLIES THEM.
+// The May 2026 build filled this object with invented values: a reserved-exchange
+// phone number ((970) 555-0140), a placeholder street address (1234 S Townsend Ave),
+// an unverified license ("CO Master Plumber #ML-204881 · WQA Certified Installer"),
+// a founding year, a 75-mile radius, and three social URLs that do not exist.
+// All of it shipped publicly on 132 pages.
+//
+// RULE: nothing goes in this object that did not come from Ken directly.
+// Every consumer must handle null by rendering nothing — never a placeholder.
+// Canonical source + notes: ~/Ken Williamson/data/business.json
 
 export const BUSINESS = {
-  legalName: "Williamson Water Co.",
+  // Verified-safe: these are names, not claims.
   name: "Williamson Water",
-  tagline: "Pure water. Promised.",
   owner: "Ken Williamson",
-  founded: 2009,
-  phone: "(970) 555-0140",
-  phoneHref: "tel:+19705550140",
-  email: "hello@williamsonwater.co",
+  tagline: "Pure water. Promised.",
+
+  // CONFIRM WITH KEN — inherited from the May build, never verified against
+  // the Colorado DORA registration.
+  legalName: "Williamson Water Co.",
+
+  // BLOCKED — all null until Ken provides them.
+  founded: null as number | null,
+  phone: null as string | null,
+  phoneHref: null as string | null,
+  email: null as string | null,
   address: {
-    line1: "1234 S Townsend Ave",
-    city: "Montrose",
+    line1: null as string | null,
+    city: null as string | null,
     state: "CO",
-    zip: "81401",
+    zip: null as string | null,
   },
-  hours: [
-    { day: "Mon – Fri", hours: "7:00 AM – 6:00 PM" },
-    { day: "Saturday", hours: "8:00 AM – 4:00 PM" },
-    { day: "Sunday", hours: "Emergency service only" },
-  ],
+  hours: [] as { day: string; hours: string }[],
   socials: {
-    facebook: "https://facebook.com/williamsonwater",
-    instagram: "https://instagram.com/williamsonwater",
-    youtube: "https://youtube.com/@williamsonwater",
+    facebook: null as string | null,
+    instagram: null as string | null,
+    youtube: null as string | null,
   },
-  license: "CO Master Plumber #ML-204881 · WQA Certified Installer · NSF/ANSI Trained",
-  serviceRadiusMiles: 75,
-} as const;
+  license: null as string | null,
+  serviceRadiusMiles: null as number | null,
+};
 
 export type ServiceSlug =
   | "reverse-osmosis"
@@ -64,7 +76,6 @@ export const SERVICES: Service[] = [
       "5-stage and 7-stage under-sink RO systems with remineralization. Removes 99% of dissolved solids, chlorine, nitrates, lead, and PFAS. Engineered for Western Slope hard water.",
     icon: "Droplets",
     fixes: ["Chlorine taste & odor", "TDS / hardness in drinking water", "Lead, arsenic, nitrates", "PFAS / forever chemicals", "Bottled water cost"],
-    startingAt: "$1,495",
     badge: "Most popular",
   },
   {
@@ -75,7 +86,6 @@ export const SERVICES: Service[] = [
       "Point-of-entry carbon and catalytic media systems that scrub chlorine, chloramines, sediment, and organics from every drop entering the home. Sized for your flow rate.",
     icon: "Home",
     fixes: ["Chlorine in showers", "Skin & hair dryness", "Off taste throughout the house", "Sediment from snowmelt"],
-    startingAt: "$2,395",
   },
   {
     slug: "water-softening",
@@ -85,7 +95,6 @@ export const SERVICES: Service[] = [
       "High-efficiency, on-demand softeners sized to your hardness and household. The Western Slope runs 12 – 28 gpg — your appliances, water heater, and skin pay the price until you fix it.",
     icon: "ShieldCheck",
     fixes: ["Hard-water scale", "Dry skin & dull hair", "White spots on dishes", "Failing water heaters", "Stiff laundry"],
-    startingAt: "$2,195",
     badge: "Most common fix",
   },
   {
@@ -96,7 +105,6 @@ export const SERVICES: Service[] = [
       "We test your well, design a multi-stage solution, and install everything from oxidation iron filters to UV sterilization. One contractor — not three.",
     icon: "Mountain",
     fixes: ["Iron staining", "Rotten-egg sulfur smell", "Bacteria / coliform", "Manganese", "Uranium / radon"],
-    startingAt: "$3,495",
   },
   {
     slug: "uv-purification",
@@ -106,7 +114,6 @@ export const SERVICES: Service[] = [
       "NSF Class A UV sterilizers neutralize 99.99% of bacteria, viruses, and protozoa — including E. coli, coliform, and Giardia. Critical for private wells and emergency-prep homes.",
     icon: "Sun",
     fixes: ["Positive bacteria tests", "Boil-water advisories", "Private well disinfection", "Cabin / vacation home protection"],
-    startingAt: "$895",
   },
   {
     slug: "iron-sulfur-removal",
@@ -116,7 +123,6 @@ export const SERVICES: Service[] = [
       "Air-injection oxidation filters specifically tuned for the iron and hydrogen sulfide common in Uncompahgre Valley well water.",
     icon: "FlaskConical",
     fixes: ["Orange / red staining on fixtures", "Rotten-egg odor", "Black slime in toilets", "Discolored laundry"],
-    startingAt: "$2,795",
   },
   {
     slug: "acid-neutralizers",
@@ -126,7 +132,6 @@ export const SERVICES: Service[] = [
       "Low-pH water eats copper. Calcite and corosex neutralizers raise pH to 7.0+ and end the slow drip-drip-drip of leaks in your walls.",
     icon: "TestTube2",
     fixes: ["Blue-green staining", "Pinhole leaks in copper", "pH below 7.0", "Aggressive water"],
-    startingAt: "$1,895",
   },
   {
     slug: "sediment-filtration",
@@ -136,7 +141,6 @@ export const SERVICES: Service[] = [
       "Spin-down separators and pleated filtration that handle the silt loads of spring snowmelt and shallow wells across the Western Slope.",
     icon: "Filter",
     fixes: ["Cloudy water", "Clogged aerators", "Damaged solenoid valves", "Snowmelt season turbidity"],
-    startingAt: "$695",
   },
   {
     slug: "pfas-treatment",
@@ -146,7 +150,6 @@ export const SERVICES: Service[] = [
       "NSF/ANSI 53 and 58 certified solutions targeting PFOA, PFOS, GenX, and the wider PFAS family. We test, we treat, we re-test.",
     icon: "AlertOctagon",
     fixes: ["PFOA / PFOS in drinking water", "Firefighting foam contamination zones", "Long-term health concerns"],
-    startingAt: "$1,995",
     badge: "Trending concern",
   },
   {
@@ -166,7 +169,6 @@ export const SERVICES: Service[] = [
       "Plumbed-in cold, hot, and sparkling water coolers for offices, gyms, and shops. One install. No more delivery invoices, no more lifting jugs.",
     icon: "Coffee",
     fixes: ["Jug delivery costs", "Storing 5-gallon bottles", "Plastic waste"],
-    startingAt: "$59/mo",
   },
   {
     slug: "emergency-service",

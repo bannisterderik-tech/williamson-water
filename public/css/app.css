@@ -1,0 +1,170 @@
+/* ============================================================
+   WILLIAMSON WATER — CRM / portal app layer (extends main.css)
+   ============================================================ */
+
+body.app { background: var(--canvas); }
+
+/* ---------- App shell ---------- */
+.app-shell { display: flex; min-height: 100vh; }
+
+.app-side {
+  width: 15.5rem; flex-shrink: 0; background: var(--brand-950); color: var(--brand-200);
+  display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh;
+}
+.app-side .brand { padding: 1.3rem 1.2rem 1rem; display: block; text-decoration: none; }
+.app-side .brand svg { height: 2.15rem; width: auto; display: block; }
+
+.app-nav { display: flex; flex-direction: column; gap: .1rem; padding: .5rem; flex: 1; overflow-y: auto; }
+.app-nav a {
+  display: flex; align-items: center; gap: .65rem; padding: .58rem .8rem;
+  color: var(--brand-200); text-decoration: none; font-weight: 600; font-size: .92rem; border-radius: 9px;
+}
+.app-nav a:hover { background: rgba(255,255,255,.08); color: #fff; }
+.app-nav a[aria-current="page"] { background: var(--brand-600); color: #fff; font-weight: 700; }
+.app-nav a svg { width: 17px; height: 17px; flex-shrink: 0; opacity: .9; }
+.app-nav .nav-group {
+  font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 800;
+  color: rgba(188,219,255,.45); padding: .9rem .8rem .3rem;
+}
+.app-nav .nav-sep { margin-top: auto; border-top: 1px solid rgba(255,255,255,.1); padding-top: .5rem; }
+
+.app-main { flex: 1; min-width: 0; padding: clamp(1.1rem, 2.6vw, 2.2rem); }
+
+.app-topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.app-topbar h1 { font-size: clamp(1.5rem, 2.8vw, 2rem); margin: 0; }
+.app-topbar .sub { color: var(--ink-soft); font-size: .93rem; margin: .15rem 0 0; }
+.app-topbar .actions { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+
+.demo-badge {
+  display: inline-flex; align-items: center; gap: .4rem; background: var(--sun-100); color: var(--sun-700);
+  border: 1px solid var(--sun-300); font-size: .72rem; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; padding: .3rem .7rem; border-radius: 999px;
+}
+
+/* ---------- Stats ---------- */
+.stat-row { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr)); margin-bottom: 1.5rem; }
+.stat {
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1rem 1.15rem; box-shadow: var(--shadow-soft); text-decoration: none; color: inherit; display: block;
+}
+a.stat:hover { border-color: var(--brand-300); }
+.stat .stat-label { font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-700); }
+.stat .stat-num { font-family: var(--font-display); font-size: 1.95rem; font-weight: 700; color: var(--ink-900); line-height: 1.15; margin-top: .1rem; }
+.stat .stat-sub { font-size: .82rem; color: var(--ink-soft); }
+
+/* ---------- Panels ---------- */
+.panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 1.5rem; overflow: hidden; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .95rem 1.2rem; border-bottom: 1px solid var(--line-soft); flex-wrap: wrap; }
+.panel-head h2 { font-size: 1rem; margin: 0; }
+.panel-body { padding: 1.1rem 1.2rem; }
+.panel-body.flush { padding: 0; }
+
+.grid-2 { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr)); }
+
+/* ---------- Tables ---------- */
+.tbl-scroll { overflow-x: auto; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: .93rem; }
+.tbl th { text-align: left; padding: .65rem 1.1rem; font-size: .71rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: .75rem 1.1rem; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+.tbl tbody tr:hover td { background: var(--brand-50); }
+.tbl .t-strong { font-weight: 700; color: var(--ink-900); }
+.tbl .t-sub { display: block; font-size: .8rem; color: var(--ink-soft); font-weight: 400; }
+.tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl-empty { color: var(--ink-soft); padding: 1.4rem 1.1rem; }
+
+/* ---------- Badges ---------- */
+.badge { display: inline-block; padding: .2rem .6rem; border-radius: 999px; font-size: .74rem; font-weight: 800; letter-spacing: .02em; white-space: nowrap; }
+.badge.green { background: #e3f5e6; color: #1f6b33; }
+.badge.blue  { background: var(--brand-100); color: var(--brand-800); }
+.badge.amber { background: #fdf0d3; color: #8a6410; }
+.badge.red   { background: #fbe3de; color: #a5311d; }
+.badge.gray  { background: var(--ink-100); color: var(--ink-600); }
+.badge.navy  { background: var(--brand-900); color: var(--brand-100); }
+.badge.sun   { background: var(--sun-100); color: var(--sun-700); }
+
+/* Water-result badges: how a measured value reads against a standard */
+.badge.ok    { background: #e3f5e6; color: #1f6b33; }
+.badge.watch { background: #fdf0d3; color: #8a6410; }
+.badge.over  { background: #fbe3de; color: #a5311d; }
+
+/* ---------- Buttons (app sizes) ---------- */
+.btn-sm { padding: .48rem .95rem; font-size: .86rem; }
+.btn-xs { padding: .3rem .6rem; font-size: .78rem; border-radius: 8px; }
+.btn-icon { background: none; border: 1.5px solid var(--ink-200); border-radius: 8px; padding: .3rem .55rem; color: var(--ink-soft); font-weight: 700; font-size: .82rem; cursor: pointer; text-decoration: none; }
+.btn-icon:hover { border-color: var(--brand-500); color: var(--brand-700); }
+
+/* ---------- Kanban ---------- */
+.kanban { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(15rem, 1fr); gap: .9rem; overflow-x: auto; padding-bottom: .8rem; align-items: start; }
+.kcol { background: var(--canvas-deep); border-radius: var(--radius); padding: .75rem; min-height: 12rem; }
+.kcol.dragover { outline: 2px dashed var(--brand-500); outline-offset: -4px; }
+.kcol-head { display: flex; justify-content: space-between; align-items: center; padding: .1rem .3rem .65rem; font-size: .74rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--brand-800); }
+.kcol-head .count { background: var(--paper); border-radius: 999px; padding: .05rem .5rem; font-size: .75rem; }
+.kcard { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; margin-bottom: .6rem; box-shadow: var(--shadow-soft); cursor: grab; font-size: .89rem; }
+.kcard:active { cursor: grabbing; }
+.kcard.dragging { opacity: .45; }
+.kcard .k-name { font-weight: 800; color: var(--ink-900); }
+.kcard .k-meta { color: var(--ink-soft); font-size: .8rem; margin-top: .2rem; }
+.kcard .k-tags { margin-top: .45rem; display: flex; gap: .35rem; flex-wrap: wrap; }
+
+/* ---------- Forms in app ---------- */
+.form-row { display: grid; gap: .85rem; grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr)); margin-bottom: .85rem; }
+
+/* ---------- Modal ---------- */
+.modal-back { position: fixed; inset: 0; background: rgba(8,29,77,.55); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 4vh 1rem; overflow-y: auto; }
+.modal-back.open { display: flex; }
+.modal { background: var(--paper); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift); width: min(36rem, 100%); padding: 1.5rem; }
+.modal.wide { width: min(52rem, 100%); }
+.modal h3 { margin-top: 0; }
+.modal .modal-actions { display: flex; gap: .6rem; justify-content: flex-end; margin-top: 1.1rem; flex-wrap: wrap; }
+
+/* ---------- Water test result strip ---------- */
+.wt-grid { display: grid; gap: .7rem; grid-template-columns: repeat(auto-fit, minmax(min(8.5rem, 100%), 1fr)); }
+.wt-cell { background: var(--canvas); border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; }
+.wt-cell .wt-k { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; }
+.wt-cell .wt-v { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--ink-900); line-height: 1.2; }
+.wt-cell .wt-u { font-size: .75rem; color: var(--ink-soft); font-weight: 600; }
+.wt-cell.over { border-color: #f0b6a9; background: #fdf1ee; }
+.wt-cell.watch { border-color: #ecd39a; background: #fdf8ec; }
+
+/* ---------- Reference / sourced-fact callout ---------- */
+.srcnote { font-size: .8rem; color: var(--ink-soft); margin-top: .5rem; }
+.srcnote a { color: var(--brand-700); }
+.callout { border-left: 3px solid var(--sun-400); background: #fffbf0; padding: .8rem 1rem; border-radius: 0 10px 10px 0; font-size: .89rem; }
+.callout.warn { border-left-color: #d9534f; background: #fdf1ee; }
+.callout strong { color: var(--ink-900); }
+
+/* ---------- Empty state ---------- */
+.empty { text-align: center; padding: 2.5rem 1rem; color: var(--ink-soft); }
+.empty h3 { color: var(--ink-700); margin: 0 0 .3rem; font-size: 1.05rem; }
+.empty p { margin: 0 0 1rem; font-size: .92rem; }
+
+/* ---------- Login ---------- */
+.login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 1.2rem; background: linear-gradient(160deg, var(--brand-950) 0%, var(--brand-900) 55%, var(--brand-800) 100%); }
+.login-card { width: min(26rem, 100%); background: var(--paper); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift); padding: 2rem; }
+.login-tabs { display: flex; background: var(--canvas-deep); border-radius: 999px; padding: .22rem; margin-bottom: 1.3rem; }
+.login-tabs button { flex: 1; border: 0; background: none; padding: .5rem; border-radius: 999px; font-weight: 800; font-size: .88rem; color: var(--ink-soft); cursor: pointer; font-family: inherit; }
+.login-tabs button.active { background: var(--brand-700); color: #fff; }
+.login-note { font-size: .83rem; color: var(--ink-soft); text-align: center; margin-top: 1rem; }
+
+/* ---------- Pagination ---------- */
+.mc-pager { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 1rem 0 .2rem; }
+.mc-pager[hidden] { display: none; }
+.mc-pager-range { font-size: .84rem; font-weight: 700; color: var(--ink-soft); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .app-shell { flex-direction: column; }
+  .app-side { width: 100%; height: auto; position: sticky; top: 0; z-index: 100; }
+  .app-side .brand { padding: .7rem 1rem .3rem; }
+  .app-side .brand svg { height: 1.7rem; }
+  .app-nav { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; padding: .25rem .8rem .6rem; gap: .3rem; scrollbar-width: none; }
+  .app-nav::-webkit-scrollbar { display: none; }
+  .app-nav a { padding: .4rem .75rem; font-size: .84rem; white-space: nowrap; border-radius: 999px; }
+  .app-nav .nav-group { display: none; }
+  .app-nav .nav-sep { margin: 0; border: 0; padding-top: .4rem; }
+  .app-main { padding: 1rem .85rem 4rem; }
+  .stat-row { grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+  .stat .stat-num { font-size: 1.5rem; }
+  .panel-head, .panel-body { padding-left: 1rem; padding-right: 1rem; }
+  .modal { padding: 1.15rem; }
+}

@@ -1,0 +1,291 @@
+{
+  "_meta": {
+    "description": "Verified public water system data for the Williamson Water service area. Every numeric value traces to sourceUrl. Generated from data/verified-facts.json (359 adversarially-confirmed claims).",
+    "researched": "2026-08-11",
+    "reviewBy": "2027-06-30",
+    "rule": "No value enters this file without a sourceUrl that was re-fetched and confirmed. A null means NO VERIFIED DATA — the generator must not render a claim for it."
+  },
+
+  "wholesale": {
+    "project-7": {
+      "name": "Project 7 Water Authority",
+      "pwsid": "CO0143621",
+      "role": "Regional treatment plant supplying six retail systems in Montrose and Delta counties",
+      "supplies": ["montrose", "delta", "olathe", "chipeta-wd", "menoken-wd", "tri-county-wcd"],
+      "sourceWaters": [
+        { "name": "Gunnison River Tunnel", "type": "Surface Water-Intake" },
+        { "name": "Fairview Reservoir", "type": "Surface Water-Reservoir" },
+        { "name": "Cerro Reservoir", "type": "Surface Water-Intake" }
+      ],
+      "plantCapacityMGD": 27.6,
+      "demandMGD": { "winter": 5, "summer": 15 },
+      "disinfectant": {
+        "type": "chloramine",
+        "totalChlorineResidualMgL": 1.91,
+        "monochloramineMgL": 1.43,
+        "shareOfResidualAsMonochloramine": 0.75,
+        "mrdlMgL": 4.0,
+        "violations": 0,
+        "note": "Chloramine — NOT free chlorine. Requires different carbon media and longer contact time than free-chlorine systems. This is the single most commercially important operational fact for the Project 7 service area.",
+        "sourceUrl": "https://www.project7water.org/files/80a73f76e/2025_water_quality_composite2.pdf"
+      },
+      "hardness": {
+        "compositeAvgMgL": 128,
+        "compositeMinMgL": 103,
+        "compositeMinMonth": "June",
+        "compositeMaxMgL": 181,
+        "compositeMaxMonth": "January",
+        "compositeAvgGpg": 7.5,
+        "calciumHardnessMgL": 92,
+        "magnesiumHardnessMgL": 36,
+        "providerStatedAvgMgL": 110,
+        "providerStatedAvgGpg": 6.5,
+        "providerStatedRangeMgL": [80, 140],
+        "seasonalNote": "Winter water runs roughly 75% harder than summer water (181 mg/L in January vs 103 mg/L in June). The plant does not soften.",
+        "usgsClassification": "hard at the 128 mg/L average; very hard at the 181 mg/L January peak",
+        "sourceUrl": "https://www.project7water.org/files/80a73f76e/2025_water_quality_composite2.pdf",
+        "providerSourceUrl": "https://www.project7water.org/facts-links.html"
+      },
+      "tds": { "avgMgL": 123, "minMgL": 103, "maxMgL": 183, "sourceUrl": "https://www.project7water.org/files/80a73f76e/2025_water_quality_composite2.pdf" },
+      "ph": { "finishedAvg": 7.34, "finishedMin": 7.23, "finishedMax": 7.63, "rawAvg": 8.10, "sourceUrl": "https://www.project7water.org/files/80a73f76e/2025_water_quality_composite2.pdf" },
+      "fluoride": {
+        "fluoridated": false,
+        "naturallyOccurringMgL": [0.15, 0.25],
+        "measured2025AvgMgL": 0.24,
+        "measured2025RangeMgL": [0.12, 0.36],
+        "caution": "The 0.24 mg/L figure appears only in the operational composite, NOT among detected contaminants in the CCR. Do not state a cause for the fluoride present beyond 'not added'.",
+        "sourceUrl": "https://www.project7water.org/facts-links.html"
+      },
+      "iron": {
+        "finishedAvgMgL": 0.04,
+        "belowDetectionMonths": 9,
+        "detections": [0.05, 0.03, 0.03],
+        "rawAvgMgL": 0.14,
+        "salesConstraint": "Finished-water iron is essentially nil. An iron-filter pitch to a Project 7 municipal customer is UNSUPPORTED. Iron is a private-well story only.",
+        "sourceUrl": "https://www.project7water.org/files/80a73f76e/2025_water_quality_composite2.pdf"
+      },
+      "leadCopper": {
+        "lead90thPpb": 2.4, "leadActionLevelPpb": 15, "leadTapRangePpb": [0, 9.5],
+        "copper90thPpm": 0.58, "copperActionLevelPpm": 1.3, "copperTapRangePpm": [0.00656, 1.83],
+        "samples": 30, "sampled": "2023-07-13 to 2023-08-01",
+        "sourceUrl": "https://www.project7water.org/files/cc4a4ce8f/integrated_p7_wa_-_co0143621_-_2026_ccr.pdf"
+      },
+      "otherDetections": {
+        "bariumPpm": 0.04, "bariumMclPpm": 2,
+        "hexachlorocyclopentadienePpb": 0.07, "hexachlorocyclopentadieneRangePpb": [0.04, 0.1], "hexachlorocyclopentadieneMclPpb": 50,
+        "sodiumPpm": 11.1, "calciumPpm": 30.33,
+        "note": "Barium and hexachlorocyclopentadiene were the ONLY regulated inorganic/synthetic organic contaminants detected at the entry point in 2025.",
+        "sourceUrl": "https://www.project7water.org/files/cc4a4ce8f/integrated_p7_wa_-_co0143621_-_2026_ccr.pdf"
+      },
+      "pfas": {
+        "status": "non-detect",
+        "detail": "All 29 PFAS analytes below the lab practical quantitation limit in 4 samples, 2024-2025. PFOA <0.0041 ppb, PFOS <0.0041 ppb.",
+        "sourceUrl": "https://www.project7water.org/files/cc4a4ce8f/integrated_p7_wa_-_co0143621_-_2026_ccr.pdf"
+      }
+    }
+  },
+
+  "retail": {
+    "montrose": {
+      "name": "City of Montrose", "pwsid": "CO0143518", "county": "Montrose",
+      "populationServed": 19305, "sourceType": "purchased surface water", "wholesaler": "project-7",
+      "dbp": { "tthmAvgPpb": 38.3, "tthmRangePpb": [32.3, 42.9], "tthmMclPpb": 80, "haa5AvgPpb": 28.3, "haa5RangePpb": [16.0, 35.7], "haa5MclPpb": 60, "samples": 8 },
+      "violations": {
+        "crossConnection": {
+          "ids": ["M619", "M611"],
+          "classification": "Printed under 'Health-Based Violations (Cont)' on p.15 of the Project 7 integrated CCR. The CCR glossary defines Health-Based as 'A violation of either a MCL or TT.'",
+          "disclosure": "We have an inadequate backflow prevention and cross-connection control program.",
+          "WARNING": "Do NOT publish 'Montrose has zero health-based violations' — it contradicts the utility's own consumer report.",
+          "sourceUrl": "https://www.project7water.org/files/cc4a4ce8f/integrated_p7_wa_-_co0143621_-_2026_ccr.pdf"
+        }
+      },
+      "pfas": { "status": "non-detect", "detail": "Zero detections of any of the 29 UCMR5 PFAS across 4 quarterly sampling events." },
+      "hooks": ["Full 12-month plant chemistry available", "Regional wholesaler story", "Chloramine-specific carbon sizing", "Seasonal hardness swing"],
+      "uniquePageJustified": true, "tier": "flagship"
+    },
+    "delta": {
+      "name": "City of Delta", "pwsid": "CO0115205", "county": "Delta",
+      "populationServed": 8700, "wholesaler": "project-7",
+      "dbp": { "tthmAvgPpb": 37.7, "tthmRangePpb": [32.7, 42.1], "haa5AvgPpb": 28.3, "haa5RangePpb": [21.6, 34.3], "samples": 4 },
+      "violations": { "boilWaterNotice": "October 2025", "publicNotice": 2 },
+      "pfas": { "status": "detected-no-mcl", "pfba": 0.0083, "note": "PFBA has no federal MCL." },
+      "hooks": ["Provider publishes its own hardness page", "Not fluoridated", "Oct 2025 boil-water notice"],
+      "uniquePageJustified": true,
+      "sourceUrl": "https://www.cityofdelta.net/media/37111"
+    },
+    "olathe": {
+      "name": "Town of Olathe", "pwsid": "CO0143582", "county": "Montrose", "wholesaler": "project-7",
+      "dbp": { "tthmAvgPpb": 37.5, "tthmRangePpb": [31.2, 41.8], "haa5AvgPpb": 29.1, "haa5RangePpb": [16, 35.4], "samples": 4 },
+      "violations": { "ccrRule": "resolved" },
+      "hooks": ["Shared Project 7 chemistry", "Ag-adjacent private wells are the real story here"],
+      "uniquePageJustified": true, "note": "Thin beyond shared P7 data — lean on well water."
+    },
+    "tri-county-wcd": {
+      "name": "Tri-County Water Conservancy District", "pwsid": "CO0143755", "county": "Montrose",
+      "populationServed": 20490, "connections": 8046, "wholesaler": "project-7",
+      "dbp": { "tthmAvgPpb": 35.3, "tthmRangePpb": [25.0, 43.5], "haa5AvgPpb": 14.8, "haa5RangePpb": [1.0, 32.6], "note": "Widest HAA5 range of the six Project 7 systems." },
+      "hooks": ["Largest Project 7 member by population"],
+      "uniquePageJustified": true, "pageType": "service-area"
+    },
+    "chipeta-wd": {
+      "name": "Chipeta Water District", "pwsid": "CO0143176", "county": "Montrose", "wholesaler": "project-7",
+      "pfas": { "status": "detected-no-mcl", "pfba": 0.0295, "note": "Highest PFBA in the region. PFBA has NO federal MCL — do not present as a violation or a health exceedance." },
+      "uniquePageJustified": false, "foldInto": "project-7-service-area"
+    },
+    "menoken-wd": {
+      "name": "Menoken Water District", "pwsid": "CO0143506", "county": "Montrose",
+      "populationServed": 4500, "wholesaler": "project-7",
+      "uniquePageJustified": false, "foldInto": "project-7-service-area"
+    },
+
+    "cedaredge": {
+      "name": "Town of Cedaredge", "county": "Delta",
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "free chlorine" },
+      "dbp": { "tthmAvgPpb": 15.15, "haa5AvgPpb": 14.53, "period": "CY2024" },
+      "lead": { "singleTapMaxPpb": 24, "note": "One tap at 24 ppb, above the 15 ppb action level, despite a compliant 90th percentile." },
+      "violations": { "cy2024": "clean", "deficiency": "T119" },
+      "hooks": ["12 Grand Mesa intakes", "One tap at 24 ppb lead", "Neighboring USCDWUA has lead and HAA5 problems"],
+      "uniquePageJustified": true, "NOT_A_HARDNESS_PAGE": true,
+      "sourceUrl": "https://www.cedaredgecolorado.com/DocumentCenter/View/18290/2025-Town-of-Cedaredge-Drinking-Water-Quality-Report-PDF"
+    },
+    "paonia": {
+      "name": "Town of Paonia", "pwsid": "CO0115601", "county": "Delta",
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "free chlorine" },
+      "dbp": { "tthmAvgPpb": 7.51, "haa5AvgPpb": 3.77, "note": "Lowest DBPs in Delta County." },
+      "lead": { "singleTapMaxPpb": 19 },
+      "sourceWaters": { "count": 40, "type": "GWUDI springs" },
+      "violations": {
+        "treatmentTechnique": 4,
+        "crossConnection": { "ids": ["M614", "M611"], "CAUTION": "The town CCR prints these under 'Health-Based Violations', but EPA SDWIS records only ONE cross-connection violation (code 5A, category 'Other') and classifies it NON-health-based. Do not publish as health-based without qualification." },
+        "supplyFailure": "2019"
+      },
+      "treatmentPlant": { "cost": 1350000, "note": "$1.35M per the Delta County Independent. An earlier $1.6M figure and a 'two-thirds funding' claim were both KILLED in verification." },
+      "hooks": ["Exactly 40 GWUDI springs", "2019 supply failure", "Operator-turnover story", "Lowest DBPs in the county"],
+      "uniquePageJustified": true, "tier": "strongest-narrative",
+      "sourceUrl": "https://townofpaonia.colorado.gov/sites/townofpaonia/files/documents/PAONIA-TOWN-OF-CO0115601-2025-CCR.pdf"
+    },
+    "hotchkiss": {
+      "name": "Town of Hotchkiss", "pwsid": "CO0115352", "county": "Delta",
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "free chlorine" },
+      "fluoridated": true, "fluoridatedNote": "The only fluoridating system in the research area.",
+      "dbp": { "tthmAvgPpb": 41.53, "haa5AvgPpb": 33.9, "singleSampleMaxPpb2023": 82.85, "note": "Highest DBPs in Delta County." },
+      "lead": { "tapRangePpb2024": [0, 43], "ninetiethPpb2023": 12, "ninetiethPpb2024": 1.7,
+        "CRITICAL": "One home tested at 43 ppb in June 2024 — nearly 3x the 15 ppb action level — while the 90th percentile was a compliant 1.7 ppb. Publishing only the 90th percentile would be a material omission. This is the single most consequential number in the dataset." },
+      "violations": { "dehpMcl": { "count": 3, "years": "2020-2021", "valuesMgL": [0.023, 0.023, 0.0115], "violationIds": [2453, 2454, 2455] } },
+      "treatmentPlant": { "type": "membrane", "since": 2010 },
+      "hooks": ["3 DEHP MCL violations", "One tap at 43 ppb lead", "Highest DBPs in Delta County", "Turbidity at its limit both years", "Only fluoridating system"],
+      "uniquePageJustified": true, "tier": "highest-value-non-montrose",
+      "sourceUrl": "https://townofhotchkiss.colorado.gov/sites/g/files/lrnvjt1216/files/documents/WATER-CCR-REPORT-2025.pdf"
+    },
+    "crawford": {
+      "name": "Town of Crawford", "county": "Delta",
+      "hardness": null, "tds": null, "ph": null, "dbp": null,
+      "disinfectant": { "type": "free chlorine", "samples": 1 },
+      "sourceWaters": { "count": 1, "type": "spring", "note": "The only true-groundwater town of the five." },
+      "violations": { "cy2025": "clean", "lifetime": 2 },
+      "hooks": ["Only true-groundwater town", "Single spring", "Lowest lead of the five"],
+      "uniquePageJustified": true, "note": "Thin — pair with Crawford Mesa WA and private wells.",
+      "sourceUrl": "https://townofcrawford.colorado.gov/sites/g/files/lrnvjt1976/files/documents/CRAWFORD%20CCR%202026.pdf"
+    },
+
+    "ridgway": {
+      "name": "Town of Ridgway", "pwsid": "CO0146676", "county": "Ouray",
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "free chlorine", "samples": 1 },
+      "sodiumPpm": 10.7,
+      "dbp": { "tthmAvgPpb": 63.67, "tthmSingleSampleMaxPpb": 112, "tthmMclPpb": 80, "chloriteReported": true,
+        "note": "The most defensible 'real water quality issue' anywhere in this dataset. Average is 80% of the MCL and one sample exceeded it." },
+      "violations": { "surfaceWaterTreatmentRule": { "count": 4, "year": 2023, "RULE_CODE_NOTE": "SDWIS rule code 121 = Surface Water Treatment Rule, NOT Revised Total Coliform Rule (that is 111). A researcher got this wrong and it was killed in verification." }, "crossConnection": "M614", "leadCopperMonitoring": "open" },
+      "correction": "Supply is NOT Ridgway Reservoir. The old site claimed it was.",
+      "hooks": ["TTHM 63.67 avg, one sample at 112 ppb", "4 SWTR treatment technique violations", "Open lead/copper monitoring violation"],
+      "uniquePageJustified": true, "tier": "best-dbp-carbon-page",
+      "sourceUrl": "https://townofridgway.colorado.gov/sites/g/files/lrnvjt1246/files/documents/RIDGWAY%20TOWN%20OF%20-%20CO0146676%20-%202025%20CCR.pdf"
+    },
+    "ouray": {
+      "name": "City of Ouray", "county": "Ouray",
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "free chlorine", "samples": 2 },
+      "sodiumPpm": 4.4,
+      "dbp": { "tthmAvgPpb": 2.87, "haa5AvgPpb": 0.88, "note": "Lowest DBPs anywhere in the research area." },
+      "copper": { "ninetiethPpm": 1.07, "actionLevelPpm": 1.3, "shareOfActionLevel": 0.82, "sampled": 2021,
+        "note": "82% of the action level. Must be labeled with its 2021 sample date." },
+      "sourceWaters": { "count": 1, "name": "Weehawken spring" },
+      "violations": { "failureToFilter": { "type": "treatment technique", "penalty": 390, "resolved": 2024, "note": "New plant built; resolved." } },
+      "hooks": ["Copper at 82% of action level", "New treatment plant story", "Lowest DBPs anywhere"],
+      "uniquePageJustified": true, "dataLabelRequired": "CY2023 data must be labeled as such."
+    },
+    "telluride": {
+      "name": "Town of Telluride", "pwsid": "CO0157400", "county": "San Miguel",
+      "populationServed": 7900, "sourceType": "surface water",
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "free chlorine", "samples": 6 },
+      "sodiumPpm": 3.07,
+      "dbp": { "tthmAvgPpb": 22.22, "haa5AvgPpb": 30.94, "haa5SingleSampleMaxPpb": 90.8, "haa5MclPpb": 60 },
+      "violations": { "membraneIntegrity": { "type": "treatment technique - recordkeeping", "facilities": ["Mill Creek WTP", "Pandora WTP"], "period": "Jul-Dec 2024" }, "crossConnection": "resolved 2025-03" },
+      "treatmentPlant": { "membranes": ["Memcor", "Scinor", "Pall"] },
+      "pfas": { "status": "non-detect", "detail": "Zero detections across 8 UCMR5 samples (2 entry points x 4 events).",
+        "caveat": "One CDPHE sample dated 2024-08-28 shows PFOA 2 ng/L, PFOS 1 ng/L, PFBS 2 ng/L — all far below MCLs; other same-date samples were zero." },
+      "hooks": ["HAA5 single sample at 90.8 ppb", "Membrane integrity violation", "Superfund and abandoned-mine screening", "Zero PFAS"],
+      "uniquePageJustified": true,
+      "sourceUrl": "https://www.telluride.gov/DocumentCenter/View/15027/2025-Consumer-Confidence-Report-PDF"
+    },
+    "mountain-village": {
+      "name": "Town of Mountain Village", "county": "San Miguel",
+      "populationServed": 9700, "sourceType": "groundwater", "wells": 15,
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "free chlorine", "samples": 11 },
+      "sodiumPpm": 4.5,
+      "dbp": { "tthmAvgPpb": 3.6, "samples": 2 },
+      "pfas": {
+        "status": "ABOVE-MCL",
+        "pfosPpt": 7.3, "pfosMclPpt": 4.0, "pfosEntryPoint": "San Joaquin Tank", "pfosDate": "2024-11-26",
+        "pfhxsPpt": [7.7, 8.1], "pfhxsMclPpt": 10, "pfhxsEntryPoints": ["Double Cabin", "San Joaquin"],
+        "priorEvent": "2024-05-07: all 29 PFAS non-detect at all 4 entry points",
+        "note": "The ONLY detection above a federal MCL anywhere in the research area. UCMR5 is occurrence data, not a compliance determination — EPA says so explicitly."
+      },
+      "otherDetections": { "uraniumPpb": 0.13, "uraniumMclPpb": 30, "seleniumPpb": 19, "seleniumNote": "at one well" },
+      "violations": { "healthBased": 0, "totalRecords": 145, "note": "Cleanest violation record in the research area." },
+      "hooks": ["PFOS above the federal MCL", "15 wells", "Zero health-based violations in 145 records"],
+      "uniquePageJustified": true, "tier": "the-pfas-page",
+      "sourceUrl": "https://townofmountainvillage.com/site/assets/files/44136/2024_drinking_water_consumer_confidence_report_for_2023.pdf"
+    },
+    "norwood": {
+      "name": "Norwood Water Commission", "county": "San Miguel",
+      "hardness": null, "tds": null, "ph": null,
+      "disinfectant": { "type": "chloramine", "note": "The ONLY non-Project-7 chloramine system in the research area." },
+      "sodiumPpm": 3.4,
+      "dbp": { "tthmAvgPpb": 52.27, "tthmMclPpb": 80, "shareOfMcl": 0.65, "haa5AvgPpb": 22 },
+      "sourceWaters": { "name": "Gurley Ditch" },
+      "violations": { "healthBased": 0, "totalRecords": 16 },
+      "hooks": ["Only non-P7 chloramine system", "TTHM at 65% of MCL", "Mine-site and oil/gas-well screening"],
+      "uniquePageJustified": true,
+      "sourceUrl": "https://www.norwoodtown.com/files/76fa7420a/Norwood+Water+Commission+CCR+Report+2025.pdf"
+    },
+
+    "nucla": {
+      "name": "Town of Nucla", "county": "Montrose",
+      "hardness": null, "tds": null, "ph": null, "dbp": null, "disinfectant": null,
+      "violations": { "tthmMcl": { "count": 2, "year": 2016, "note": "PREDATE the switch to Mustang water. Do not present as current." } },
+      "relatedSystem": { "name": "Mustang Water Authority", "issues": ["turbidity", "certified-operator violations"] },
+      "uniquePageJustified": "partial",
+      "pageType": "well-water and mill-legacy only — NO municipal water-quality page"
+    },
+    "naturita": {
+      "name": "Town of Naturita", "county": "Montrose",
+      "hardness": null, "tds": null, "ph": null, "dbp": null, "disinfectant": null,
+      "violations": { "tthmMcl": { "count": 7, "years": "2019-2023" } },
+      "millSite": { "source": "DOE", "sourceUrl": "https://www.energy.gov/sites/default/files/2021-08/NaturitaFactSheet.pdf",
+        "uraniumQuestion": "ANSWERED IN THE NEGATIVE — the historical mill site does not mean the municipal drinking water has a uranium problem. The real story is private wells in the Uravan Belt." },
+      "uniquePageJustified": "partial",
+      "pageType": "well-water and mill-legacy only — NO municipal water-quality page"
+    }
+  },
+
+  "excluded": {
+    "gunnison": "Outside all verified research. No page.",
+    "ophir": "CCR URL returns 404; never fetched. No page."
+  }
+}

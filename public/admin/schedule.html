@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schedule | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "schedule",
+    title: "Schedule",
+    sub: "Installs, service visits, and tests — by day.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-visit'>+ Schedule visit</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='panel'><div class='panel-head'><h2>Next 30 days</h2>" +
+      "<div style='display:flex;gap:.5rem;align-items:center'>" +
+        "<select id='ftech' style='width:auto'><option value=''>All techs</option>" +
+        WW.teamMembers().map(function (t) { return "<option value='" + WWUI.esc(t.id) + "'>" + WWUI.esc(t.name) + "</option>"; }).join("") +
+        "</select></div></div>" +
+      "<div class='panel-body' id='cal'></div></div>" +
+    "<div class='panel'><div class='panel-head'><h2>Past &amp; overdue</h2></div>" +
+      "<div class='panel-body flush tbl-scroll'><table class='tbl'>" +
+      "<thead><tr><th>When</th><th>What</th><th>Customer</th><th>Tech</th><th>Status</th></tr></thead>" +
+      "<tbody id='past'></tbody></table></div></div>";
+
+  document.getElementById("ftech").addEventListener("change", render);
+
+  function events() {
+    var out = [];
+    WW.list("visits").forEach(function (v) {
+      out.push({ id: v.id, kind: "visit", date: v.date, what: v.type, customer_id: v.customer_id, tech: v.tech, done: v.done, raw: v });
+    });
+    WW.list("jobs").forEach(function (j) {
+      out.push({ id: j.id, kind: "job", date: j.start, what: j.title, customer_id: j.customer_id, tech: j.tech, done: j.status === "done", raw: j });
+    });
+    var ft = document.getElementById("ftech").value;
+    if (ft) out = out.filter(function (e) { return String(e.tech) === ft; });
+    return out.sort(function (a, b) { return (a.date || "") < (b.date || "") ? -1 : 1; });
+  }
+
+  function render() {
+    var iso = WW.today();
+    var end = new Date(); end.setDate(end.getDate() + 30);
+    var iso30 = end.toISOString().slice(0, 10);
+    var all = events();
+
+    /* --- grouped upcoming --- */
+    var upcoming = all.filter(function (e) { return e.date >= iso && e.date <= iso30; });
+    var byDay = {};
+    upcoming.forEach(function (e) { (byDay[e.date] = byDay[e.date] || []).push(e); });
+    var days = Object.keys(byDay).sort();
+
+    var cal = document.getElementById("cal");
+    if (!days.length) {
+      cal.innerHTML = "<div class='empty'><h3>Nothing scheduled</h3><p>The next 30 days are clear.</p></div>";
+    } else {
+      cal.innerHTML = days.map(function (d) {
+        var n = WW.daysFrom(d);
+        return "<div style='display:flex;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--line-soft)'>" +
+          "<div style='flex:0 0 6.5rem'><div class='t-strong'>" + WW.fmtDate(d) + "</div>" +
+          "<div class='t-sub'>" + (n === 0 ? "today" : "in " + n + " days") + "</div></div>" +
+          "<div style='flex:1'>" + byDay[d].map(function (e) {
+            return "<div style='display:flex;align-items:center;gap:.6rem;padding:.2rem 0'>" +
+              "<span class='badge " + (e.kind === "job" ? "navy" : "blue") + "'>" + (e.kind === "job" ? "Install" : "Service") + "</span>" +
+              "<span style='flex:1'>" + WWUI.esc(e.what) + " <span class='t-sub'>" + WWUI.esc(WW.customerName(e.customer_id)) + "</span></span>" +
+              "<span class='t-sub'>" + WWUI.esc(WW.techName(e.tech)) + "</span></div>";
+          }).join("") + "</div></div>";
+      }).join("");
+    }
+
+    /* --- past / overdue --- */
+    var past = all.filter(function (e) { return e.date < iso; }).reverse().slice(0, 25);
+    WWUI.table(document.getElementById("past"), past, [
+      { cell: function (e) { return "<span class='t-strong'>" + WW.fmtDate(e.date) + "</span>"; } },
+      { cell: function (e) { return WWUI.esc(e.what); } },
+      { cell: function (e) { return WWUI.esc(WW.customerName(e.customer_id)); } },
+      { cell: function (e) { return WWUI.esc(WW.techName(e.tech)); } },
+      { cell: function (e) { return e.done ? "<span class='badge green'>Done</span>" : "<span class='badge red'>Not closed out</span>"; } }
+    ], { empty: "Nothing in the past.", onRow: function (e) {
+        if (e.kind !== "visit") { location.href = "jobs.html"; return; }
+        WWUI.open({
+          eyebrow: "Service visit", title: e.what, subtitle: WW.customerName(e.customer_id),
+          bodyHTML: WWUI.section("Details", WWUI.kv([
+            ["When", WW.fmtDate(e.date)], ["Tech", WW.techName(e.tech)],
+            ["Status", e.done ? "Done" : "Open"], ["Summary", e.raw.summary]
+          ])),
+          actions: e.done ? [] : [{ label: "Mark done", kind: "primary", onClick: function () {
+            WW.update("visits", e.id, { done: true }); WWUI.close(); render(); WWUI.toast("Closed out");
+          } }]
+        });
+    } });
+  }
+
+  document.getElementById("new-visit").addEventListener("click", function () {
+    var cust = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+    var tech = WW.teamMembers().map(function (t) { return "<option value='" + WWUI.esc(t.id) + "'>" + WWUI.esc(t.name) + "</option>"; }).join("");
+    WWUI.modal({
+      title: "Schedule a visit",
+      bodyHTML:
+        "<div class='form-row'><div><label>Customer</label><select name='customer_id'>" + cust + "</select></div>" +
+          "<div><label>Type</label><input name='type' placeholder='Salt delivery, membrane swap…'></div></div>" +
+        "<div class='form-row'><div><label>Date</label><input name='date' type='date' value='" + WW.today() + "'></div>" +
+          "<div><label>Tech</label><select name='tech'><option value=''>Unassigned</option>" + tech + "</select></div></div>",
+      okLabel: "Schedule",
+      onOk: function (f) {
+        if (!f.type) { WWUI.toast("Type is required", "err"); return false; }
+        f.done = false; f.summary = ""; WW.add("visits", f); render(); WWUI.toast("Scheduled");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

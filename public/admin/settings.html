@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "settings",
+    title: "Settings",
+    sub: "Business facts, deployment state, and what is still blocked.",
+    actions: ""
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='panel'><div class='panel-head'><h2>Business facts</h2><span class='badge red' id='blocked'>—</span></div>" +
+      "<div class='panel-body' id='biz'><p class='t-sub'>Loading data/business.json…</p></div></div>" +
+    "<div class='panel'><div class='panel-head'><h2>Data mode</h2></div><div class='panel-body' id='mode'></div></div>" +
+    "<div class='panel'><div class='panel-head'><h2>Deployment checklist</h2></div><div class='panel-body' id='deploy'></div></div>";
+
+  /* --- data mode --- */
+  document.getElementById("mode").innerHTML =
+    (WW.mode === "demo"
+      ? "<div class='callout'><strong>Demo mode.</strong> No <code>js/config.js</code> present, so the panel is running " +
+        "on seeded sample data in this browser's localStorage. Every phone number is a 555 placeholder and every name " +
+        "is fictional — none of it can reach a public page. Drop in <code>js/config.js</code> with the Supabase URL " +
+        "and publishable key and the same screens switch to live data.</div>" +
+        "<button class='btn btn-outline btn-sm' id='reset' style='margin-top:.9rem'>Reset demo data</button>"
+      : "<div class='callout'><strong>Live mode.</strong> Connected to Supabase. Row-level security decides what each " +
+        "role can read and write — the panel's nav gating is convenience, not the actual gate.</div>");
+
+  var rb = document.getElementById("reset");
+  if (rb) rb.addEventListener("click", function () {
+    WWUI.confirmDelete("all demo data and reseed", function () { WW.resetDemo(); });
+  });
+
+  /* --- deployment checklist --- */
+  var steps = [
+    ["Admin panel built", true, "16 tabs, shared shell, role gating, dual-mode data layer."],
+    ["Verified water data loaded", true, "359 sourced facts in data/verified-facts.json; structured in water-systems.json and wells.json."],
+    ["Ken's business facts", false, "data/business.json is all nulls by design. Legal name, phone, address, licence, certifications, founding year, service area, real reviews, pricing."],
+    ["Paid vs demo decided", false, "Paid → Supabase + Stripe. Demo → static, noindex, no backend."],
+    ["Supabase project created", false, "Then js/config.js gets the URL + publishable key, and db/migrations run."],
+    ["Vercel connected", false, "Waiting on you — say the word and this ships."],
+    ["Marketing site generated", false, "~300 pages off gen/build.mjs. Blocked on business.json."],
+    ["Old repo made private", false, "bannisterderik-tech/williamson-water still public with 15 fabricated testimonials."]
+  ];
+  document.getElementById("deploy").innerHTML = steps.map(function (s) {
+    return "<div style='display:flex;gap:.8rem;padding:.55rem 0;border-bottom:1px solid var(--line-soft)'>" +
+      "<span class='badge " + (s[1] ? "ok" : "amber") + "'>" + (s[1] ? "done" : "todo") + "</span>" +
+      "<div><div class='t-strong'>" + WWUI.esc(s[0]) + "</div><div class='t-sub'>" + WWUI.esc(s[2]) + "</div></div></div>";
+  }).join("");
+
+  /* --- business.json --- */
+  fetch("../data/business.json").then(function (r) { return r.json(); }).then(function (b) {
+    var fields = [
+      ["Legal name", b.legalName], ["Display name", b.displayName], ["Tagline", b.tagline],
+      ["Owner", b.owner], ["Phone", b.phone], ["Email", b.email],
+      ["Address", b.address && b.address.line1], ["City", b.address && b.address.city],
+      ["Founded", b.founded], ["Service radius", b.serviceArea && b.serviceArea.radiusMiles],
+      ["Licences", (b.licenses || []).length ? b.licenses.join(", ") : null],
+      ["Certifications", (b.certifications || []).length ? b.certifications.join(", ") : null],
+      ["Real reviews", (b.reviews || []).length || null],
+      ["Pricing", b.pricing], ["Hosting mode", b.hosting && b.hosting.mode]
+    ];
+    var missing = fields.filter(function (f) { return f[1] == null || f[1] === ""; });
+    document.getElementById("blocked").textContent = missing.length + " still blocked";
+
+    document.getElementById("biz").innerHTML =
+      "<div class='callout warn'><strong>Every one of these was invented in the May 2026 build.</strong> " +
+      "Research cannot produce them — only Ken can. The generator is wired to fail the build on a null rather than " +
+      "render a placeholder, which is exactly how the last version shipped a 555 phone number on 132 pages.</div>" +
+      "<table class='tbl' style='margin-top:1rem'><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>" +
+      fields.map(function (f) {
+        var has = f[1] != null && f[1] !== "";
+        return "<tr><td class='t-strong'>" + WWUI.esc(f[0]) + "</td><td>" +
+          (has ? WWUI.esc(String(f[1])) : "<span class='badge red'>blocked</span>") + "</td></tr>";
+      }).join("") + "</tbody></table>";
+  }).catch(function () {
+    document.getElementById("biz").innerHTML =
+      "<div class='empty'><h3>Could not load data/business.json</h3>" +
+      "<p>Opening these files directly from disk blocks the fetch. Serve the folder (<code>npx serve</code>) " +
+      "or view it on the deployment.</p></div>";
+  });
+
+});
+</script>
+</body>
+</html>

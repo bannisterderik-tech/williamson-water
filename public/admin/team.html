@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "team",
+    title: "Team",
+    sub: "Who has access, and to what.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-seat'>+ Add seat</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  var ROLE_NOTE = {
+    admin: "Everything, including money and settings.",
+    sales: "Leads, tests, proposals, customers, invoices — no settings, no inventory.",
+    field: "The day's work: tests, installs, schedule, equipment, inventory."
+  };
+
+  $page.innerHTML =
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Sees</th><th>Status</th></tr></thead>" +
+      "<tbody id='rows'></tbody></table></div></div>" +
+    "<div class='panel'><div class='panel-head'><h2>What each role can open</h2></div>" +
+      "<div class='panel-body flush tbl-scroll'><table class='tbl'><thead><tr><th>Tab</th><th>Admin</th><th>Sales</th><th>Field</th></tr></thead>" +
+      "<tbody id='matrix'></tbody></table></div></div>";
+
+  function render() {
+    WWUI.table(document.getElementById("rows"), WW.list("team_seats"), [
+      { cell: function (m) { return "<span class='t-strong'>" + WWUI.esc(m.name || "—") + "</span>"; } },
+      { cell: function (m) { return WWUI.esc(m.email); } },
+      { cell: function (m) { return "<span class='badge navy'>" + WWUI.esc(m.role) + "</span>"; } },
+      { cell: function (m) { return "<span class='t-sub'>" + WWUI.esc(ROLE_NOTE[m.role] || "") + "</span>"; } },
+      { cell: function (m) { return m.active !== false ? "<span class='badge green'>Active</span>" : "<span class='badge gray'>Disabled</span>"; } }
+    ], { empty: "No seats yet.", onRow: function (m) {
+      WWUI.open({
+        eyebrow: "Team seat", title: m.name || m.email, subtitle: m.role,
+        bodyHTML: WWUI.section("Access", WWUI.kv([
+          ["Email", m.email], ["Role", m.role], ["Sees", ROLE_NOTE[m.role] || ""],
+          ["Status", m.active !== false ? "Active" : "Disabled"]
+        ])) + WWUI.section("Note",
+          "<p class='t-sub' style='margin:0'>Roles are enforced twice: this panel hides what the role cannot open, " +
+          "and Postgres row-level security refuses the data. The UI is convenience; RLS is the actual gate.</p>"),
+        actions: [
+          { label: m.active !== false ? "Disable" : "Enable", onClick: function () {
+              WW.update("team_seats", m.id, { active: m.active === false }); WWUI.close(); render(); WWUI.toast("Updated");
+          } },
+          { label: "Remove", kind: "danger", onClick: function () {
+              WWUI.confirmDelete("this seat", function () { WW.remove("team_seats", m.id); WWUI.close(); render(); WWUI.toast("Removed"); });
+          } }
+        ]
+      });
+    } });
+
+    var tb = document.getElementById("matrix");
+    tb.innerHTML = WWShell.NAV.map(function (n) {
+      function tick(role) {
+        return WWShell.ROLE_PAGES[role].indexOf(n[0]) > -1
+          ? "<span class='badge ok'>yes</span>" : "<span class='badge gray'>—</span>";
+      }
+      return "<tr><td class='t-strong'>" + WWUI.esc(n[1]) + "</td><td>" + tick("admin") +
+             "</td><td>" + tick("sales") + "</td><td>" + tick("field") + "</td></tr>";
+    }).join("");
+  }
+
+  document.getElementById("new-seat").addEventListener("click", function () {
+    WWUI.modal({
+      title: "Add a team seat",
+      bodyHTML:
+        "<div class='form-row'><div><label>Name</label><input name='name'></div>" +
+          "<div><label>Email</label><input name='email' type='email'></div></div>" +
+        "<div><label>Role</label><select name='role'>" +
+          "<option value='field'>Field — the day's work</option>" +
+          "<option value='sales'>Sales — pipeline and customers</option>" +
+          "<option value='admin'>Admin — everything</option></select></div>" +
+        "<p class='t-sub'>Adding a seat here does not create a login. Once Supabase is wired, this email must also " +
+        "be able to sign in by magic link, and RLS reads the role from this table.</p>",
+      okLabel: "Add seat",
+      onOk: function (f) {
+        if (!f.email) { WWUI.toast("Email is required", "err"); return false; }
+        f.active = true; WW.add("team_seats", f); render(); WWUI.toast("Seat added");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

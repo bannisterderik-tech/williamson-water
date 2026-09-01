@@ -1,0 +1,114 @@
+{
+  "_meta": {
+    "description": "Private well water data for Montrose, Delta, Ouray counties. The largest and least contested content opportunity — no competitor covers this.",
+    "researched": "2026-08-11",
+    "keyInsight": "Depth is the story: drilling deeper solves selenium and uranium but NOT iron and manganese."
+  },
+
+  "regulatoryVacuum": {
+    "coloradoRegulatesPrivateWellQuality": false,
+    "quote": "CDPHE does not regulate water quality for private water wells because they are not covered by the Safe Drinking Water Act.",
+    "sdwaThreshold": "Applies only to systems serving 25+ people 60+ days/year, or with 15+ service connections",
+    "cdpheRecommendation": "Test at least annually; more often if pregnant or breastfeeding people drink the water, unexplained stomach illness, contaminants found in a neighboring well, or any change in taste/odor/color/clarity",
+    "coloradoResidentsOnWells": "about 7%",
+    "dataGap": "CDPHE's private-well repository is incomplete because testing is voluntary and private labs generally do not report results to the Tracking Program.",
+    "sourceUrl": "https://coepht.colorado.gov/well-water-and-health"
+  },
+
+  "countyWellCounts": {
+    "montrose": { "permitRecords": 4171, "residentialCategory": 2237, "constructed": 1425, "medianDepthFt": 138, "medianYieldGpm": 10.0, "population": 41276, "ruralShare": 0.45 },
+    "delta":    { "permitRecords": 4396, "residentialCategory": 3000, "constructed": 1879, "medianDepthFt": 100, "medianYieldGpm": 15.0, "population": 30952, "ruralShare": 0.63 },
+    "ouray":    { "permitRecords": 1375, "residentialCategory": 1011, "constructed": 662,  "medianDepthFt": 220, "medianYieldGpm": 7.0,  "population": 4436,  "ruralShare": 1.00 }
+  },
+
+  "sixCountyStudy": {
+    "counties": ["Delta", "Gunnison", "Hinsdale", "Montrose", "Ouray", "San Miguel"],
+    "wellsTested": 457,
+    "headline": "56% of tested wells exceeded one or more primary or secondary standards (58% including lead and copper). 15% exceeded a primary standard.",
+    "primaryExceedanceRates": {
+      "arsenic": 0.1070, "lead": 0.0305, "uranium": 0.0284, "copper": 0.0175,
+      "nitrateN": 0.0109, "selenium": 0.0109, "barium": 0.0044, "cadmium": 0.0022,
+      "fluoride": 0.0022, "chromium": 0.0, "nitrite": 0.0
+    },
+    "secondaryExceedanceRates": {
+      "tds": 0.4083, "manganese": 0.2445, "iron": 0.2009, "sulfate": 0.1834,
+      "phOutOfRange": 0.1004, "aluminum": 0.0437, "chloride": 0.0218, "zinc": 0.0, "silver": 0.0
+    },
+    "nationalComparison": { "sulfate": "18.34% vs 3.79% nationally — roughly 5x, attributed to pyrite", "iron": "20.09% vs 19%", "manganese": "24.45% vs 21%" },
+    "countyArsenicRates": { "delta": 0.06, "montrose": 0.01, "ouray": 0.0, "gunnison": 0.0, "hinsdale": 0.04, "sanMiguel": 0.0 },
+    "sourceUrl": "https://scholar.colorado.edu/downloads/6969z1231"
+  },
+
+  "shallowVsDeep": {
+    "_note": "USGS Water Quality Portal + USGS SIR 2019-5029. The single strongest technical argument on the site.",
+    "shallow": {
+      "definition": "<50 ft, alluvium overlying Mancos Shale, east side of the Uncompahgre",
+      "montrose": { "seleniumMedianUgL": 65, "seleniumMaxUgL": 4120, "uraniumMedianUgL": 76.2, "uraniumMaxUgL": 2500, "sulfateMgL": 2210, "hardnessMgLCaCO3": 2235, "tdsMgL": 3820 },
+      "delta": { "seleniumMedianUgL": 23.4, "seleniumMaxUgL": 4070 }
+    },
+    "deep": {
+      "definition": ">=100 ft",
+      "montrose": { "seleniumMedianUgL": 1.0, "uraniumMedianUgL": 0.6, "uraniumMaxUgL": 7.2, "ironMedianUgL": 380, "ironMaxUgL": 2300, "manganeseMedianUgL": 58.6, "manganeseMaxUgL": 760 },
+      "delta": { "seleniumMedianUgL": 0.0, "ironMedianUgL": 410, "ironMaxUgL": 62000, "manganeseMedianUgL": 40 }
+    },
+    "takeaway": "Depth solves selenium and uranium. It does NOT solve iron and manganese — those stay elevated at every depth. That distinction drives the correct treatment recommendation and no competitor makes it."
+  },
+
+  "mancosShaleMechanism": {
+    "selenium": "Naturally present in Mancos Shale, leached by irrigation. Primary source area is the east side of the Uncompahgre River in Delta and Montrose counties.",
+    "nitrate": "Range <0.04 to 550 mg/L as N, median 4.8 mg/L as N (n=70). USGS: 'the primary source is the Mancos Shale' — NOT fertilizer.",
+    "coupling": "Nitrate as low as 5 mg/L as N maintains oxidizing conditions that inhibit selenate reduction, keeping selenium mobile.",
+    "groundwaterAge": "6 to 20 years — recharged by irrigation, no deeper recharge source found",
+    "usgsShallowNetwork": { "wells": 30, "samples": 70, "period": "2013-2016", "seleniumRangeUgL": [0, 4100], "seleniumMedianUgL": 14,
+      "otherMedians": { "uraniumUgL": 71.1, "uraniumMaxUgL": 469, "manganeseUgL": 429, "manganeseMaxUgL": 1430, "ironMaxUgL": 8650, "boronUgL": 726, "lithiumUgL": 257, "strontiumUgL": 6700 },
+      "majorIons": { "tdsMedianMgL": 4000, "tdsRangeMgL": [926, 53000], "sulfateMedianMgL": 2210, "sulfateRangeMgL": [527, 34400], "specificConductanceUScm": 4160, "calciumMedianMgL": 499 } },
+    "honestyNote": "USGS states 'few wells are used for drinking-water supply' in the Uncompahgre Project irrigated area. Do NOT imply these shallow monitoring wells are typical domestic supply wells. Frame as: this is what the shallow aquifer under irrigated ground looks like, which is why depth and testing matter.",
+    "seleniumStandards": { "epaDrinkingWaterUgL": 50, "cdpheChronicAquaticLifeUgL": 4.6, "cdpheAcuteAquaticLifeUgL": 18.4 },
+    "sourceUrl": "https://pubs.usgs.gov/sir/2019/5029/sir20195029.pdf"
+  },
+
+  "uravanBelt": {
+    "location": "Western Montrose County — Nucla, Naturita, Uravan, Gateway, Bull Canyon",
+    "geology": "70 x 30 mile belt. Uranium, vanadium, radium ore in the Jurassic Salt Wash Member of the Morrison Formation. ~1,200 small mines.",
+    "study": "CGS/CDPHE 5-year Baseline Radiological Study, Year 3 report CGS Open-File Report OF-24-08 (Sebol and Buch-Leviatan, 2024)",
+    "privateWellsSampled": 23,
+    "exceedancesByAnalyte": { "arsenic": 6, "lead": 5, "radium226plus228": 4, "grossAlpha": 3, "manganese": 3, "iron": 2, "uranium": 1, "grossBeta": 1, "antimony": 1, "boron": 1, "cobalt": 1 },
+    "uraniumDetail": "Detected at 19 of 23 locations; 1 exceeded 0.030 mg/L (a 150-ft well in mudstone).",
+    "arsenicDetail": "Above reporting limit at 6 locations; 5 exceeded 0.01 mg/L.",
+    "sourceUrl": "https://coloradogeologicalsurvey.org/wp-content/uploads/2025/05/OF-24-08.pdf"
+  },
+
+  "radon": {
+    "ouryCountyWellWaterPCiL": [26, 26, 29, 580, 610, 860, 900],
+    "deltaCountyWellWaterPCiL": [760],
+    "indoorAir": "About half of Colorado homes exceed the EPA action level of 4.0 pCi/L. CDPHE distributed 12,500+ free test kits in early 2025 and mitigated 200+ homes.",
+    "epaZones": "Zone 1 = predicted average indoor screening >4 pCi/L; Zone 2 = 2-4; Zone 3 = <2. EPA states all homes should be tested regardless of zone."
+  },
+
+  "aquifers": ["Colorado Plateaus aquifers", "alluvial aquifers"],
+  "mancosNote": "Mancos Shale is a regional confining unit, but locally wells are completed in weathered Mancos Shale at shallow depths.",
+
+  "permitting": {
+    "database": "Colorado DWR Well Permit Search Tool and Well Permit Map Viewer — searchable by permit number, name, address, or subdivision",
+    "reviewTime": "up to 49 days",
+    "householdUseOnlyUnder35Acres": "Inside one single-family dwelling only; no outdoor use",
+    "over35Acres": "Up to three single-family dwellings, watering of domestic animals, and irrigation of no more than one acre of lawn and garden",
+    "agriculturalNitrateStandard": "Colorado's agricultural groundwater standard for nitrate is 100 mg/L as N — the drinking-water MCL is 10 mg/L as N. Do not confuse them."
+  },
+
+  "countyHealthDepartments": {
+    "montrose": "Environmental Health states private well quality is not regulated and is the owner's responsibility; maintains a list of Western Slope certified labs.",
+    "delta": "Does not test or regulate private well quality, but a water sample report is required for new wells and subdivision applications. Sample containers via Mesa County Public Health; analysis at Grand Junction Regional Laboratory or the CDPHE state lab."
+  },
+
+  "freeTestingProgram": {
+    "counties": ["Ouray", "San Miguel", "Montrose", "Delta", "Gunnison", "Hinsdale"],
+    "funding": "CDC grant",
+    "partners": ["Delta County Health Department", "West Central Public Health Partnership", "Uncompahgre Watershed Partnership"],
+    "contentAngle": "A genuinely useful thing to tell homeowners. Builds trust and costs Ken nothing."
+  },
+
+  "epaSecondaryMCLs": { "ironMgL": 0.3, "manganeseMgL": 0.05, "sulfateMgL": 250, "tdsMgL": 500, "chlorideMgL": 250, "phRange": [6.5, 8.5], "zincMgL": 5, "note": "EPA does not enforce secondary standards." },
+
+  "contacts": { "cdpheToxCall": "303-692-2606 / cdphe_toxcall@state.co.us", "wellCareHotline": "888-395-1033" }
+}

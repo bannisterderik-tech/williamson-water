@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "index",
+    title: "Dashboard",
+    sub: "The state of the business, right now.",
+    actions: "<a class='btn btn-outline btn-sm' href='tests.html'>+ Water test</a><a class='btn btn-primary btn-sm' href='leads.html'>+ Lead</a>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  var leads = WW.list("leads"), jobs = WW.list("jobs"), inv = WW.list("invoices"),
+      tests = WW.list("water_tests"), visits = WW.list("visits");
+
+  var newLeads = leads.filter(function (l) { return l.stage === "new"; });
+  var inprog   = jobs.filter(function (j) { return j.status === "in-progress"; });
+  var pipeline = WW.list("proposals").filter(function (p) { return p.status === "draft" || p.status === "sent"; });
+  var owed     = inv.filter(function (i) { return i.kind === "invoice" && i.status === "sent"; });
+  var due      = WW.serviceDue(30);
+  var low      = WW.lowStock();
+
+  $page.innerHTML =
+    "<div class='stat-row'>" +
+      "<a class='stat' href='leads.html'><div class='stat-label'>New leads</div><div class='stat-num'>" + newLeads.length + "</div><div class='stat-sub'>need first contact</div></a>" +
+      "<a class='stat' href='tests.html'><div class='stat-label'>Water tests</div><div class='stat-num'>" + tests.length + "</div><div class='stat-sub'>on file</div></a>" +
+      "<a class='stat' href='proposals.html'><div class='stat-label'>Pipeline</div><div class='stat-num'>" + WW.money(pipeline.reduce(function (a, p) { return a + Number(p.amount || 0); }, 0)) + "</div><div class='stat-sub'>awaiting a yes</div></a>" +
+      "<a class='stat' href='invoices.html'><div class='stat-label'>Owed to you</div><div class='stat-num'>" + WW.money(owed.reduce(function (a, i) { return a + Number(i.amount || 0); }, 0)) + "</div><div class='stat-sub'>sent, unpaid</div></a>" +
+      "<a class='stat' href='plans.html'><div class='stat-label'>Recurring</div><div class='stat-num'>" + WW.money(WW.mrr()) + "</div><div class='stat-sub'>per month</div></a>" +
+    "</div>" +
+    "<div class='panel'><div class='panel-head'><h2>Needs your attention</h2></div><div class='panel-body' id='attn'></div></div>" +
+    "<div class='grid-2'>" +
+      "<div class='panel'><div class='panel-head'><h2>Service due (30 days)</h2><a class='btn btn-outline btn-sm' href='equipment.html'>Equipment →</a></div>" +
+        "<div class='panel-body flush tbl-scroll'><table class='tbl'><thead><tr><th>When</th><th>Customer</th><th>What</th></tr></thead><tbody id='due'></tbody></table></div></div>" +
+      "<div class='panel'><div class='panel-head'><h2>This week</h2><a class='btn btn-outline btn-sm' href='schedule.html'>Schedule →</a></div>" +
+        "<div class='panel-body flush tbl-scroll'><table class='tbl'><thead><tr><th>When</th><th>What</th><th>Who</th></tr></thead><tbody id='week'></tbody></table></div></div>" +
+    "</div>";
+
+  /* --- attention list --- */
+  var att = [];
+  newLeads.forEach(function (l) {
+    att.push(["red", "New lead: <strong>" + WWUI.esc(l.name) + "</strong> (" + WWUI.esc(l.city) + " · " + WWUI.esc(l.service) + ")", "leads.html"]);
+  });
+  owed.forEach(function (i) {
+    att.push(["amber", "Unpaid: <strong>" + WWUI.esc(i.label) + "</strong> · " + WW.money(i.amount) + " · " + WWUI.esc(WW.customerName(i.customer_id)), "invoices.html"]);
+  });
+  due.filter(function (e) { return WW.daysFrom(e.next_service) < 0; }).forEach(function (e) {
+    att.push(["red", "Overdue service: <strong>" + WWUI.esc(e.service_type) + "</strong> — " + WWUI.esc(WW.customerName(e.customer_id)) + " (" + WWUI.esc(e.type) + ")", "equipment.html"]);
+  });
+  low.forEach(function (i) {
+    att.push(["amber", "Low stock: <strong>" + WWUI.esc(i.name) + "</strong> — " + i.qty + " left (reorder at " + i.reorder_at + ")", "inventory.html"]);
+  });
+  WW.list("water_tests").forEach(function (t) {
+    var bad = WW.ANALYTES.filter(function (a) { return WW.rate(a.key, t[a.key]) === "over"; });
+    if (bad.length && !WW.list("proposals").some(function (p) { return p.test_id === t.id; })) {
+      var who = t.customer_id ? WW.customerName(t.customer_id) : (WW.get("leads", t.lead_id) || {}).name;
+      att.push(["blue", "Test with " + bad.length + " result" + (bad.length > 1 ? "s" : "") + " over standard and no proposal yet: <strong>" + WWUI.esc(who || "—") + "</strong>", "tests.html"]);
+    }
+  });
+
+  var ah = document.getElementById("attn");
+  if (!att.length) ah.innerHTML = "<p class='t-sub'>All clear.</p>";
+  att.slice(0, 8).forEach(function (a) {
+    var row = document.createElement("div");
+    row.style.cssText = "display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid var(--line-soft)";
+    row.innerHTML = "<span class='badge " + a[0] + "'>&bull;</span><span style='flex:1'>" + a[1] + "</span><a class='btn-icon' href='" + a[2] + "'>Open →</a>";
+    ah.appendChild(row);
+  });
+
+  /* --- service due --- */
+  WWUI.table(document.getElementById("due"), due.slice(0, 8), [
+    { cell: function (e) { var n = WW.daysFrom(e.next_service);
+        return "<span class='badge " + (n < 0 ? "red" : n < 14 ? "amber" : "gray") + "'>" + (n < 0 ? Math.abs(n) + "d late" : "in " + n + "d") + "</span>"; } },
+    { cell: function (e) { return "<span class='t-strong'>" + WWUI.esc(WW.customerName(e.customer_id)) + "</span>"; } },
+    { cell: function (e) { return WWUI.esc(e.service_type) + "<span class='t-sub'>" + WWUI.esc(e.type) + "</span>"; } }
+  ], { empty: "Nothing due in the next 30 days.", onRow: function () { location.href = "equipment.html"; } });
+
+  /* --- week --- */
+  var iso = WW.today(), in7 = new Date(); in7.setDate(in7.getDate() + 7);
+  var iso7 = in7.toISOString().slice(0, 10);
+  var week = visits.filter(function (v) { return v.date >= iso && v.date <= iso7; })
+                   .sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+  WWUI.table(document.getElementById("week"), week, [
+    { cell: function (v) { return "<span class='t-strong'>" + WW.fmtDate(v.date) + "</span>"; } },
+    { cell: function (v) { return WWUI.esc(v.type); } },
+    { cell: function (v) { return WWUI.esc(WW.customerName(v.customer_id)) + "<span class='t-sub'>" + WWUI.esc(WW.techName(v.tech)) + "</span>"; } }
+  ], { empty: "Nothing scheduled in the next 7 days.", onRow: function () { location.href = "schedule.html"; } });
+
+});
+</script>
+</body>
+</html>

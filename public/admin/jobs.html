@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installs | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "jobs",
+    title: "Installs",
+    sub: "Work sold, scheduled, and finished.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-job'>+ Install</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  var STATUSES = [
+    { key: "scheduled",   label: "Scheduled",   badge: "blue" },
+    { key: "in-progress", label: "In progress", badge: "amber" },
+    { key: "done",        label: "Done",        badge: "green" },
+    { key: "on-hold",     label: "On hold",     badge: "gray" }
+  ];
+
+  $page.innerHTML =
+    "<div class='stat-row' id='stats'></div>" +
+    "<div id='bar'></div>" +
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>Job</th><th>Customer</th><th>Start</th>" +
+      "<th>Tech</th><th class='num'>Value</th><th>Status</th></tr></thead><tbody id='rows'></tbody></table>" +
+    "</div></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search job, customer, notes…",
+    sorts: [
+      { value: "start", label: "Soonest start" },
+      { value: "value", label: "Highest value" },
+      { value: "recent", label: "Most recent" }
+    ],
+    extraHTML: "<select id='fstatus' style='width:auto'><option value=''>All statuses</option>" +
+      STATUSES.map(function (s) { return "<option value='" + s.key + "'>" + s.label + "</option>"; }).join("") + "</select>",
+    onChange: render
+  });
+  document.getElementById("fstatus").addEventListener("change", render);
+
+  function badgeFor(k) {
+    var s = STATUSES.filter(function (x) { return x.key === k; })[0];
+    return s ? "<span class='badge " + s.badge + "'>" + s.label + "</span>" : "<span class='badge gray'>" + WWUI.esc(k || "—") + "</span>";
+  }
+
+  function render() {
+    var all = WW.list("jobs").map(function (j) {
+      var c = Object.create(j); c._cust = WW.customerName(j.customer_id); return c;
+    });
+    var f = document.getElementById("fstatus").value;
+    if (f) all = all.filter(function (j) { return j.status === f; });
+
+    document.getElementById("stats").innerHTML = STATUSES.map(function (s) {
+      var mine = WW.list("jobs").filter(function (j) { return j.status === s.key; });
+      return "<div class='stat'><div class='stat-label'>" + s.label + "</div><div class='stat-num'>" + mine.length +
+             "</div><div class='stat-sub'>" + WW.money(mine.reduce(function (a, j) { return a + Number(j.value || 0); }, 0)) + "</div></div>";
+    }).join("");
+
+    var rows = WWUI.filterSort(all, bar, {
+      keys: ["title", "_cust", "note"],
+      sorts: {
+        start:  WWUI.cmp.dateAsc("start"),
+        value:  WWUI.cmp.numDesc("value"),
+        recent: WWUI.cmp.dateDesc("start")
+      }
+    });
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (j) { return "<span class='t-strong'>" + WWUI.esc(j.title) + "</span>"; } },
+      { cell: function (j) { return WWUI.esc(j._cust); } },
+      { cell: function (j) { return WW.fmtDate(j.start); } },
+      { cell: function (j) { return WWUI.esc(WW.techName(j.tech)); } },
+      { cls: "num", cell: function (j) { return WW.money(j.value); } },
+      { cell: function (j) { return badgeFor(j.status); } }
+    ], { empty: "No installs yet.", onRow: openJob });
+  }
+
+  function openJob(j) {
+    WWUI.open({
+      eyebrow: "Install",
+      title: j.title,
+      subtitle: WW.customerName(j.customer_id),
+      bodyHTML:
+        WWUI.section("Details", WWUI.kv([
+          ["Customer", WW.customerName(j.customer_id)],
+          ["Start", WW.fmtDate(j.start)],
+          ["Tech", WW.techName(j.tech)],
+          ["Value", WW.money(j.value)],
+          ["Status", (STATUSES.filter(function (s) { return s.key === j.status; })[0] || {}).label || j.status]
+        ])) +
+        (j.note ? WWUI.section("Notes", "<p style='margin:0'>" + WWUI.esc(j.note) + "</p>") : ""),
+      actions: STATUSES.filter(function (s) { return s.key !== j.status; }).slice(0, 2).map(function (s) {
+        return { label: "Mark " + s.label.toLowerCase(), kind: s.key === "done" ? "primary" : "outline",
+                 onClick: function () { WW.update("jobs", j.id, { status: s.key }); WWUI.close(); render(); WWUI.toast("Marked " + s.label.toLowerCase()); } };
+      }).concat([
+        { label: "Delete", kind: "danger", onClick: function () {
+            WWUI.confirmDelete("this install", function () { WW.remove("jobs", j.id); WWUI.close(); render(); WWUI.toast("Deleted"); });
+        } }
+      ])
+    });
+  }
+
+  document.getElementById("new-job").addEventListener("click", function () {
+    var cust = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+    var tech = WW.teamMembers().map(function (t) { return "<option value='" + WWUI.esc(t.id) + "'>" + WWUI.esc(t.name) + "</option>"; }).join("");
+    WWUI.modal({
+      title: "New install", wide: true,
+      bodyHTML:
+        "<div class='form-row'><div><label>Job title</label><input name='title'></div>" +
+          "<div><label>Customer</label><select name='customer_id'>" + cust + "</select></div></div>" +
+        "<div class='form-row'>" +
+          "<div><label>Start</label><input name='start' type='date' value='" + WW.today() + "'></div>" +
+          "<div><label>Tech</label><select name='tech'><option value=''>Unassigned</option>" + tech + "</select></div>" +
+          "<div><label>Value</label><input name='value' type='number' step='any'></div>" +
+        "</div>" +
+        "<div><label>Notes</label><textarea name='note'></textarea></div>",
+      okLabel: "Add install",
+      onOk: function (f) {
+        if (!f.title) { WWUI.toast("Title is required", "err"); return false; }
+        f.status = "scheduled"; WW.add("jobs", f); render(); WWUI.toast("Install added");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

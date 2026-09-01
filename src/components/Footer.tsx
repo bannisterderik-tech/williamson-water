@@ -53,10 +53,10 @@ export function Footer() {
               serving Montrose County and the Western Slope of Colorado since {BUSINESS.founded}.
             </p>
             <div className="mt-6 space-y-2 text-sm">
-              <a href={BUSINESS.phoneHref} className="flex items-center gap-3 text-white hover:text-sun-300 transition-colors">
+              <a href={BUSINESS.phoneHref ?? undefined} className="flex items-center gap-3 text-white hover:text-sun-300 transition-colors">
                 <Phone className="size-4 text-sun-400" /> {BUSINESS.phone}
               </a>
-              <a href={`mailto:${BUSINESS.email}`} className="flex items-center gap-3 hover:text-white transition-colors">
+              <a href={BUSINESS.email ? `mailto:${BUSINESS.email}` : undefined} className="flex items-center gap-3 hover:text-white transition-colors">
                 <Mail className="size-4 text-sun-400" /> {BUSINESS.email}
               </a>
               <div className="flex items-start gap-3">
@@ -69,13 +69,13 @@ export function Footer() {
               </div>
             </div>
             <div className="mt-6 flex gap-3">
-              <a href={BUSINESS.socials.facebook} aria-label="Facebook" className="inline-flex size-10 items-center justify-center rounded-full ring-1 ring-white/20 hover:bg-white/10 transition-colors">
+              <a href={BUSINESS.socials.facebook ?? undefined} aria-label="Facebook" className="inline-flex size-10 items-center justify-center rounded-full ring-1 ring-white/20 hover:bg-white/10 transition-colors">
                 <IconFacebook className="size-4" />
               </a>
-              <a href={BUSINESS.socials.instagram} aria-label="Instagram" className="inline-flex size-10 items-center justify-center rounded-full ring-1 ring-white/20 hover:bg-white/10 transition-colors">
+              <a href={BUSINESS.socials.instagram ?? undefined} aria-label="Instagram" className="inline-flex size-10 items-center justify-center rounded-full ring-1 ring-white/20 hover:bg-white/10 transition-colors">
                 <IconInstagram className="size-4" />
               </a>
-              <a href={BUSINESS.socials.youtube} aria-label="YouTube" className="inline-flex size-10 items-center justify-center rounded-full ring-1 ring-white/20 hover:bg-white/10 transition-colors">
+              <a href={BUSINESS.socials.youtube ?? undefined} aria-label="YouTube" className="inline-flex size-10 items-center justify-center rounded-full ring-1 ring-white/20 hover:bg-white/10 transition-colors">
                 <IconYoutube className="size-4" />
               </a>
             </div>

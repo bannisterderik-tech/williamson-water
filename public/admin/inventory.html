@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventory | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "inventory",
+    title: "Inventory",
+    sub: "Media, salt, cartridges, membranes, lamps.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-item'>+ Item</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='stat-row' id='stats'></div>" +
+    "<div id='bar'></div>" +
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>SKU</th><th>Item</th><th>Category</th>" +
+      "<th class='num'>On hand</th><th class='num'>Reorder at</th><th class='num'>Value</th><th></th></tr></thead>" +
+      "<tbody id='rows'></tbody></table></div></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search SKU, item, category…",
+    sorts: [
+      { value: "low",  label: "Lowest stock first" },
+      { value: "name", label: "Name A–Z" },
+      { value: "val",  label: "Highest value" }
+    ],
+    onChange: render
+  });
+
+  function render() {
+    var all = WW.list("inventory");
+    var low = WW.lowStock();
+    var value = all.reduce(function (a, i) { return a + Number(i.qty || 0) * Number(i.unit_cost || 0); }, 0);
+
+    document.getElementById("stats").innerHTML =
+      "<div class='stat'><div class='stat-label'>SKUs</div><div class='stat-num'>" + all.length + "</div><div class='stat-sub'>tracked</div></div>" +
+      "<div class='stat'><div class='stat-label'>Below reorder</div><div class='stat-num'>" + low.length + "</div><div class='stat-sub'>order these</div></div>" +
+      "<div class='stat'><div class='stat-label'>Stock value</div><div class='stat-num'>" + WW.money(value) + "</div><div class='stat-sub'>at unit cost</div></div>";
+
+    var rows = WWUI.filterSort(all, bar, {
+      keys: ["sku", "name", "category"],
+      sorts: {
+        low:  function (a, b) { return (Number(a.qty) - Number(a.reorder_at)) - (Number(b.qty) - Number(b.reorder_at)); },
+        name: WWUI.cmp.textAsc("name"),
+        val:  function (a, b) { return (b.qty * b.unit_cost) - (a.qty * a.unit_cost); }
+      }
+    });
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (i) { return "<span class='t-mono'>" + WWUI.esc(i.sku) + "</span>"; } },
+      { cell: function (i) { return "<span class='t-strong'>" + WWUI.esc(i.name) + "</span>"; } },
+      { cell: function (i) { return "<span class='badge gray'>" + WWUI.esc(i.category || "—") + "</span>"; } },
+      { cls: "num", cell: function (i) {
+          var lowq = Number(i.qty) <= Number(i.reorder_at);
+          return "<span class='badge " + (lowq ? "red" : "ok") + "'>" + i.qty + "</span>"; } },
+      { cls: "num", cell: function (i) { return String(i.reorder_at); } },
+      { cls: "num", cell: function (i) { return WW.money(Number(i.qty || 0) * Number(i.unit_cost || 0)); } },
+      { cls: "num", cell: function (i) {
+          return "<button class='btn-icon' data-adj='" + WWUI.esc(i.id) + "' data-d='-1'>−</button> " +
+                 "<button class='btn-icon' data-adj='" + WWUI.esc(i.id) + "' data-d='1'>+</button>"; } }
+    ], { empty: "No inventory tracked yet." });
+
+    document.querySelectorAll("[data-adj]").forEach(function (b) {
+      b.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        var it = WW.get("inventory", b.dataset.adj);
+        WW.update("inventory", it.id, { qty: Math.max(0, Number(it.qty || 0) + Number(b.dataset.d)) });
+        render();
+      });
+    });
+  }
+
+  document.getElementById("new-item").addEventListener("click", function () {
+    WWUI.modal({
+      title: "New inventory item",
+      bodyHTML:
+        "<div class='form-row'><div><label>SKU</label><input name='sku'></div>" +
+          "<div><label>Category</label><input name='category' placeholder='Media, Filter, Membrane…'></div></div>" +
+        "<div><label>Name</label><input name='name'></div>" +
+        "<div class='form-row' style='margin-top:.85rem'>" +
+          "<div><label>On hand</label><input name='qty' type='number' value='0'></div>" +
+          "<div><label>Reorder at</label><input name='reorder_at' type='number' value='0'></div>" +
+          "<div><label>Unit cost</label><input name='unit_cost' type='number' step='any' value='0'></div>" +
+        "</div>",
+      okLabel: "Add item",
+      onOk: function (f) {
+        if (!f.name) { WWUI.toast("Name is required", "err"); return false; }
+        WW.add("inventory", f); render(); WWUI.toast("Item added");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

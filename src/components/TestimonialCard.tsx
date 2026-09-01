@@ -44,53 +44,14 @@ export function TestimonialCard({ t, dark = false }: { t: Testimonial; dark?: bo
   );
 }
 
-export const TESTIMONIALS: Testimonial[] = [
-  {
-    name: "Janelle R.",
-    location: "Montrose, CO",
-    rating: 5,
-    service: "Whole-house softener + RO",
-    quote:
-      "Our water went from feeling like a chore to feeling like a luxury. Ken hand-tested the well three times before quoting and the install was spotless. Two years later — zero scale.",
-  },
-  {
-    name: "Mark & Sue B.",
-    location: "Ridgway, CO",
-    rating: 5,
-    service: "Iron & sulfur filter",
-    quote:
-      "The rotten-egg smell drove us nuts for five years. Three other companies sold us the same softener. Williamson actually tested the water, found hydrogen sulfide, and fixed it. Genius.",
-  },
-  {
-    name: "Travis C.",
-    location: "Telluride, CO",
-    rating: 5,
-    service: "7-stage RO + remineralization",
-    quote:
-      "We have a beautiful spec-build at altitude and demanded a kitchen RO that didn't look like a science experiment. The system Ken designed is invisible and the water tastes incredible.",
-  },
-  {
-    name: "Pastor Liam H.",
-    location: "Delta, CO",
-    rating: 5,
-    service: "UV + sediment for church well",
-    quote:
-      "Our church well tested positive for coliform during the summer. Williamson Water had a UV solution installed the same week — and re-tested at no charge.",
-  },
-  {
-    name: "Cara D.",
-    location: "Olathe, CO",
-    rating: 5,
-    service: "Acid neutralizer",
-    quote:
-      "We thought the green stains were normal. Turns out our pH was 6.1 and our copper lines were on borrowed time. Caught early. Saved us a re-plumb.",
-  },
-  {
-    name: "Greg P.",
-    location: "Cedaredge, CO",
-    rating: 5,
-    service: "Well-water full package",
-    quote:
-      "I had three quotes. Williamson was middle-of-the-pack on price and miles ahead on engineering. They explained every stage. No upsell. No pressure.",
-  },
-];
+// EMPTY BY DESIGN — rail 3.
+// The May 2026 build shipped six fabricated named testimonials here and nine more
+// in src/app/reviews/page.tsx, under a headline reading "Names, towns, and stories
+// — all real … call any name on the page to verify it yourself." One of them
+// disparaged Culligan by name. None of these people exist.
+//
+// Under 16 CFR Part 465 a review featured in marketing is a testimonial and the
+// review-hosting exemption does not apply. This array stays empty until Ken
+// supplies real Google / Facebook / BBB review URLs, and every consumer below
+// guards on `.length` so the section disappears rather than rendering a shell.
+export const TESTIMONIALS: Testimonial[] = [];

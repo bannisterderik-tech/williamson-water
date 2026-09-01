@@ -37,13 +37,18 @@ export default function ContactPage() {
                     icon={Mail}
                     label="Email"
                     value={BUSINESS.email}
-                    href={`mailto:${BUSINESS.email}`}
+                    href={BUSINESS.email ? `mailto:${BUSINESS.email}` : undefined}
                   />
                   <ContactRow
                     icon={MapPin}
                     label="Shop / mailing"
-                    value={`${BUSINESS.address.line1}, ${BUSINESS.address.city}, ${BUSINESS.address.state} ${BUSINESS.address.zip}`}
+                    value={
+                      BUSINESS.address.line1
+                        ? `${BUSINESS.address.line1}, ${BUSINESS.address.city}, ${BUSINESS.address.state} ${BUSINESS.address.zip}`
+                        : null
+                    }
                   />
+                  {BUSINESS.hours.length > 0 && (
                   <div className="flex items-start gap-4">
                     <span className="inline-flex size-12 items-center justify-center rounded-2xl gradient-brand text-white">
                       <Clock className="size-5" />
@@ -60,6 +65,7 @@ export default function ContactPage() {
                       </ul>
                     </div>
                   </div>
+                  )}
                 </div>
               </Reveal>
             </div>
@@ -83,12 +89,13 @@ function ContactRow({
 }: {
   icon: typeof Phone;
   label: string;
-  value: string;
-  href?: string;
+  value: string | null;
+  href?: string | null;
 }) {
+  if (!value) return null;   // fact not supplied yet — render nothing, never a placeholder
   const Wrapper: React.ElementType = href ? "a" : "div";
   return (
-    <Wrapper href={href} className="flex items-start gap-4 group">
+    <Wrapper href={href ?? undefined} className="flex items-start gap-4 group">
       <span className="inline-flex size-12 items-center justify-center rounded-2xl gradient-brand text-white">
         <Icon className="size-5" />
       </span>

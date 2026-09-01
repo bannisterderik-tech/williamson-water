@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leads | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "leads",
+    title: "Leads",
+    sub: "Drag a card to move the deal. The test is the step that closes it.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-lead'>+ Lead</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML = "<div id='bar'></div><div class='kanban' id='kb'></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search name, town, service…",
+    sorts: [
+      { value: "newest", label: "Newest first" },
+      { value: "oldest", label: "Oldest first" },
+      { value: "name",   label: "Name A–Z" }
+    ],
+    onChange: render
+  });
+
+  function render() {
+    var rows = WWUI.filterSort(WW.list("leads"), bar, {
+      keys: ["name", "city", "service", "note", "source"],
+      sorts: {
+        newest: WWUI.cmp.dateDesc("created"),
+        oldest: WWUI.cmp.dateAsc("created"),
+        name:   WWUI.cmp.textAsc("name")
+      }
+    });
+
+    var kb = document.getElementById("kb");
+    kb.innerHTML = "";
+    WW.LEAD_STAGES.forEach(function (st) {
+      var mine = rows.filter(function (l) { return (l.stage || "new") === st.key; });
+      var col = document.createElement("div");
+      col.className = "kcol";
+      col.dataset.stage = st.key;
+      col.innerHTML = "<div class='kcol-head'><span>" + st.label + "</span><span class='count'>" + mine.length + "</span></div>";
+
+      mine.forEach(function (l) {
+        var test = WW.latestTest({ leadId: l.id });
+        var card = document.createElement("div");
+        card.className = "kcard";
+        card.draggable = true;
+        card.dataset.id = l.id;
+        card.innerHTML =
+          "<div class='k-name'>" + WWUI.esc(l.name) + "</div>" +
+          "<div class='k-meta'>" + WWUI.esc(l.city || "—") + " · " + WWUI.esc(l.service || "—") + "</div>" +
+          "<div class='k-tags'>" +
+            (l.source ? "<span class='badge gray'>" + WWUI.esc(l.source) + "</span>" : "") +
+            (test ? "<span class='badge blue'>Tested</span>" : "") +
+          "</div>";
+        card.addEventListener("dragstart", function (e) {
+          card.classList.add("dragging");
+          e.dataTransfer.setData("text/plain", l.id);
+        });
+        card.addEventListener("dragend", function () { card.classList.remove("dragging"); });
+        card.addEventListener("click", function () { openLead(l); });
+        col.appendChild(card);
+      });
+
+      col.addEventListener("dragover", function (e) { e.preventDefault(); col.classList.add("dragover"); });
+      col.addEventListener("dragleave", function () { col.classList.remove("dragover"); });
+      col.addEventListener("drop", function (e) {
+        e.preventDefault(); col.classList.remove("dragover");
+        var id = e.dataTransfer.getData("text/plain");
+        WW.update("leads", id, { stage: st.key });
+        WWUI.toast("Moved to " + st.label);
+        render();
+      });
+      kb.appendChild(col);
+    });
+  }
+
+  function openLead(l) {
+    var test = WW.latestTest({ leadId: l.id });
+    WWUI.open({
+      eyebrow: "Lead",
+      title: l.name,
+      subtitle: (l.city || "") + (l.service ? " · " + l.service : ""),
+      bodyHTML:
+        WWUI.section("Contact", WWUI.kv([
+          ["Phone", l.phone ? "<a href='tel:" + WWUI.esc(l.phone) + "'>" + WWUI.esc(l.phone) + "</a>" : "", "raw"],
+          ["Email", l.email ? "<a href='mailto:" + WWUI.esc(l.email) + "'>" + WWUI.esc(l.email) + "</a>" : "", "raw"],
+          ["Town", l.city], ["Source", l.source], ["Created", WW.fmtDate(l.created)],
+          ["Stage", (WW.LEAD_STAGES.filter(function (s) { return s.key === l.stage; })[0] || {}).label || l.stage]
+        ])) +
+        (l.note ? WWUI.section("Note", "<p style='margin:0'>" + WWUI.esc(l.note) + "</p>") : "") +
+        WWUI.section("Latest water test", test
+          ? WWUI.testGrid(test)
+          : "<div class='wwui-empty'>No test yet — this is the step that closes the deal.</div>") +
+        (test ? WWUI.section("What the numbers support",
+          WWUI.list(WW.recommend(test).map(function (r) { return { main: r.service, sub: r.why }; }),
+                    "Nothing over its screening level.")) : ""),
+      actions: [
+        { label: "Log a water test", kind: "primary", onClick: function () { location.href = "tests.html?lead=" + encodeURIComponent(l.id); } },
+        { label: "Edit", onClick: function () { editLead(l); } },
+        { label: "Delete", kind: "danger", onClick: function () {
+            WWUI.confirmDelete("this lead", function () { WW.remove("leads", l.id); WWUI.close(); render(); WWUI.toast("Lead deleted"); });
+        } }
+      ]
+    });
+  }
+
+  function leadForm(l) {
+    l = l || {};
+    return "<div class='form-row'>" +
+        "<div><label>Name</label><input name='name' value='" + WWUI.esc(l.name || "") + "'></div>" +
+        "<div><label>Phone</label><input name='phone' value='" + WWUI.esc(l.phone || "") + "'></div>" +
+      "</div><div class='form-row'>" +
+        "<div><label>Email</label><input name='email' type='email' value='" + WWUI.esc(l.email || "") + "'></div>" +
+        "<div><label>Town</label><input name='city' value='" + WWUI.esc(l.city || "") + "'></div>" +
+      "</div><div class='form-row'>" +
+        "<div><label>Service wanted</label><input name='service' value='" + WWUI.esc(l.service || "") + "'></div>" +
+        "<div><label>Source</label><input name='source' value='" + WWUI.esc(l.source || "") + "' placeholder='Web form, referral…'></div>" +
+      "</div>" +
+      "<div><label>Note</label><textarea name='note'>" + WWUI.esc(l.note || "") + "</textarea></div>";
+  }
+
+  function editLead(l) {
+    WWUI.modal({
+      title: "Edit lead", bodyHTML: leadForm(l), okLabel: "Save",
+      onOk: function (f) { WW.update("leads", l.id, f); WWUI.close(); render(); WWUI.toast("Saved"); }
+    });
+  }
+
+  document.getElementById("new-lead").addEventListener("click", function () {
+    WWUI.modal({
+      title: "New lead", bodyHTML: leadForm(), okLabel: "Add lead",
+      onOk: function (f) {
+        if (!f.name) { WWUI.toast("Name is required", "err"); return false; }
+        f.stage = "new"; f.created = WW.today();
+        WW.add("leads", f); render(); WWUI.toast("Lead added");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

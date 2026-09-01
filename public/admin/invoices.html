@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoices | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "invoices",
+    title: "Invoices",
+    sub: "Estimates out, invoices out, money in.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-inv'>+ Invoice</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='stat-row' id='stats'></div>" +
+    "<div id='bar'></div>" +
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>Reference</th><th>Customer</th><th>Kind</th>" +
+      "<th>Date</th><th class='num'>Amount</th><th>Status</th></tr></thead><tbody id='rows'></tbody></table>" +
+    "</div></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search reference, customer…",
+    sorts: [
+      { value: "recent", label: "Newest first" },
+      { value: "amount", label: "Largest first" }
+    ],
+    extraHTML: "<select id='fkind' style='width:auto'><option value=''>All</option>" +
+      "<option value='invoice'>Invoices</option><option value='estimate'>Estimates</option>" +
+      "<option value='unpaid'>Unpaid only</option></select>",
+    onChange: render
+  });
+  document.getElementById("fkind").addEventListener("change", render);
+
+  function render() {
+    var all = WW.list("invoices").map(function (i) {
+      var c = Object.create(i); c._cust = WW.customerName(i.customer_id); return c;
+    });
+    var f = document.getElementById("fkind").value;
+    if (f === "unpaid") all = all.filter(function (i) { return i.kind === "invoice" && i.status !== "paid"; });
+    else if (f) all = all.filter(function (i) { return i.kind === f; });
+
+    var invs = WW.list("invoices").filter(function (i) { return i.kind === "invoice"; });
+    var paid = invs.filter(function (i) { return i.status === "paid"; });
+    var owed = invs.filter(function (i) { return i.status === "sent"; });
+
+    document.getElementById("stats").innerHTML =
+      "<div class='stat'><div class='stat-label'>Collected</div><div class='stat-num'>" + WW.money(paid.reduce(function (a, i) { return a + Number(i.amount || 0); }, 0)) + "</div><div class='stat-sub'>" + paid.length + " paid</div></div>" +
+      "<div class='stat'><div class='stat-label'>Outstanding</div><div class='stat-num'>" + WW.money(owed.reduce(function (a, i) { return a + Number(i.amount || 0); }, 0)) + "</div><div class='stat-sub'>" + owed.length + " unpaid</div></div>" +
+      "<div class='stat'><div class='stat-label'>Estimates out</div><div class='stat-num'>" + WW.list("invoices").filter(function (i) { return i.kind === "estimate" && i.status === "sent"; }).length + "</div><div class='stat-sub'>awaiting decision</div></div>";
+
+    var rows = WWUI.filterSort(all, bar, {
+      keys: ["label", "_cust"],
+      sorts: { recent: WWUI.cmp.dateDesc("date"), amount: WWUI.cmp.numDesc("amount") }
+    });
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (i) { return "<span class='t-strong'>" + WWUI.esc(i.label) + "</span>"; } },
+      { cell: function (i) { return WWUI.esc(i._cust); } },
+      { cell: function (i) { return "<span class='badge " + (i.kind === "invoice" ? "navy" : "gray") + "'>" + WWUI.esc(i.kind) + "</span>"; } },
+      { cell: function (i) { return WW.fmtDate(i.date); } },
+      { cls: "num", cell: function (i) { return WW.money(i.amount); } },
+      { cell: function (i) {
+          var m = { paid: "green", sent: "amber", draft: "gray", approved: "blue", declined: "red" };
+          return "<span class='badge " + (m[i.status] || "gray") + "'>" + WWUI.esc(i.status) + "</span>"; } }
+    ], { empty: "Nothing here.", onRow: openInv });
+  }
+
+  function openInv(i) {
+    WWUI.open({
+      eyebrow: i.kind === "invoice" ? "Invoice" : "Estimate",
+      title: i.label,
+      subtitle: WW.customerName(i.customer_id) + " · " + WW.money(i.amount),
+      bodyHTML: WWUI.section("Details", WWUI.kv([
+        ["Customer", WW.customerName(i.customer_id)],
+        ["Kind", i.kind], ["Amount", WW.money(i.amount)],
+        ["Date", WW.fmtDate(i.date)], ["Status", i.status]
+      ])) +
+      WWUI.section("Payment",
+        "<p class='t-sub' style='margin:0'>Stripe is not wired yet. Once Ken confirms paid-client mode, " +
+        "<code>api/create-checkout.js</code> issues a live payment link from this record — the same pattern " +
+        "already running on Mistletoe.</p>"),
+      actions: (i.status !== "paid" ? [{ label: "Mark paid", kind: "primary", onClick: function () {
+          WW.update("invoices", i.id, { status: "paid" }); WWUI.close(); render(); WWUI.toast("Marked paid");
+        } }] : []).concat([
+        { label: "Delete", kind: "danger", onClick: function () {
+            WWUI.confirmDelete("this record", function () { WW.remove("invoices", i.id); WWUI.close(); render(); WWUI.toast("Deleted"); });
+        } }
+      ])
+    });
+  }
+
+  document.getElementById("new-inv").addEventListener("click", function () {
+    var cust = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+    WWUI.modal({
+      title: "New invoice or estimate",
+      bodyHTML:
+        "<div><label>Reference / description</label><input name='label' placeholder='INV-1044 · RO membrane'></div>" +
+        "<div class='form-row' style='margin-top:.85rem'>" +
+          "<div><label>Customer</label><select name='customer_id'>" + cust + "</select></div>" +
+          "<div><label>Kind</label><select name='kind'><option value='invoice'>Invoice</option><option value='estimate'>Estimate</option></select></div>" +
+        "</div><div class='form-row'>" +
+          "<div><label>Amount</label><input name='amount' type='number' step='any'></div>" +
+          "<div><label>Date</label><input name='date' type='date' value='" + WW.today() + "'></div>" +
+        "</div>",
+      okLabel: "Create",
+      onOk: function (f) {
+        if (!f.label) { WWUI.toast("Reference is required", "err"); return false; }
+        f.status = "draft"; WW.add("invoices", f); render(); WWUI.toast("Created");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

@@ -31,7 +31,7 @@ export function Header() {
           <div className="flex items-center gap-6">
             <Link href="/financing" className="hover:text-white transition-colors">0% financing OAC</Link>
             <Link href="/quote" className="hover:text-white transition-colors">Free water test</Link>
-            <a href={BUSINESS.phoneHref} className="inline-flex items-center gap-1.5 text-sun-300 hover:text-sun-200 transition-colors">
+            <a href={BUSINESS.phoneHref ?? undefined} className="inline-flex items-center gap-1.5 text-sun-300 hover:text-sun-200 transition-colors">
               <Phone className="size-3.5" /> {BUSINESS.phone}
             </a>
           </div>
@@ -174,7 +174,7 @@ export function Header() {
                   Get a free water test
                 </Button>
                 <a
-                  href={BUSINESS.phoneHref}
+                  href={BUSINESS.phoneHref ?? undefined}
                   className="flex items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3 text-white font-semibold"
                 >
                   <Phone className="size-4" /> {BUSINESS.phone}

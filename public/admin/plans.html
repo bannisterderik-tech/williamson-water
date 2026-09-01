@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Service Plans | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "plans",
+    title: "Service Plans",
+    sub: "Recurring revenue — salt, filters, membranes, lamps.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-plan'>+ Enroll customer</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='stat-row' id='stats'></div>" +
+    "<div class='callout'>Water treatment is a consumables business. Salt, sediment cartridges, RO membranes and " +
+    "UV lamps all expire on a schedule — the plan turns that from a chase into a route.</div>" +
+    "<div id='bar' style='margin-top:1.1rem'></div>" +
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>Customer</th><th>Tier</th><th class='num'>Per month</th>" +
+      "<th>Started</th><th>Next visit</th><th>Status</th></tr></thead><tbody id='rows'></tbody></table>" +
+    "</div></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search customer…",
+    sorts: [
+      { value: "next",  label: "Next visit first" },
+      { value: "value", label: "Highest value" },
+      { value: "cust",  label: "Customer A–Z" }
+    ],
+    onChange: render
+  });
+
+  function render() {
+    var all = WW.list("plans").map(function (p) {
+      var c = Object.create(p); c._cust = WW.customerName(p.customer_id); return c;
+    });
+    var active = all.filter(function (p) { return p.active !== false; });
+
+    document.getElementById("stats").innerHTML =
+      "<div class='stat'><div class='stat-label'>Active plans</div><div class='stat-num'>" + active.length + "</div><div class='stat-sub'>paying members</div></div>" +
+      "<div class='stat'><div class='stat-label'>Recurring</div><div class='stat-num'>" + WW.money(WW.mrr()) + "</div><div class='stat-sub'>per month</div></div>" +
+      "<div class='stat'><div class='stat-label'>Annualized</div><div class='stat-num'>" + WW.money(WW.mrr() * 12) + "</div><div class='stat-sub'>if nobody churns</div></div>" +
+      "<div class='stat'><div class='stat-label'>Attach rate</div><div class='stat-num'>" +
+        (WW.list("customers").length ? Math.round(active.length / WW.list("customers").length * 100) : 0) +
+        "%</div><div class='stat-sub'>of customers enrolled</div></div>";
+
+    var rows = WWUI.filterSort(all, bar, {
+      keys: ["_cust", "tier"],
+      sorts: {
+        next:  WWUI.cmp.dateAsc("next_visit"),
+        value: WWUI.cmp.numDesc("price_mo"),
+        cust:  WWUI.cmp.textAsc("_cust")
+      }
+    });
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (p) { return "<span class='t-strong'>" + WWUI.esc(p._cust) + "</span>"; } },
+      { cell: function (p) { return "<span class='badge navy'>" + WWUI.esc(p.tier || "—") + "</span>"; } },
+      { cls: "num", cell: function (p) { return WW.money(p.price_mo); } },
+      { cell: function (p) { return WW.fmtDate(p.started); } },
+      { cell: function (p) {
+          var n = WW.daysFrom(p.next_visit);
+          if (n == null) return "<span class='t-sub'>—</span>";
+          return "<span class='badge " + (n < 0 ? "red" : n <= 14 ? "amber" : "gray") + "'>" + WW.fmtDate(p.next_visit) + "</span>"; } },
+      { cell: function (p) { return p.active !== false ? "<span class='badge green'>Active</span>" : "<span class='badge gray'>Paused</span>"; } }
+    ], { empty: "Nobody enrolled yet.", onRow: openPlan });
+  }
+
+  function openPlan(p) {
+    var equip = WW.list("equipment").filter(function (e) { return e.customer_id === p.customer_id; });
+    WWUI.open({
+      eyebrow: "Service plan",
+      title: WW.customerName(p.customer_id),
+      subtitle: (p.tier || "") + " · " + WW.money(p.price_mo) + "/mo",
+      bodyHTML:
+        WWUI.section("Plan", WWUI.kv([
+          ["Tier", p.tier], ["Price", WW.money(p.price_mo) + "/mo"],
+          ["Started", WW.fmtDate(p.started)], ["Next visit", WW.fmtDate(p.next_visit)],
+          ["Status", p.active !== false ? "Active" : "Paused"]
+        ])) +
+        WWUI.section("Covered equipment", WWUI.list(equip.map(function (e) {
+          return { main: e.type, sub: e.service_type + " · next " + WW.fmtDate(e.next_service) };
+        }), "No equipment on this account."), equip.length),
+      actions: [
+        { label: p.active !== false ? "Pause plan" : "Reactivate", onClick: function () {
+            WW.update("plans", p.id, { active: p.active === false });
+            WWUI.close(); render(); WWUI.toast("Updated");
+        } },
+        { label: "Delete", kind: "danger", onClick: function () {
+            WWUI.confirmDelete("this plan", function () { WW.remove("plans", p.id); WWUI.close(); render(); WWUI.toast("Deleted"); });
+        } }
+      ]
+    });
+  }
+
+  document.getElementById("new-plan").addEventListener("click", function () {
+    var opts = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+    WWUI.modal({
+      title: "Enroll a customer",
+      bodyHTML:
+        "<div class='form-row'><div><label>Customer</label><select name='customer_id'>" + opts + "</select></div></div>" +
+        "<div class='form-row'>" +
+          "<div><label>Tier</label><input name='tier' placeholder='basic, guardian…'></div>" +
+          "<div><label>Price / month</label><input name='price_mo' type='number' step='any'></div>" +
+        "</div><div class='form-row'>" +
+          "<div><label>Started</label><input name='started' type='date' value='" + WW.today() + "'></div>" +
+          "<div><label>Next visit</label><input name='next_visit' type='date'></div>" +
+        "</div>" +
+        "<p class='t-sub'>Pricing is a real business decision — see <code>data/business.json</code>. Nothing here is published until Ken confirms it.</p>",
+      okLabel: "Enroll",
+      onOk: function (f) {
+        if (!f.customer_id) { WWUI.toast("Pick a customer", "err"); return false; }
+        f.active = true; WW.add("plans", f);
+        WW.update("customers", f.customer_id, { plan: f.tier });
+        render(); WWUI.toast("Enrolled");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

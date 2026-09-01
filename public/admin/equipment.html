@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equipment | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "equipment",
+    title: "Equipment",
+    sub: "Every system installed, and what it needs next.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-eq'>+ Equipment</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='stat-row' id='stats'></div>" +
+    "<div id='bar'></div>" +
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>Customer</th><th>System</th><th>Serial</th>" +
+      "<th>Installed</th><th>Warranty</th><th>Next service</th></tr></thead><tbody id='rows'></tbody></table>" +
+    "</div></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search customer, type, brand, serial…",
+    sorts: [
+      { value: "due",   label: "Service due first" },
+      { value: "new",   label: "Newest install" },
+      { value: "cust",  label: "Customer A–Z" }
+    ],
+    onChange: render
+  });
+
+  function render() {
+    var all = WW.list("equipment").map(function (e) {
+      var c = Object.create(e); c._cust = WW.customerName(e.customer_id); return c;
+    });
+    var overdue = all.filter(function (e) { var n = WW.daysFrom(e.next_service); return n != null && n < 0; });
+    var soon    = all.filter(function (e) { var n = WW.daysFrom(e.next_service); return n != null && n >= 0 && n <= 30; });
+    var expiring= all.filter(function (e) { var n = WW.daysFrom(e.warranty_until); return n != null && n >= 0 && n <= 90; });
+
+    document.getElementById("stats").innerHTML =
+      "<div class='stat'><div class='stat-label'>Installed</div><div class='stat-num'>" + all.length + "</div><div class='stat-sub'>systems tracked</div></div>" +
+      "<div class='stat'><div class='stat-label'>Overdue</div><div class='stat-num'>" + overdue.length + "</div><div class='stat-sub'>past service date</div></div>" +
+      "<div class='stat'><div class='stat-label'>Due in 30d</div><div class='stat-num'>" + soon.length + "</div><div class='stat-sub'>book these now</div></div>" +
+      "<div class='stat'><div class='stat-label'>Warranty ending</div><div class='stat-num'>" + expiring.length + "</div><div class='stat-sub'>within 90 days</div></div>";
+
+    var rows = WWUI.filterSort(all, bar, {
+      keys: ["_cust", "type", "brand", "model", "serial", "service_type"],
+      sorts: {
+        due:  WWUI.cmp.dateAsc("next_service"),
+        new:  WWUI.cmp.dateDesc("installed"),
+        cust: WWUI.cmp.textAsc("_cust")
+      }
+    });
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (e) { return "<span class='t-strong'>" + WWUI.esc(e._cust) + "</span>"; } },
+      { cell: function (e) { return WWUI.esc(e.type) + "<span class='t-sub'>" + WWUI.esc([e.brand, e.model].filter(Boolean).join(" ")) + "</span>"; } },
+      { cell: function (e) { return "<span class='t-mono'>" + WWUI.esc(e.serial || "—") + "</span>"; } },
+      { cell: function (e) { return WW.fmtDate(e.installed); } },
+      { cell: function (e) {
+          var n = WW.daysFrom(e.warranty_until);
+          if (n == null) return "<span class='t-sub'>—</span>";
+          return n < 0 ? "<span class='badge gray'>expired</span>"
+               : "<span class='badge " + (n < 90 ? "amber" : "green") + "'>" + WW.fmtDate(e.warranty_until) + "</span>"; } },
+      { cell: function (e) {
+          var n = WW.daysFrom(e.next_service);
+          if (n == null) return "<span class='t-sub'>—</span>";
+          return "<span class='badge " + (n < 0 ? "red" : n <= 30 ? "amber" : "gray") + "'>" +
+                 (n < 0 ? Math.abs(n) + "d late" : "in " + n + "d") + "</span><span class='t-sub'>" + WWUI.esc(e.service_type || "") + "</span>"; } }
+    ], { empty: "No equipment recorded yet.", onRow: openEq });
+  }
+
+  function openEq(e) {
+    WWUI.open({
+      eyebrow: "Equipment",
+      title: e.type,
+      subtitle: WW.customerName(e.customer_id),
+      bodyHTML: WWUI.section("Details", WWUI.kv([
+        ["Brand", e.brand], ["Model", e.model], ["Serial", e.serial],
+        ["Installed", WW.fmtDate(e.installed)],
+        ["Warranty until", WW.fmtDate(e.warranty_until)],
+        ["Service type", e.service_type],
+        ["Next service", WW.fmtDate(e.next_service)]
+      ])),
+      actions: [
+        { label: "Mark serviced today", kind: "primary", onClick: function () {
+            var next = new Date(); next.setDate(next.getDate() + 180);
+            WW.update("equipment", e.id, { next_service: next.toISOString().slice(0, 10) });
+            WWUI.close(); render(); WWUI.toast("Next service set 180 days out");
+        } },
+        { label: "Edit", onClick: function () { editEq(e); } },
+        { label: "Delete", kind: "danger", onClick: function () {
+            WWUI.confirmDelete("this equipment", function () { WW.remove("equipment", e.id); WWUI.close(); render(); WWUI.toast("Deleted"); });
+        } }
+      ]
+    });
+  }
+
+  function eqForm(e) {
+    e = e || {};
+    var opts = WW.list("customers").map(function (c) {
+      return "<option value='" + WWUI.esc(c.id) + "'" + (c.id === e.customer_id ? " selected" : "") + ">" + WWUI.esc(c.name) + "</option>";
+    }).join("");
+    return "<div class='form-row'>" +
+        "<div><label>Customer</label><select name='customer_id'>" + opts + "</select></div>" +
+        "<div><label>System type</label><input name='type' value='" + WWUI.esc(e.type || "") + "' placeholder='Water softener, RO system…'></div>" +
+      "</div><div class='form-row'>" +
+        "<div><label>Brand</label><input name='brand' value='" + WWUI.esc(e.brand || "") + "'></div>" +
+        "<div><label>Model</label><input name='model' value='" + WWUI.esc(e.model || "") + "'></div>" +
+        "<div><label>Serial</label><input name='serial' value='" + WWUI.esc(e.serial || "") + "'></div>" +
+      "</div><div class='form-row'>" +
+        "<div><label>Installed</label><input name='installed' type='date' value='" + WWUI.esc(e.installed || WW.today()) + "'></div>" +
+        "<div><label>Warranty until</label><input name='warranty_until' type='date' value='" + WWUI.esc(e.warranty_until || "") + "'></div>" +
+      "</div><div class='form-row'>" +
+        "<div><label>Service type</label><input name='service_type' value='" + WWUI.esc(e.service_type || "") + "' placeholder='Media change, lamp replacement…'></div>" +
+        "<div><label>Next service</label><input name='next_service' type='date' value='" + WWUI.esc(e.next_service || "") + "'></div>" +
+      "</div>";
+  }
+
+  function editEq(e) {
+    WWUI.modal({ title: "Edit equipment", wide: true, bodyHTML: eqForm(e), okLabel: "Save",
+      onOk: function (f) { WW.update("equipment", e.id, f); WWUI.close(); render(); WWUI.toast("Saved"); } });
+  }
+
+  document.getElementById("new-eq").addEventListener("click", function () {
+    WWUI.modal({ title: "Add equipment", wide: true, bodyHTML: eqForm(), okLabel: "Add",
+      onOk: function (f) {
+        if (!f.customer_id || !f.type) { WWUI.toast("Customer and system type are required", "err"); return false; }
+        WW.add("equipment", f); render(); WWUI.toast("Equipment added");
+      } });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

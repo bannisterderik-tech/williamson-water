@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div style="text-align:center;margin-bottom:1.3rem" id="mark"></div>
+
+    <div class="login-tabs" role="tablist">
+      <button class="active" data-tab="staff" role="tab">Staff</button>
+      <button data-tab="client" role="tab">Customer</button>
+    </div>
+
+    <form id="magic">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <button class="btn btn-primary" type="submit" style="width:100%;margin-top:.9rem">Email me a sign-in link</button>
+    </form>
+
+    <p class="login-note" id="note">We'll email a one-time link. No password to remember.</p>
+
+    <div id="demo-box" style="display:none;border-top:1px solid var(--line);margin-top:1.2rem;padding-top:1.2rem">
+      <p class="t-sub" style="text-align:center;margin:0 0 .75rem">
+        <strong>Demo mode</strong> — no backend wired yet. Jump straight in as:
+      </p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" data-role="admin" style="flex:1">Admin</button>
+        <button class="btn btn-outline btn-sm" data-role="sales" style="flex:1">Sales</button>
+        <button class="btn btn-outline btn-sm" data-role="field" style="flex:1">Field</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  /* brand mark, reused from the shell so it can never drift */
+  var m = document.getElementById("mark");
+  m.innerHTML = WWShell.logoSVG();
+  var svg = m.querySelector("svg");
+  svg.style.height = "2.6rem"; svg.style.width = "auto";
+  /* the lockup is drawn for a dark sidebar — recolour the wordmark for white card */
+  svg.querySelectorAll("text")[0].setAttribute("fill", "#131a2c");
+  svg.querySelectorAll("text")[1].setAttribute("fill", "#154bc0");
+
+  var tab = "staff";
+  document.querySelectorAll(".login-tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".login-tabs button").forEach(function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      tab = b.dataset.tab;
+      document.getElementById("note").textContent = tab === "staff"
+        ? "We'll email a one-time link. No password to remember."
+        : "Customers: check your water test results, equipment and invoices.";
+    });
+  });
+
+  document.getElementById("magic").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = document.getElementById("email").value.trim();
+    if (!email) return;
+    var back = location.origin + location.pathname.replace(/portal\/login\.html$/, "") +
+               (tab === "staff" ? "admin/index.html" : "portal/index.html");
+    WW.auth.sendMagicLink(email, back).then(function (r) {
+      if (r && r.demo) { WWUI.toast("Demo mode — use the role buttons below"); return; }
+      if (r && r.error) { WWUI.toast(r.error.message, "err"); return; }
+      WWUI.toast("Check your email for the link");
+    });
+  });
+
+  if (WW.mode === "demo") {
+    document.getElementById("demo-box").style.display = "block";
+    document.querySelectorAll("[data-role]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        WW.auth.login(b.dataset.role, b.dataset.role === "admin" ? "Ken Williamson" : "Field Tech");
+        location.href = "../admin/index.html";
+      });
+    });
+  }
+});
+</script>
+</body>
+</html>

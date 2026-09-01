@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reviews | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "reviews",
+    title: "Reviews",
+    sub: "Real reviews only. This tab cannot hold anything else.",
+    actions: "<button class='btn btn-primary btn-sm' id='add-review'>+ Add a real review</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  $page.innerHTML =
+    "<div class='callout warn'><strong>Why this tab is locked down.</strong> The May 2026 build shipped " +
+    "15 fabricated named testimonials — including one that disparaged a competitor by name — under a headline " +
+    "reading &ldquo;Names, towns, and stories &mdash; all real.&rdquo; Under " +
+    "<a href='https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-465' target='_blank' rel='noopener'>16 CFR Part 465</a> " +
+    "any review a business features in its own marketing is a <em>testimonial</em>, and the review-hosting exemption " +
+    "does not apply. The current maximum FTC civil penalty is $53,088 per violation. Colorado adds " +
+    "C.R.S. 6-1-105(n) at up to $20,000 per violation &mdash; $50,000 against an elderly person &mdash; " +
+    "and counts <em>each consumer</em> separately.</div>" +
+
+    "<div class='panel' style='margin-top:1.2rem'><div class='panel-head'><h2>Rules this tab enforces</h2></div>" +
+    "<div class='panel-body'><ol style='margin:0;padding-left:1.2rem;line-height:1.9'>" +
+      "<li>A review must carry a <strong>public URL</strong> on Google, Facebook or BBB. No URL, no save.</li>" +
+      "<li>Text is stored <strong>verbatim</strong>. Nobody drafts, polishes, or paraphrases a customer's words.</li>" +
+      "<li>Any incentive given for the review is <strong>disclosed on the page</strong>.</li>" +
+      "<li>A curated subset is labelled <strong>&ldquo;selected&rdquo;</strong>, never presented as the whole.</li>" +
+      "<li>The site generator reads only from this list. It renders <strong>no reviews section at all</strong> when the list is empty &mdash; which is correct and safe.</li>" +
+    "</ol></div></div>" +
+
+    "<div class='panel'><div class='panel-head'><h2>Reviews on file</h2><span id='count' class='t-sub'></span></div>" +
+    "<div class='panel-body flush tbl-scroll'><table class='tbl'><thead><tr>" +
+    "<th>Reviewer</th><th>Platform</th><th>Rating</th><th>Date</th><th>Verbatim</th><th>Incentive</th>" +
+    "</tr></thead><tbody id='rows'></tbody></table></div></div>";
+
+  function render() {
+    var rows = WW.list("reviews");
+    document.getElementById("count").textContent = rows.length + " on file";
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (r) { return "<span class='t-strong'>" + WWUI.esc(r.name) + "</span>"; } },
+      { cell: function (r) { return "<a href='" + WWUI.esc(r.url) + "' target='_blank' rel='noopener'>" + WWUI.esc(r.platform) + " →</a>"; } },
+      { cell: function (r) { return "<span class='badge sun'>" + WWUI.esc(r.rating) + "★</span>"; } },
+      { cell: function (r) { return WW.fmtDate(r.date); } },
+      { cell: function (r) { return "<span class='t-sub'>" + WWUI.esc(String(r.text || "").slice(0, 90)) + "…</span>"; } },
+      { cell: function (r) { return r.incentive ? "<span class='badge amber'>" + WWUI.esc(r.incentive) + "</span>" : "<span class='badge ok'>None</span>"; } }
+    ], { empty: "No reviews on file. The site will render no reviews section — that is the correct default." });
+  }
+
+  document.getElementById("add-review").addEventListener("click", function () {
+    WWUI.modal({
+      title: "Add a real review", wide: true,
+      bodyHTML:
+        "<div class='callout warn' style='margin-bottom:1rem'>Copy the reviewer's words exactly. Do not tidy them up. " +
+        "A business must not supply testimonial text without a reasonable basis to believe it is truthful about that " +
+        "person's actual experience.</div>" +
+        "<div class='form-row'>" +
+          "<div><label>Reviewer name (as published)</label><input name='name'></div>" +
+          "<div><label>Platform</label><select name='platform'><option>Google</option><option>Facebook</option><option>BBB</option></select></div>" +
+        "</div><div class='form-row'>" +
+          "<div><label>Public URL to the review</label><input name='url' type='url' placeholder='https://…'></div>" +
+          "<div><label>Rating</label><input name='rating' type='number' min='1' max='5'></div>" +
+          "<div><label>Date</label><input name='date' type='date'></div>" +
+        "</div>" +
+        "<div><label>Verbatim text</label><textarea name='text' rows='4'></textarea></div>" +
+        "<div style='margin-top:.85rem'><label>Incentive given, if any</label>" +
+        "<input name='incentive' placeholder='Leave blank if none — do not guess'></div>",
+      okLabel: "Save review",
+      onOk: function (f) {
+        if (!f.name || !f.text) { WWUI.toast("Name and verbatim text are required", "err"); return false; }
+        if (!/^https?:\/\//i.test(f.url || "")) { WWUI.toast("A public review URL is required — this is rail 4", "err"); return false; }
+        WW.add("reviews", f); render(); WWUI.toast("Review saved");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

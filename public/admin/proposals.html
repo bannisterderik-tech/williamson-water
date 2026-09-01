@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proposals | Williamson Water</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var ses = WWShell.mount({
+    page: "proposals",
+    title: "Proposals",
+    sub: "What you quoted, and whether it landed.",
+    actions: "<button class='btn btn-primary btn-sm' id='new-prop'>+ Proposal</button>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  var STATUS = [
+    { key: "draft",    label: "Draft",    badge: "gray" },
+    { key: "sent",     label: "Sent",     badge: "blue" },
+    { key: "accepted", label: "Accepted", badge: "green" },
+    { key: "paid",     label: "Paid",     badge: "green" },
+    { key: "declined", label: "Declined", badge: "red" }
+  ];
+  function badgeFor(k) {
+    var s = STATUS.filter(function (x) { return x.key === k; })[0];
+    return s ? "<span class='badge " + s.badge + "'>" + s.label + "</span>" : "<span class='badge gray'>" + WWUI.esc(k || "—") + "</span>";
+  }
+
+  $page.innerHTML =
+    "<div class='stat-row' id='stats'></div>" +
+    "<div id='bar'></div>" +
+    "<div class='panel'><div class='panel-body flush tbl-scroll'>" +
+      "<table class='tbl'><thead><tr><th>Proposal</th><th>Customer</th><th>Created</th>" +
+      "<th>Based on</th><th class='num'>Amount</th><th>Status</th></tr></thead><tbody id='rows'></tbody></table>" +
+    "</div></div>";
+
+  var bar = WWUI.listBar(document.getElementById("bar"), {
+    placeholder: "Search title, customer…",
+    sorts: [
+      { value: "recent", label: "Newest first" },
+      { value: "amount", label: "Largest first" },
+      { value: "status", label: "By status" }
+    ],
+    onChange: render
+  });
+
+  function render() {
+    var all = WW.list("proposals").map(function (p) {
+      var c = Object.create(p); c._cust = WW.customerName(p.customer_id); return c;
+    });
+
+    var open = all.filter(function (p) { return p.status === "draft" || p.status === "sent"; });
+    var won  = all.filter(function (p) { return p.status === "accepted" || p.status === "paid"; });
+    var decided = won.length + all.filter(function (p) { return p.status === "declined"; }).length;
+
+    document.getElementById("stats").innerHTML =
+      "<div class='stat'><div class='stat-label'>Open</div><div class='stat-num'>" + open.length + "</div><div class='stat-sub'>" + WW.money(open.reduce(function (a, p) { return a + Number(p.amount || 0); }, 0)) + " in play</div></div>" +
+      "<div class='stat'><div class='stat-label'>Won</div><div class='stat-num'>" + won.length + "</div><div class='stat-sub'>" + WW.money(won.reduce(function (a, p) { return a + Number(p.amount || 0); }, 0)) + "</div></div>" +
+      "<div class='stat'><div class='stat-label'>Close rate</div><div class='stat-num'>" + (decided ? Math.round(won.length / decided * 100) : 0) + "%</div><div class='stat-sub'>of decided proposals</div></div>" +
+      "<div class='stat'><div class='stat-label'>Average</div><div class='stat-num'>" + WW.money(all.length ? all.reduce(function (a, p) { return a + Number(p.amount || 0); }, 0) / all.length : 0) + "</div><div class='stat-sub'>per proposal</div></div>";
+
+    var rows = WWUI.filterSort(all, bar, {
+      keys: ["title", "_cust"],
+      sorts: {
+        recent: WWUI.cmp.dateDesc("created"),
+        amount: WWUI.cmp.numDesc("amount"),
+        status: WWUI.cmp.textAsc("status")
+      }
+    });
+
+    WWUI.table(document.getElementById("rows"), rows, [
+      { cell: function (p) { return "<span class='t-strong'>" + WWUI.esc(p.title) + "</span>"; } },
+      { cell: function (p) { return WWUI.esc(p._cust); } },
+      { cell: function (p) { return WW.fmtDate(p.created); } },
+      { cell: function (p) { return p.test_id ? "<span class='badge blue'>Water test</span>" : "<span class='t-sub'>—</span>"; } },
+      { cls: "num", cell: function (p) { return WW.money(p.amount); } },
+      { cell: function (p) { return badgeFor(p.status); } }
+    ], { empty: "No proposals yet.", onRow: openProp });
+  }
+
+  function openProp(p) {
+    var test = p.test_id ? WW.get("water_tests", p.test_id) : null;
+    WWUI.open({
+      eyebrow: "Proposal",
+      title: p.title,
+      subtitle: WW.customerName(p.customer_id) + " · " + WW.money(p.amount),
+      bodyHTML:
+        WWUI.section("Details", WWUI.kv([
+          ["Customer", WW.customerName(p.customer_id)],
+          ["Amount", WW.money(p.amount)],
+          ["Created", WW.fmtDate(p.created)],
+          ["Status", (STATUS.filter(function (s) { return s.key === p.status; })[0] || {}).label || p.status]
+        ])) +
+        (test
+          ? WWUI.section("Backed by this water test", WWUI.testGrid(test)) +
+            WWUI.section("What the numbers support",
+              WWUI.list(WW.recommend(test).map(function (r) { return { main: r.service, sub: r.why }; }), "Nothing over standard."))
+          : WWUI.section("Backing data",
+              "<div class='callout warn'>No water test linked. A recommendation without a measurement is a guess — " +
+              "log a test before this goes out.</div>")),
+      actions: STATUS.filter(function (s) { return s.key !== p.status; }).slice(0, 3).map(function (s) {
+        return { label: "Mark " + s.label.toLowerCase(), kind: s.key === "accepted" ? "primary" : "outline",
+                 onClick: function () { WW.update("proposals", p.id, { status: s.key }); WWUI.close(); render(); WWUI.toast("Marked " + s.label.toLowerCase()); } };
+      }).concat([
+        { label: "Delete", kind: "danger", onClick: function () {
+            WWUI.confirmDelete("this proposal", function () { WW.remove("proposals", p.id); WWUI.close(); render(); WWUI.toast("Deleted"); });
+        } }
+      ])
+    });
+  }
+
+  document.getElementById("new-prop").addEventListener("click", function () {
+    var cust = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+    var tests = WW.list("water_tests").map(function (t) {
+      var who = t.customer_id ? WW.customerName(t.customer_id) : (WW.get("leads", t.lead_id) || {}).name;
+      return "<option value='" + WWUI.esc(t.id) + "'>" + WW.fmtDate(t.date) + " — " + WWUI.esc(who || "—") + "</option>";
+    }).join("");
+    WWUI.modal({
+      title: "New proposal", wide: true,
+      bodyHTML:
+        "<div><label>Title</label><input name='title' placeholder='Whole-house carbon + softener'></div>" +
+        "<div class='form-row' style='margin-top:.85rem'>" +
+          "<div><label>Customer</label><select name='customer_id'>" + cust + "</select></div>" +
+          "<div><label>Amount</label><input name='amount' type='number' step='any'></div>" +
+        "</div>" +
+        "<div><label>Backed by water test</label><select name='test_id'><option value=''>— none —</option>" + tests + "</select></div>" +
+        "<p class='t-sub'>Link a test wherever one exists. Every performance claim needs substantiation independent " +
+        "of the testimonial carrying it (16 CFR 255.2(a)) — a measured result is that substantiation.</p>",
+      okLabel: "Create",
+      onOk: function (f) {
+        if (!f.title) { WWUI.toast("Title is required", "err"); return false; }
+        f.status = "draft"; f.created = WW.today();
+        WW.add("proposals", f); render(); WWUI.toast("Proposal created");
+      }
+    });
+  });
+
+  render();
+
+});
+</script>
+</body>
+</html>

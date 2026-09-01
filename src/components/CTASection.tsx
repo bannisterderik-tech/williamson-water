@@ -32,7 +32,7 @@ export function CTASection({
                 {primary.label}
               </Button>
               <a
-                href={BUSINESS.phoneHref}
+                href={BUSINESS.phoneHref ?? undefined}
                 className="inline-flex items-center gap-2 rounded-full bg-white/5 px-6 py-3.5 text-white ring-1 ring-white/20 hover:bg-white/10 transition-colors"
               >
                 <Phone className="size-4 text-sun-400" />

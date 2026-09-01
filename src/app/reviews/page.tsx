@@ -15,17 +15,7 @@ export const metadata: Metadata = {
 };
 
 // More reviews for the page
-const EXTRA: Testimonial[] = [
-  { name: "Diana T.", location: "Naturita, CO", rating: 5, service: "Well-water rebuild", quote: "We bought a property nobody wanted because the well water was 'untreatable.' Williamson said no, it's just iron and bacteria. Six months in, no stains and we drink straight from the tap." },
-  { name: "Jorge M.", location: "Hotchkiss, CO", rating: 5, service: "RO + softener", quote: "Three competitors quoted me a 'package.' Ken brought a meter. Different recommendations, different price, way better water. Easy choice." },
-  { name: "Stephanie K.", location: "Mountain Village, CO", rating: 5, service: "7-stage RO", quote: "We host a lot. The RO water is what every guest asks about. Worth every penny just for the compliments." },
-  { name: "Tom & Linda W.", location: "Crawford, CO", rating: 5, service: "Whole-house + UV", quote: "We have a shallow well. We had been buying bottled water for fifteen years. Now we don't. Should have called sooner." },
-  { name: "Brittany F.", location: "Grand Junction, CO", rating: 5, service: "Softener swap", quote: "Replaced a unit Culligan installed eight years ago. Williamson's install was tidier, the system runs quieter, and the salt fills go six weeks instead of three." },
-  { name: "Pastor Eli D.", location: "Paonia, CO", rating: 5, service: "Sediment + carbon", quote: "Snowmelt season used to wreck our church's coffee pot. Not anymore. Pour-over operation now." },
-  { name: "Casey N.", location: "Telluride, CO", rating: 5, service: "Bottleless cooler", quote: "Got rid of the jug subscription at our gym. The cooler looks great, the staff loves it, and we save $200 a month." },
-  { name: "Andrea P.", location: "Ouray, CO", rating: 5, service: "Acid neutralizer", quote: "We had a pinhole leak. Ken pH-tested and explained the chemistry. Installed a neutralizer the next week. No more green stains, no more leaks." },
-  { name: "Rick J.", location: "Olathe, CO", rating: 5, service: "Iron filter rebuild", quote: "An old iron filter the previous owner left behind was producing rust water. Williamson rebuilt it for less than half the cost of replacing it." },
-];
+const EXTRA: Testimonial[] = [];   // emptied — see TestimonialCard.tsx
 
 const ALL = [...TESTIMONIALS, ...EXTRA];
 
