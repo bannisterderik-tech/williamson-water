@@ -10,7 +10,7 @@ import { Wrench, GraduationCap, Heart, Mountain } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Careers — Join Williamson Water",
-  description: "Hiring water-treatment install and service techs in Montrose, CO. Paid training, master-plumber mentorship, real benefits.",
+  description: "Hiring water-treatment install and service techs in Montrose, CO. Paid training and hands-on mentorship.",
 };
 
 const ROLES = [
@@ -22,7 +22,7 @@ const ROLES = [
 
 const PERKS = [
   { icon: Wrench, title: "Real tools, real trucks", body: "We invest in our techs. Stocked trucks, ergonomic carts, and modern test gear so you can do the job right and go home on time." },
-  { icon: GraduationCap, title: "Paid certifications", body: "WQA, NSF, plumbing apprenticeship hours, and OSHA training — all paid by us. We promote from inside." },
+  { icon: GraduationCap, title: "Paid certifications", body: "We invest in training and promote from inside." },
   { icon: Heart, title: "Health, dental, 401(k) match", body: "Full benefits package with employer-paid medical and 4% 401(k) match after 90 days." },
   { icon: Mountain, title: "Built for the Slope", body: "Local routes, no overnights, every weekend off except emergency on-call rotation (paid)." },
 ];

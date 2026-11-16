@@ -48,7 +48,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About"
         title="A real local water company. Built on one promise."
-        lead="Ken Williamson left a national water-treatment chain in 2009 with one goal: do the job right and answer the phone. Sixteen years later we have a fleet of trucks, a master-plumber license, and 2,400+ Western Slope clients who'd recommend us in a second."
+        lead="Local water treatment for the Uncompahgre Valley, the North Fork and the San Juans — specified from your own water test rather than a catalog."
       />
 
       <Section>
@@ -68,7 +68,7 @@ export default function AboutPage() {
                     <span className="text-xs font-semibold uppercase tracking-[0.18em] text-sun-300">Owner & Master Plumber</span>
                     <h3 className="mt-2 text-3xl font-bold tracking-tight">Ken Williamson</h3>
                     <p className="mt-2 text-sm text-ink-200">
-                      Lifelong Montrose resident · Master Plumber · WQA Certified Installer · Father of three
+                      Montrose, Colorado
                     </p>
                   </div>
                 </div>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                     Water with a simple rule: <strong>test first, sell never</strong>.
                   </p>
                   <p>
-                    Sixteen years later we run a fleet of service trucks, a master-plumber-led install team, and
+                    Today we run service across the Uncompahgre Valley, the North Fork and the San Juans, and
                     annual maintenance contracts on more than 1,200 homes. The rule hasn't changed.
                   </p>
                 </div>
@@ -104,10 +104,6 @@ export default function AboutPage() {
       <section className="relative gradient-brand text-white py-24">
         <Container>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
-            <StatBlock value={2400} suffix="+" label="Homes served" />
-            <StatBlock value={15} suffix=" yrs" label="On the Slope" />
-            <StatBlock value={1200} suffix="+" label="Service contracts" />
-            <StatBlock value={4.9} suffix="/5" label="Avg. review" />
           </div>
         </Container>
       </section>

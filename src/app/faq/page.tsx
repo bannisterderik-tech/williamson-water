@@ -18,7 +18,7 @@ const SECTIONS = [
       { q: "Is the water test really free?", a: "Yes — and there's no obligation to buy. Our tech runs a 12-point analysis in your home and walks you through the report. If we don't think you need treatment, we'll tell you." },
       { q: "Do you charge for quotes?", a: "Never. Test, design, and quote are always complimentary. We make money installing systems for clients who want them — not on consultation fees." },
       { q: "Will I work with the same person?", a: "Yes. Whoever does your test will lead your install. We don't bait-and-switch with subcontractors." },
-      { q: "Are you licensed and insured?", a: "Master plumber license, general liability, and workers' comp. WQA Certified Installer. Happy to send certificates of insurance on request." },
+      { q: "Are you licensed and insured?", a: "Ask us and we will send our current license and certificate of insurance on request." },
     ],
   },
   {
@@ -33,10 +33,10 @@ const SECTIONS = [
   {
     title: "About pricing & financing",
     items: [
-      { q: "What does an average install cost?", a: "Drinking-water RO: $1,495+. Whole-house softener: $2,195+. Whole-house combo: $3,895+. Full well-water rebuild: $4,800–$8,500. Fixed prices after testing, no surprises." },
-      { q: "Do you finance?", a: "Yes — 0% APR for 12 months OAC through our financing partner, plus longer-term plans at competitive rates." },
-      { q: "Are there ongoing costs?", a: "Salt for softeners ($10–$40/month). Filter changes for RO ($60–$120/yr). UV bulbs ($150/yr). Many clients sign on for our annual service plan which bundles everything for less than $300/yr." },
-      { q: "What payment methods do you accept?", a: "Cash, check, ACH, all major cards (no surcharge), and our financing partner. We don't take crypto, sorry." },
+      { q: "What does an average install cost?", a: "It depends on what your water test shows. We quote a fixed number after testing rather than pricing from a catalog." },
+      { q: "Do you finance?", a: "Ask us when we quote and we will tell you what options are available at that time." },
+      { q: "Are there ongoing costs?", a: "Yes — softeners need salt, RO systems need filter changes, and UV units need an annual bulb. We spell out the ongoing cost for your specific system when we quote it." },
+      { q: "What payment methods do you accept?", a: "Cash, check, ACH and all major cards." },
     ],
   },
   {

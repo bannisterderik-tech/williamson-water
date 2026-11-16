@@ -108,7 +108,7 @@ export const ARTICLES: Article[] = [
 
 <h2>The bottled water math</h2>
 <p>The average four-person household consumes 12–18 cases of bottled water per month. Say 15 cases at $4 each = $60/month, or $720/year. Over 5 years that's $3,600 — not counting hauling, storage, or the plastic guilt.</p>
-<p>A high-quality RO system installed runs $1,495. With $80/year in filters, you break even in <strong>14 months</strong>. Everything after that is profit, better water, and no jugs in the garage.</p>
+<p>Against that, a quality RO system and its annual filters usually pay for themselves well inside a couple of years. We quote the actual number after testing your water.</p>
 
 <h2>The taste math</h2>
 <p>Chlorine in Project 7 water runs 0.5–1.5 ppm at the tap. The taste threshold is around 0.3 ppm. Most Western Slope tap water tastes like chlorine. RO removes it. Coffee snaps to life. Cocktails taste like the recipe. Pet water bowls don't grow biofilm.</p>

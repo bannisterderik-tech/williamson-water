@@ -323,7 +323,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     results: ["Water restored — fast", "Damage minimized", "Documented for insurance", "Real human accountability"],
     goodFor: ["Burst pipes", "Failed softeners and RO units", "Boil-water orders", "Frozen and broken well-pump situations", "Suspected contamination events"],
-    features: ["24-hour line", "Stocked emergency truck", "Insurance-ready documentation", "Master plumber on every emergency call", "No 'after-hours surprise pricing' on existing clients"],
+    features: ["24-hour line", "Stocked emergency truck", "Insurance-ready documentation", "A written diagnosis on every emergency call", "No 'after-hours surprise pricing' on existing clients"],
     faq: [
       { q: "What's the response time?", a: "Same-day in Montrose County during business hours. After-hours and outside-county within 24 hours. We never leave you in the dark on timing." },
       { q: "How does pricing work?", a: "Existing clients pay our standard rates. New clients pay a flat $189 emergency dispatch plus repair time and parts — credited against a future system install." },

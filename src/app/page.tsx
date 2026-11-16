@@ -95,13 +95,7 @@ export default function Home() {
                       </span>
                     ))}
                   </div>
-                  <span><strong className="text-white">2,400+</strong> Western Slope homes served</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="size-3.5 fill-sun-400 text-sun-400" />
-                  ))}
-                  <span className="ml-1"><strong className="text-white">4.9/5</strong> across 380+ reviews</span>
+                  <span>Water treatment across the Uncompahgre Valley &amp; North Fork</span>
                 </div>
               </div>
             </Reveal>
@@ -121,7 +115,6 @@ export default function Home() {
       <div className="py-10 border-y border-ink-100 bg-white">
         <Marquee
           items={[
-            "WQA Certified",
             "NSF/ANSI 58 Compliant",
             "Master Plumber Licensed",
             "Better Business Bureau A+",
@@ -223,11 +216,11 @@ export default function Home() {
               <Reveal>
                 <Eyebrow dark>By the numbers</Eyebrow>
                 <H2 dark className="mt-5">
-                  A real local business. Real numbers behind it.
+                  A real local business.
                 </H2>
                 <p className="mt-6 text-pretty text-lg text-ink-200 leading-relaxed">
-                  No franchise overlord. No call center. Just a master plumber, a few great techs, and the
-                  trucks you see in your neighbor's driveway every Tuesday.
+                  No franchise overlord. No call center. Local water treatment, specified from your own
+                  test results rather than a catalog.
                 </p>
                 <div className="mt-8">
                   <Button href="/about" variant="sun" arrow>About Ken & the team</Button>
@@ -235,11 +228,7 @@ export default function Home() {
               </Reveal>
             </div>
             <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-2 gap-10">
-              <StatBlock value={2400} suffix="+" label="Homes served" description="Across Montrose, Delta, Ouray, and San Miguel counties." />
-              <StatBlock value={15} suffix=" yrs" label="On the Western Slope" description="Same owner. Same shop. Same phone number." />
-              <StatBlock value={99} suffix="%" label="Contaminants removed" description="Average across our RO + whole-house combos, per NSF testing." />
-              <StatBlock value={24} suffix="hr" label="Emergency response" description="Same-day in Montrose County — 24-hour everywhere else we serve." />
-            </div>
+                          </div>
           </div>
         </Container>
       </section>
@@ -261,7 +250,8 @@ export default function Home() {
         </Container>
       </Section>
 
-      {/* TESTIMONIALS */}
+      {/* TESTIMONIALS — hidden until real, URL-backed reviews exist (rail 3) */}
+      {TESTIMONIALS.length > 0 && (
       <Section tone="dark" className="overflow-hidden">
         <Container>
           <div className="grid lg:grid-cols-12 gap-10 items-end mb-14">
@@ -274,7 +264,7 @@ export default function Home() {
             <div className="lg:col-span-5">
               <Reveal delay={0.1}>
                 <p className="text-pretty text-lg text-ink-300">
-                  Names and towns are real. Quotes are unedited. We publish good and bad — the bad makes us better.
+                  Reviews are published only from verifiable public sources.
                 </p>
               </Reveal>
             </div>
@@ -293,6 +283,7 @@ export default function Home() {
           </div>
         </Container>
       </Section>
+      )}
 
       {/* SERVICE AREAS */}
       <Section>
@@ -356,16 +347,16 @@ export default function Home() {
                   a: "Yes — a tech comes to your home, runs a 12-point analysis (hardness, iron, pH, TDS, chlorine, alkalinity, nitrates, sulfur, hydrogen sulfide, bacteria indicator, lead screen, and a tap-sample taste/odor) and walks you through the report. No purchase required. If we don't think you need treatment, we'll tell you.",
                 },
                 {
-                  q: "How is Williamson Water different from Culligan or the big chains?",
-                  a: "We're locally owned and operated — Ken answers his own phone. We custom-spec every system to your actual test results instead of selling you a one-size-fits-all softener. We use commercial-grade media (not throwaway tanks), we install with a master plumber, and we don't lock you into a rental contract.",
+                  q: "How are you different from the big national chains?",
+                  a: "We're locally owned and operated. We custom-spec every system to your actual test results instead of selling a one-size-fits-all softener, and we don't lock you into a rental contract.",
                 },
                 {
                   q: "What does a typical install cost?",
-                  a: "Drinking-water RO systems start at $1,495 installed. Whole-house softeners start at $2,195. Full well-water systems with iron, sulfur, UV and softening typically run $4,800 – $8,500. We publish starting prices on every service page and quote a fixed number after testing.",
+                  a: "It depends entirely on what your water test shows. We quote a fixed number after testing — no catalog pricing.",
                 },
                 {
                   q: "Do you offer financing?",
-                  a: "Yes — 0% for 12 months OAC through our financing partner, plus longer-term plans at competitive rates. Most clients finance whole-house and well-water systems and pay cash for RO.",
+                  a: "Ask us when we quote — we will tell you what options are available at that time.",
                 },
                 {
                   q: "What kind of warranty comes with installs?",

@@ -41,9 +41,9 @@ const DETAILS = [
     n: "03",
     title: "Single-day, code-compliant install",
     body:
-      "Most installs are done in one day by a master-plumber-led crew. We protect floors, label every line, photograph the work, and program the system to your household profile before we leave.",
+      "Most installs are done in one day. We protect floors, label every line, photograph the work, and program the system to your household profile before we leave.",
     bullets: [
-      "Master plumber on every job",
+      "A tested, written spec on every job",
       "Floor protection & shoe covers",
       "Lines labeled and photographed",
       "Walk-through demo before we leave",
@@ -69,7 +69,7 @@ export default function ProcessPage() {
       <PageHero
         eyebrow="Our process"
         title="Test it. Design it. Install it. Stand behind it."
-        lead="The water industry has a trust problem. We fix it the same way every job — measure first, recommend second, install with a master plumber, and never disappear after the check clears."
+        lead="The water industry has a trust problem. We fix it the same way every job — measure first, recommend second, install it properly, and never disappear after the check clears."
       />
 
       <Section>

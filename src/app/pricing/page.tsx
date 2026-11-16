@@ -12,13 +12,13 @@ import { CheckCircle2, Star } from "lucide-react";
 export const metadata: Metadata = {
   title: "Pricing — Real numbers. Fixed quotes. No upsells.",
   description:
-    "Transparent installed pricing for water softeners, reverse osmosis, whole-house filtration, well-water treatment, and commercial systems on the Western Slope.",
+    "Water softeners, reverse osmosis, whole-house filtration, well-water treatment, and commercial systems on the Western Slope.",
 };
 
 const TIERS = [
   {
     name: "Drinking Water — Essential",
-    from: "$1,495",
+    from: null,
     tagline: "5-stage RO under-sink",
     bullets: [
       "5-stage NSF/ANSI 58 RO",
@@ -31,7 +31,7 @@ const TIERS = [
   },
   {
     name: "Whole House — Soft + Clean",
-    from: "$3,895",
+    from: null,
     tagline: "Softener + whole-house carbon",
     bullets: [
       "1.5 cu-ft on-demand softener",
@@ -45,7 +45,7 @@ const TIERS = [
   },
   {
     name: "Well Water — Complete",
-    from: "$6,495",
+    from: null,
     tagline: "Iron, sulfur, softening, UV",
     bullets: [
       "Air-injection iron + sulfur",
@@ -164,9 +164,9 @@ export default function PricingPage() {
         <Container size="narrow">
           <Reveal>
             <Eyebrow>Financing</Eyebrow>
-            <H2 className="mt-5">0% APR for 12 months, OAC.</H2>
+            <H2 className="mt-5">Ask about payment options.</H2>
             <Lead className="mt-5">
-              Through our financing partner, qualified clients can split any installed system into 12 equal
+              Ask us when we quote and we will tell you what payment options are available for your
               monthly payments with zero interest. Longer terms available at competitive rates.{" "}
               <Link href="/financing" className="text-brand-700 underline">See financing details →</Link>
             </Lead>

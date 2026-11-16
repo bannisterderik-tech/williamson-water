@@ -9,9 +9,9 @@ import { fadeUp } from "@/lib/motion";
 import { Star } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Reviews — 380+ Western Slope homeowners",
+  title: "Reviews",
   description:
-    "Read what neighbors say about Williamson Water — water purification, RO installation, well-water treatment, and softener installs across Montrose County, CO.",
+    "Verified customer reviews for water purification, RO installation, well-water treatment and softener installs across Montrose County, CO.",
 };
 
 // More reviews for the page
@@ -29,16 +29,13 @@ export default function ReviewsPage() {
       >
         <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-ink-100 ring-1 ring-white/15">
           <span className="flex gap-0.5 text-sun-400">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="size-3.5 fill-sun-400" />
-            ))}
           </span>
-          <span><strong className="text-white">4.9</strong> avg across <strong className="text-white">380+</strong> reviews</span>
         </div>
       </PageHero>
 
       <Section>
         <Container>
+          {ALL.length > 0 ? (
           <Stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {ALL.map((t, i) => (
               <Item key={i} variants={fadeUp}>
@@ -46,6 +43,11 @@ export default function ReviewsPage() {
               </Item>
             ))}
           </Stagger>
+          ) : (
+            <p className="text-center text-lg text-ink-600">
+              Reviews are published here only from verifiable public sources. None are posted yet.
+            </p>
+          )}
         </Container>
       </Section>
 

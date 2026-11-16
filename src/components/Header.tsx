@@ -29,7 +29,7 @@ export function Header() {
         <Container className="flex h-9 items-center justify-between">
           <span className="tracking-wide">Serving Montrose County & the Western Slope · Family-owned since {BUSINESS.founded}</span>
           <div className="flex items-center gap-6">
-            <Link href="/financing" className="hover:text-white transition-colors">0% financing OAC</Link>
+            <Link href="/financing" className="hover:text-white transition-colors">Payment options</Link>
             <Link href="/quote" className="hover:text-white transition-colors">Free water test</Link>
             <a href={BUSINESS.phoneHref ?? undefined} className="inline-flex items-center gap-1.5 text-sun-300 hover:text-sun-200 transition-colors">
               <Phone className="size-3.5" /> {BUSINESS.phone}

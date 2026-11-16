@@ -25,7 +25,7 @@ const STEPS = [
     n: "03",
     title: "Clean, code-compliant install",
     body:
-      "Master-plumber install in one day for most systems. We protect floors, label every line, and program the system for your household.",
+      "Install in one day for most systems. We protect floors, label every line, and program the system for your household.",
   },
   {
     icon: BadgeCheck,

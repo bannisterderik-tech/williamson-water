@@ -9,9 +9,9 @@ import { fadeUp } from "@/lib/motion";
 import { CreditCard, Calendar, ShieldCheck, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Financing — 0% for 12 months OAC",
+  title: "Financing",
   description:
-    "Williamson Water offers 0% APR financing for 12 months (OAC) and longer-term plans for water purification, softening, and well-water systems.",
+    "Payment options for water purification, softening and well-water systems on the Western Slope — ask us when we quote your system.",
 };
 
 export default function FinancingPage() {
@@ -20,14 +20,14 @@ export default function FinancingPage() {
       <PageHero
         eyebrow="Financing"
         title="Clean water now. Pay over time."
-        lead="We've teamed up with a national home-improvement lender to bring you 0% for 12 months on qualifying installs — plus longer-term plans for the bigger systems. Approval in minutes. No prepayment penalty."
+        lead="A whole-house or well-water system is a real investment. Ask us about payment options when we quote yours and we will tell you exactly what is available at that time."
       />
 
       <Section>
         <Container>
           <Stagger className="grid gap-6 lg:grid-cols-3">
             {[
-              { icon: Sparkles, title: "0% APR / 12 months", body: "Pay zero interest for a year on qualifying installs, OAC." },
+              { icon: Sparkles, title: "Quoted up front", body: "A fixed written number after testing — not a catalog price." },
               { icon: Calendar, title: "Up to 84 months", body: "Spread a full well-water rebuild over up to 7 years at competitive fixed rates." },
               { icon: ShieldCheck, title: "No prepayment penalty", body: "Pay off the balance anytime, no fees, no fine print." },
             ].map((c) => (
@@ -56,11 +56,11 @@ export default function FinancingPage() {
                 </li>
                 <li className="flex gap-4">
                   <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white text-sm font-bold">2</span>
-                  <p>Apply online with our partner — soft credit check, no impact to score.</p>
+                  <p>Tell us you&rsquo;d like to spread the cost and we&rsquo;ll walk you through the options available.</p>
                 </li>
                 <li className="flex gap-4">
                   <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white text-sm font-bold">3</span>
-                  <p>Choose your term (12, 24, 36, 60, or 84 months).</p>
+                  <p>Pick the arrangement that works for you before anything is ordered.</p>
                 </li>
                 <li className="flex gap-4">
                   <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white text-sm font-bold">4</span>
@@ -68,16 +68,18 @@ export default function FinancingPage() {
                 </li>
               </ol>
               <div className="mt-8">
-                <Button href="/quote" variant="primary" size="lg" arrow>Apply with my quote</Button>
+                <Button href="/quote" variant="primary" size="lg" arrow>Get my quote</Button>
               </div>
             </Reveal>
             <Reveal delay={0.1}>
               <div className="rounded-3xl gradient-brand text-white p-10">
                 <CreditCard className="size-10 text-sun-400" />
-                <h3 className="mt-6 text-2xl font-bold">Sample payment</h3>
-                <p className="mt-3 text-ink-200">A $4,500 install at 0% APR / 12 months:</p>
-                <p className="mt-6 text-5xl font-bold tracking-tight">$375<span className="text-xl text-ink-200">/mo</span></p>
-                <p className="mt-3 text-sm text-ink-300">No interest, no fees. Pay off early anytime.</p>
+                <h3 className="mt-6 text-2xl font-bold">Ask when we quote</h3>
+                <p className="mt-3 text-ink-200">
+                  We will not quote a rate or a monthly payment here that we cannot honour. Once your
+                  system is specified from your water test, we will tell you exactly what payment
+                  options are available for that number.
+                </p>
               </div>
             </Reveal>
           </div>
@@ -87,10 +89,9 @@ export default function FinancingPage() {
       <Section>
         <Container size="narrow">
           <p className="text-xs text-ink-500 leading-relaxed">
-            Financing terms shown are subject to credit approval through our independent lending partner.
-            APR and term offered depend on credit score, loan size, and length. All loans are unsecured
-            personal loans for home improvement; Williamson Water Co. is not the lender. Sample payment is
-            for illustration only.
+            Any payment arrangement is subject to the terms of the provider offering it at the time of
+            your quote. We are not a lender and we do not advertise a rate, term or monthly payment
+            before your system has been specified.
           </p>
         </Container>
       </Section>
