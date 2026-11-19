@@ -74,8 +74,11 @@ WW.ready.then(function () {
     e.preventDefault();
     var email = document.getElementById("email").value.trim();
     if (!email) return;
-    var back = location.origin + location.pathname.replace(/portal\/login\.html$/, "") +
-               (tab === "staff" ? "admin/index.html" : "portal/index.html");
+    /* Absolute, not derived from location.pathname: the login page is also
+       served at /login (vercel.json rewrite), where the old relative
+       calculation produced /loginadmin/index.html. public/ is the site root,
+       so these paths are correct both at /login and at /portal/login.html. */
+    var back = location.origin + (tab === "staff" ? "/admin/index.html" : "/portal/index.html");
     WW.auth.sendMagicLink(email, back).then(function (r) {
       if (r && r.demo) { WWUI.toast("Demo mode — use the role buttons below"); return; }
       if (r && r.error) { WWUI.toast(r.error.message, "err"); return; }
