@@ -13,13 +13,13 @@
 
 export const BUSINESS = {
   // Verified-safe: these are names, not claims.
-  name: "Williamson Water",
+  name: "Pure Tap Water Co.",
   owner: "Ken Williamson",
   tagline: "Pure water. Promised.",
 
   // CONFIRM WITH KEN — inherited from the May build, never verified against
   // the Colorado DORA registration.
-  legalName: "Williamson Water Co.",
+  legalName: "Pure Tap Water Co.",
 
   // BLOCKED — all null until Ken provides them.
   founded: null as number | null,

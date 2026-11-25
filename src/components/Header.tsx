@@ -27,7 +27,7 @@ export function Header() {
       {/* Top utility bar */}
       <div className="hidden md:block bg-ink-950 text-ink-200 text-xs">
         <Container className="flex h-9 items-center justify-between">
-          <span className="tracking-wide">Serving Montrose County & the Western Slope · Family-owned since {BUSINESS.founded}</span>
+          <span className="tracking-wide">Serving Montrose County & the Western Slope</span>
           <div className="flex items-center gap-6">
             <Link href="/financing" className="hover:text-white transition-colors">Payment options</Link>
             <Link href="/quote" className="hover:text-white transition-colors">Free water test</Link>
@@ -49,7 +49,7 @@ export function Header() {
         className="sticky top-0 z-50 border-b border-ink-100/60"
       >
         <Container className="flex h-18 items-center justify-between py-3">
-          <Link href="/" aria-label="Williamson Water home">
+          <Link href="/" aria-label="Pure Tap Water Co. home">
             <Logo />
           </Link>
 

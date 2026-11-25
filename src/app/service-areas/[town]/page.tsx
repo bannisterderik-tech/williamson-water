@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
+import { townImage } from "@/lib/imagery";
 import { Container } from "@/components/Container";
 import { Section, Eyebrow, H2, Lead } from "@/components/Section";
 import { Reveal, Stagger, Item } from "@/components/Reveal";
@@ -27,7 +28,7 @@ export async function generateMetadata({
   if (!t) return {};
   return {
     title: `Water Treatment & RO Systems in ${t.name}, CO`,
-    description: `Williamson Water serves ${t.name}, ${t.county} County, CO with whole-house filtration, water softening, well water systems, reverse osmosis, and emergency service.`,
+    description: `Pure Tap Water Co. serves ${t.name}, ${t.county} County, CO with whole-house filtration, water softening, well water systems, reverse osmosis, and emergency service.`,
   };
 }
 
@@ -46,6 +47,8 @@ export default async function TownPage({
         eyebrow={`${t.county} County, Colorado`}
         title={`Water treatment in ${t.name}, CO.`}
         lead={t.water}
+        image={townImage(t.slug)}
+        caption={townImage(t.slug).alt}
       >
         <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-ink-100 ring-1 ring-white/15">
           <MapPin className="size-4 text-sun-400" /> {t.intro}

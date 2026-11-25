@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     template: `%s · ${BUSINESS.legalName}`,
   },
   description:
-    "Family-owned water purification, water testing, and reverse-osmosis installation across Montrose County and the Western Slope of Colorado. Free in-home water tests. Fixed-price quotes. Lifetime support.",
-  metadataBase: new URL("https://williamsonwater.co"),
+    "Water purification, water testing, and reverse-osmosis installation across Montrose County and the Western Slope of Colorado — hard water, well water, iron and sulfur, PFAS and RO drinking water.",
+  metadataBase: new URL("https://www.puretapco.com"),
   openGraph: {
     type: "website",
     locale: "en_US",

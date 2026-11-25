@@ -309,7 +309,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
   "emergency-service": {
     hero: "When water goes sideways, we go on call.",
     longBlurb:
-      "Burst pipe. Leaking softener. Failed RO. Active well contamination. Whatever the water emergency, we answer the phone — and we move. Williamson Water runs a dedicated emergency truck across Montrose County and a 24-hour line for the surrounding Western Slope. We are licensed plumbers; we don't just sell tanks. If we can fix it, we will. If we can't, we'll tell you who can and stay until the situation is stable.",
+      "Burst pipe. Leaking softener. Failed RO. Active well contamination. Whatever the water emergency, we answer the phone — and we move. Pure Tap Water Co. runs a dedicated emergency truck across Montrose County and a 24-hour line for the surrounding Western Slope. We are licensed plumbers; we don't just sell tanks. If we can fix it, we will. If we can't, we'll tell you who can and stay until the situation is stable.",
     problem: [
       { title: "No water in the house.", body: "Pump failure, frozen line, failed pressure tank — we diagnose and stabilize while you stay dry." },
       { title: "Active leak from a softener or RO.", body: "Connectors fail. Tanks crack. We carry every common part on the truck and can shut down/repair in one visit." },

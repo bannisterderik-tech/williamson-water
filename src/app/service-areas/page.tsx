@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
+import { IMAGES, townImage } from "@/lib/imagery";
+import { Photo } from "@/components/Photo";
 import { Container } from "@/components/Container";
 import { Section, Eyebrow, H2, Lead } from "@/components/Section";
 import { Stagger, Item, Reveal } from "@/components/Reveal";
@@ -12,7 +14,7 @@ import { MapPin, Users, Droplets, ArrowRight } from "lucide-react";
 export const metadata: Metadata = {
   title: "Service Areas — Montrose County, Delta, Ouray, San Miguel · CO",
   description:
-    "Williamson Water serves Montrose, Delta, Olathe, Ridgway, Ouray, Telluride, Cedaredge, Paonia, and the surrounding Western Slope.",
+    "Pure Tap Water Co. serves Montrose, Delta, Olathe, Ridgway, Ouray, Telluride, Cedaredge, Paonia, and the surrounding Western Slope.",
 };
 
 export default function ServiceAreas() {
@@ -22,6 +24,8 @@ export default function ServiceAreas() {
         eyebrow="Service Areas"
         title="We know your water — because we live here too."
         lead="From Project 7's treated supply to the wildest private wells on Grand Mesa, we work this water every day. Pick your town for a local breakdown."
+        image={IMAGES.uncompahgre}
+        caption={IMAGES.uncompahgre.alt}
       />
 
       <Section>
@@ -31,17 +35,25 @@ export default function ServiceAreas() {
               <Item key={t.slug} variants={fadeUp}>
                 <Link
                   href={`/service-areas/${t.slug}`}
-                  className="group relative flex h-full flex-col rounded-3xl bg-white p-7 ring-1 ring-ink-100 hover:ring-brand-300 hover:-translate-y-1 hover:shadow-[0_28px_60px_-24px_rgba(8,29,77,0.25)] transition-all"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white ring-1 ring-ink-100 hover:ring-brand-300 hover:-translate-y-1 hover:shadow-[0_28px_60px_-24px_rgba(8,29,77,0.25)] transition-all"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex size-12 items-center justify-center rounded-2xl gradient-brand text-white">
-                      <MapPin className="size-5" />
+                  <div className="relative">
+                    <Photo
+                      image={townImage(t.slug)}
+                      className="h-44 w-full"
+                      sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+                      imgClassName="transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/55 via-transparent to-transparent" />
+                    <span className="absolute left-4 top-4 inline-flex size-10 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur ring-1 ring-white/25">
+                      <MapPin className="size-4" />
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-400">
+                    <span className="absolute right-4 top-4 rounded-full bg-ink-950/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/85 backdrop-blur">
                       {t.county} County
                     </span>
                   </div>
-                  <h3 className="mt-5 text-2xl font-bold tracking-tight text-ink-900">
+                  <div className="flex flex-1 flex-col p-7">
+                  <h3 className="text-2xl font-bold tracking-tight text-ink-900">
                     {t.name}, CO
                   </h3>
                   <p className="mt-2 text-sm text-ink-500">{t.intro}</p>
@@ -54,6 +66,7 @@ export default function ServiceAreas() {
                       Local guide
                       <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
+                  </div>
                   </div>
                 </Link>
               </Item>

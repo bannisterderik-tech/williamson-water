@@ -9,7 +9,7 @@ import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Contact — Talk to a real human",
-  description: "Get in touch with Williamson Water — phone, email, address, and direct booking for in-home water tests.",
+  description: "Get in touch with Pure Tap Water Co. — phone, email, address, and direct booking for in-home water tests.",
 };
 
 export default function ContactPage() {

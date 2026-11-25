@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Section, Eyebrow, H2, Lead } from "@/components/Section";
 import { PageHero } from "@/components/PageHero";
+import { serviceImage } from "@/lib/imagery";
 import { Reveal, Stagger, Item } from "@/components/Reveal";
 import { CTASection } from "@/components/CTASection";
 import { FAQAccordion } from "@/components/FAQAccordion";
@@ -48,6 +49,7 @@ export default async function ServicePage({
         eyebrow={service.name}
         title={content.hero}
         lead={service.blurb}
+        image={serviceImage(service.slug)}
       >
         <div className="flex flex-col sm:flex-row gap-4">
           <Button href="/quote" variant="sun" size="lg" arrow>Free water test</Button>

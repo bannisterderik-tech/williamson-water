@@ -33,7 +33,7 @@ export default function PrivacyPage() {
               <h2>How to opt out</h2>
               <p>Reply STOP to any text. Click unsubscribe in any email. Or call us — a human will handle it.</p>
               <h2>Contact</h2>
-              <p>Privacy questions? Email hello@williamsonwater.co or write to us at the address in the footer.</p>
+              <p>Privacy questions? Reach us through the contact page.</p>
               <p className="text-sm text-ink-500">Last updated: this year. We rarely change this; major changes will be flagged on the site.</p>
             </article>
           </Reveal>

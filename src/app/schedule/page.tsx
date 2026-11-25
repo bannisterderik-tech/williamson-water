@@ -9,7 +9,7 @@ import { Calendar, Wrench, Truck, Phone } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Schedule Service",
-  description: "Book maintenance, an install, or an inherited-system inspection with Williamson Water.",
+  description: "Book maintenance, an install, or an inherited-system inspection with Pure Tap Water Co..",
 };
 
 const TYPES = [

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
+import { IMAGES } from "@/lib/imagery";
 import { Container } from "@/components/Container";
 import { Section, Eyebrow, H2, Lead } from "@/components/Section";
 import { Reveal, Stagger, Item } from "@/components/Reveal";
@@ -12,7 +13,7 @@ import { Award, Heart, ShieldCheck, Users } from "lucide-react";
 export const metadata: Metadata = {
   title: "About Ken & the team",
   description:
-    "Williamson Water is a family-owned water purification, testing, and RO installation company in Montrose, CO — serving the Western Slope since 2009.",
+    "Pure Tap Water Co. is a water purification, testing, and RO installation company in Montrose, CO — serving the Western Slope since 2009.",
 };
 
 const VALUES = [
@@ -49,6 +50,8 @@ export default function AboutPage() {
         eyebrow="About"
         title="A real local water company. Built on one promise."
         lead="Local water treatment for the Uncompahgre Valley, the North Fork and the San Juans — specified from your own water test rather than a catalog."
+        image={IMAGES.sanjuans}
+        caption={IMAGES.sanjuans.alt}
       />
 
       <Section>

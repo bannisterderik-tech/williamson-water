@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
+import { townImage } from "@/lib/imagery";
 import { Container } from "@/components/Container";
 import { Section, Eyebrow, H2, Lead } from "@/components/Section";
 import { Reveal, Stagger, Item } from "@/components/Reveal";
@@ -29,7 +30,7 @@ export async function generateMetadata({
   if (!t || !s) return {};
   return {
     title: `${s.name} in ${t.name}, CO`,
-    description: `${s.short} — installed and serviced in ${t.name}, ${t.county} County by Williamson Water. ${s.blurb}`,
+    description: `${s.short} — installed and serviced in ${t.name}, ${t.county} County by Pure Tap Water Co.. ${s.blurb}`,
   };
 }
 
@@ -50,6 +51,7 @@ export default async function TownServicePage({
         eyebrow={`${t.name}, CO · ${t.county} County`}
         title={`${s.name} in ${t.name}.`}
         lead={`${s.blurb} Engineered for ${t.name} water — not a generic spec sheet.`}
+        image={townImage(t.slug)}
       >
         <div className="flex flex-col sm:flex-row gap-4">
           <Button href="/quote" variant="sun" size="lg" arrow>

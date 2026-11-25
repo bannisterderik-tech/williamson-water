@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
+import { IMAGES } from "@/lib/imagery";
 import { Container } from "@/components/Container";
 import { Section, Eyebrow, H2, Lead } from "@/components/Section";
 import { Reveal } from "@/components/Reveal";
@@ -9,7 +10,7 @@ import { CTASection } from "@/components/CTASection";
 export const metadata: Metadata = {
   title: "Our Process — Test, Design, Install, Support",
   description:
-    "How Williamson Water designs and installs water purification systems on the Western Slope: 12-point test, custom design, single-day install, lifetime support.",
+    "How Pure Tap Water Co. designs and installs water purification systems on the Western Slope: 12-point test, custom design, single-day install, lifetime support.",
 };
 
 const DETAILS = [
@@ -70,6 +71,7 @@ export default function ProcessPage() {
         eyebrow="Our process"
         title="Test it. Design it. Install it. Stand behind it."
         lead="The water industry has a trust problem. We fix it the same way every job — measure first, recommend second, install it properly, and never disappear after the check clears."
+        image={IMAGES.poolwater}
       />
 
       <Section>

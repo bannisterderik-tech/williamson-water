@@ -27,8 +27,8 @@ export function Logo({ className, mono = false }: { className?: string; mono?: b
         </svg>
       </span>
       <span className={cn("flex flex-col leading-none", mono ? "text-white" : "text-ink-900")}>
-        <span className="text-[15px] font-bold tracking-tight">Williamson Water</span>
-        <span className={cn("text-[10px] uppercase tracking-[0.18em]", mono ? "text-brand-100/80" : "text-brand-700/80")}>
+        <span className="whitespace-nowrap text-[15px] font-bold tracking-tight">Pure Tap Water Co.</span>
+        <span className={cn("whitespace-nowrap text-[9px] uppercase tracking-[0.16em]", mono ? "text-brand-100/80" : "text-brand-700/80")}>
           Pure · Tested · Promised
         </span>
       </span>

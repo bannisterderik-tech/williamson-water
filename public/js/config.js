@@ -1,5 +1,5 @@
 /* ============================================================
-   Pure Tap Co / Williamson Water — live backend config.
+   Pure Tap Co / Pure Tap Water Co. — live backend config.
 
    Presence of this file is what flips js/app-data.js out of demo
    mode and onto Supabase. Delete it and the panel falls back to

@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { SERVICES, TOWNS, TOWN_SERVICE_COMBOS } from "@/lib/site";
 import { ARTICLES } from "@/lib/articles";
 
-const BASE = "https://williamsonwater.co";
+const BASE = "https://www.puretapco.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

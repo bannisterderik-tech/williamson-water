@@ -14,13 +14,21 @@ import { Marquee } from "@/components/Marquee";
 import { WaveDivider } from "@/components/WaveDivider";
 import { fadeUp } from "@/lib/motion";
 import { BUSINESS, SERVICES, TOWNS } from "@/lib/site";
+import { IMAGES, townImage } from "@/lib/imagery";
+import { Photo } from "@/components/Photo";
 import { ArrowRight, Sparkles, Phone, MapPin, Star } from "lucide-react";
 
 export default function Home() {
   return (
     <>
       {/* HERO */}
-      <section className="relative isolate overflow-hidden mesh-water text-white">
+      <section className="relative isolate overflow-hidden bg-ink-950 text-white">
+        {/* Licensed stock photograph, not a job this company performed. See /credits. */}
+        <Photo image={IMAGES.montrose} className="absolute inset-0 h-full w-full" sizes="100vw" priority />
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-ink-950/95 via-ink-950/78 to-brand-950/45"
+          aria-hidden
+        />
         <div className="absolute inset-0 grain" aria-hidden />
         <Container className="relative grid lg:grid-cols-12 gap-12 pt-16 sm:pt-24 pb-24 sm:pb-32 items-center">
           <div className="lg:col-span-7">
@@ -31,10 +39,10 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.08}>
               <h1 className="mt-6 text-balance text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-bold tracking-tight leading-[0.98] text-white">
-                test{" "}
+                Know what&rsquo;s in your water.{" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 bg-gradient-to-r from-sun-300 via-sun-400 to-sun-300 bg-clip-text text-transparent">
-                    test.
+                    Then fix it.
                   </span>
                   <svg
                     className="absolute -bottom-2 left-0 w-full"
@@ -61,7 +69,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.16}>
               <p className="mt-7 max-w-xl text-pretty text-lg sm:text-xl leading-relaxed text-ink-200">
-                Family-owned water purification, testing, and reverse-osmosis installation —
+                Water purification, testing, and reverse-osmosis installation —
                 engineered for hard water, well water, and PFAS reality across Montrose County and beyond.
               </p>
             </Reveal>
@@ -70,31 +78,21 @@ export default function Home() {
                 <Button href="/quote" variant="sun" size="lg" arrow>
                   Book my free water test
                 </Button>
-                <a
-                  href={BUSINESS.phoneHref ?? undefined}
-                  className="inline-flex items-center gap-2 rounded-full bg-white/5 px-6 py-3.5 text-white ring-1 ring-white/20 hover:bg-white/10 transition-colors"
-                >
-                  <Phone className="size-4 text-sun-400" />
-                  <span className="font-semibold">{BUSINESS.phone}</span>
-                </a>
+                {BUSINESS.phone && (
+                  <a
+                    href={BUSINESS.phoneHref ?? undefined}
+                    className="inline-flex items-center gap-2 rounded-full bg-white/5 px-6 py-3.5 text-white ring-1 ring-white/20 hover:bg-white/10 transition-colors"
+                  >
+                    <Phone className="size-4 text-sun-400" />
+                    <span className="font-semibold">{BUSINESS.phone}</span>
+                  </a>
+                )}
               </div>
             </Reveal>
             <Reveal delay={0.32}>
               <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-ink-300">
                 <div className="flex items-center gap-2">
-                  <div className="flex -space-x-2">
-                    {["JR", "MB", "TC", "PH"].map((s, i) => (
-                      <span
-                        key={s}
-                        className={
-                          "inline-flex size-7 items-center justify-center rounded-full ring-2 ring-ink-950 text-[10px] font-bold text-ink-900 " +
-                          ["bg-sun-300", "bg-brand-300", "bg-sun-200", "bg-brand-200"][i]
-                        }
-                      >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
+                  <MapPin className="size-4 text-sun-400" />
                   <span>Water treatment across the Uncompahgre Valley &amp; North Fork</span>
                 </div>
               </div>

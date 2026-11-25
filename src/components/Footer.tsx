@@ -49,8 +49,8 @@ export function Footer() {
           <div className="lg:col-span-4">
             <Logo mono />
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-ink-300">
-              Family-owned water purification, testing, and reverse osmosis installation —
-              serving Montrose County and the Western Slope of Colorado since {BUSINESS.founded}.
+              Water purification, testing, and reverse osmosis installation —
+              serving Montrose County and the Western Slope of Colorado.
             </p>
             <div className="mt-6 space-y-2 text-sm">
               <a href={BUSINESS.phoneHref ?? undefined} className="flex items-center gap-3 text-white hover:text-sun-300 transition-colors">
@@ -107,6 +107,7 @@ export function Footer() {
           <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+            <Link href="/credits" className="hover:text-white transition-colors">Photo credits</Link>
             <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
           </div>
         </div>

@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "description": "Verified public water system data for the Williamson Water service area. Every numeric value traces to sourceUrl. Generated from data/verified-facts.json (359 adversarially-confirmed claims).",
+    "description": "Verified public water system data for the Pure Tap Water Co. service area. Every numeric value traces to sourceUrl. Generated from data/verified-facts.json (359 adversarially-confirmed claims).",
     "researched": "2026-08-11",
     "reviewBy": "2027-06-30",
     "rule": "No value enters this file without a sourceUrl that was re-fetched and confirmed. A null means NO VERIFIED DATA — the generator must not render a claim for it."

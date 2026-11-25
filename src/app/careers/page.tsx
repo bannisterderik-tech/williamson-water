@@ -9,7 +9,7 @@ import { fadeUp } from "@/lib/motion";
 import { Wrench, GraduationCap, Heart, Mountain } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Careers — Join Williamson Water",
+  title: "Careers — Join Pure Tap Water Co.",
   description: "Hiring water-treatment install and service techs in Montrose, CO. Paid training and hands-on mentorship.",
 };
 
@@ -35,8 +35,8 @@ export default function CareersPage() {
         title="We're hiring — and we treat techs like adults."
         lead="If you want a trade career, a real mentor, and a company that ships on time and pays on Friday, we should talk."
       >
-        <Button href="mailto:careers@williamsonwater.co" variant="sun" size="lg" arrow>
-          Apply via email
+        <Button href="/contact" variant="sun" size="lg" arrow>
+          Get in touch
         </Button>
       </PageHero>
 
@@ -96,7 +96,7 @@ export default function CareersPage() {
       <CTASection
         title="Want in? Send us your story."
         subtitle="Resumes optional. Tell us what you've fixed, what you're good at, and what you're trying to learn."
-        primary={{ href: "mailto:careers@williamsonwater.co", label: "Email careers@" }}
+        primary={{ href: "/contact", label: "Get in touch" }}
       />
     </>
   );

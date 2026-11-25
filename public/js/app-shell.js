@@ -64,7 +64,7 @@
   };
 
   function logoSVG() {
-    return '<svg viewBox="0 0 210 40" role="img" aria-label="Williamson Water">' +
+    return '<svg viewBox="0 0 210 40" role="img" aria-label="Pure Tap Water Co.">' +
       '<defs>' +
         '<linearGradient id="wwdrop" x1="0" y1="0" x2="1" y2="1">' +
           '<stop offset="0%" stop-color="#8ec3ff"/><stop offset="100%" stop-color="#2f7bff"/>' +
@@ -75,7 +75,7 @@
       '</defs>' +
       '<path d="M20 4 C 27.5 14.5, 32.5 19.5, 32.5 25 a 12.5 12.5 0 1 1 -25 0 C 7.5 19.5, 12.5 14.5, 20 4 Z" fill="url(#wwdrop)"/>' +
       '<circle cx="26.2" cy="14.4" r="3.2" fill="url(#wwsun)"/>' +
-      '<text x="44" y="19" fill="#ffffff" font-family="Inter,system-ui,sans-serif" font-size="14.5" font-weight="700" letter-spacing="-0.3">Williamson Water</text>' +
+      '<text x="44" y="19" fill="#ffffff" font-family="Inter,system-ui,sans-serif" font-size="14.5" font-weight="700" letter-spacing="-0.3">Pure Tap Water Co.</text>' +
       '<text x="44" y="31" fill="#8ec3ff" font-family="Inter,system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="2.4">TESTED · TREATED</text>' +
       '</svg>';
   }
