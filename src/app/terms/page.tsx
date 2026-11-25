@@ -19,7 +19,7 @@ export default function TermsPage() {
               <h2>2. Service estimates</h2>
               <p>Online pricing and starting points are estimates. Final pricing is fixed in a signed quote following an in-home water test.</p>
               <h2>3. Warranty</h2>
-              <p>Our lifetime workmanship warranty and applicable manufacturer warranties are set out on our warranty page. Warranty does not cover damage from freezing, third-party modification, or normal wear of consumables.</p>
+              <p>Our workmanship warranty and applicable manufacturer warranties are set out on our warranty page. Warranty does not cover damage from freezing, third-party modification, or normal wear of consumables.</p>
               <h2>4. Cancellations</h2>
               <p>You may cancel a scheduled appointment up to 24 hours in advance at no charge. Inside 24 hours we may charge a dispatch fee. We will never charge a cancellation fee on a no-show on our part.</p>
               <h2>5. Limitation of liability</h2>

@@ -55,7 +55,7 @@ export default async function TownServicePage({
       >
         <div className="flex flex-col sm:flex-row gap-4">
           <Button href="/quote" variant="sun" size="lg" arrow>
-            Free water test in {t.name}
+            Request a water test
           </Button>
           {s.startingAt && (
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3.5 text-sm font-semibold text-white ring-1 ring-white/15">
@@ -199,7 +199,7 @@ export default async function TownServicePage({
       </Section>
 
       <CTASection
-        title={`${s.name} in ${t.name} — start with a free test.`}
+        title={`${s.name} in ${t.name} — start with a water test.`}
         subtitle="We come to your home, test from the tap, and design a real solution at a fixed price."
       />
     </>

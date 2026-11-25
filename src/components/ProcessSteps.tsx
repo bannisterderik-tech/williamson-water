@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ClipboardCheck, FlaskConical, Wrench, BadgeCheck } from "lucide-react";
 import { fadeUp } from "@/lib/motion";
 import { Stagger } from "./Reveal";
@@ -9,9 +8,9 @@ const STEPS = [
   {
     icon: ClipboardCheck,
     n: "01",
-    title: "Book a free water test",
+    title: "Request a water test",
     body:
-      "We come to your home, test from the tap (or well), and pull a 12-point report on hardness, iron, pH, TDS, chlorine, nitrates, and bacteria.",
+      "We come to your home, test from the tap (or well), and pull a test report on hardness, iron, pH, TDS, chlorine, nitrates, and bacteria.",
   },
   {
     icon: FlaskConical,
@@ -30,7 +29,7 @@ const STEPS = [
   {
     icon: BadgeCheck,
     n: "04",
-    title: "Follow-up & lifetime support",
+    title: "Follow-up after install",
     body:
       "We re-test in 30 days, refill salt and rotate filters on schedule, and back every install with a real warranty you can call about.",
   },
@@ -40,9 +39,8 @@ export function ProcessSteps({ dark = false }: { dark?: boolean }) {
   return (
     <Stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       {STEPS.map((s) => (
-        <motion.div
+        <div
           key={s.n}
-          variants={fadeUp}
           className={
             "group relative rounded-3xl p-7 ring-1 transition-all duration-500 hover:-translate-y-1 " +
             (dark
@@ -60,7 +58,7 @@ export function ProcessSteps({ dark = false }: { dark?: boolean }) {
             {s.title}
           </h3>
           <p className={"mt-3 text-sm leading-relaxed " + (dark ? "text-ink-300" : "text-ink-600")}>{s.body}</p>
-        </motion.div>
+        </div>
       ))}
     </Stagger>
   );

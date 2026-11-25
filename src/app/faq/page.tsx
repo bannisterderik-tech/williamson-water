@@ -15,7 +15,7 @@ const SECTIONS = [
   {
     title: "About our service",
     items: [
-      { q: "Is the water test really free?", a: "Yes — and there's no obligation to buy. Our tech runs a 12-point analysis in your home and walks you through the report. If we don't think you need treatment, we'll tell you." },
+      { q: "What happens at the water test?", a: "Our tech runs a water analysis in your home and walks you through the report. If we don't think you need treatment, we'll tell you. Ask us up front what the visit costs and we will tell you." },
       { q: "Do you charge for quotes?", a: "Never. Test, design, and quote are always complimentary. We make money installing systems for clients who want them — not on consultation fees." },
       { q: "Will I work with the same person?", a: "Yes. Whoever does your test will lead your install. We don't bait-and-switch with subcontractors." },
       { q: "Are you licensed and insured?", a: "Ask us and we will send our current license and certificate of insurance on request." },

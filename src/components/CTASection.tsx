@@ -6,8 +6,8 @@ import { Reveal } from "./Reveal";
 
 export function CTASection({
   title = "Find out what's in your water — for free.",
-  subtitle = "12-point in-home test. Honest recommendation. Fixed-price quote. No pressure to buy.",
-  primary = { href: "/quote", label: "Book my free water test" },
+  subtitle = "In-home water test. Honest recommendation. Written quote. No pressure to buy.",
+  primary = { href: "/quote", label: "Request a water test" },
 }: {
   title?: string;
   subtitle?: string;

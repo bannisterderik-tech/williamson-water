@@ -14,10 +14,10 @@ export const metadata: Metadata = {
 };
 
 const ROLES = [
-  { title: "Lead Install Technician", type: "Full-time · Montrose, CO", pay: "$28–$36/hr DOE + bonus" },
-  { title: "Service Technician", type: "Full-time · Montrose, CO", pay: "$22–$30/hr DOE" },
-  { title: "Apprentice (Plumbing track)", type: "Full-time · Montrose, CO", pay: "$18–$22/hr + paid school" },
-  { title: "Customer Operations Lead", type: "Full-time · Montrose, CO", pay: "$48–$58k + bonus" },
+  { title: "Lead Install Technician", type: "Full-time · Montrose, CO", pay: "Pay discussed at interview" },
+  { title: "Service Technician", type: "Full-time · Montrose, CO", pay: "Pay discussed at interview" },
+  { title: "Apprentice (Plumbing track)", type: "Full-time · Montrose, CO", pay: "Pay discussed at interview" },
+  { title: "Customer Operations Lead", type: "Full-time · Montrose, CO", pay: "Pay discussed at interview" },
 ];
 
 const PERKS = [

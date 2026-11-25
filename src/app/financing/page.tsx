@@ -27,9 +27,9 @@ export default function FinancingPage() {
         <Container>
           <Stagger className="grid gap-6 lg:grid-cols-3">
             {[
-              { icon: Sparkles, title: "Quoted up front", body: "A fixed written number after testing — not a catalog price." },
-              { icon: Calendar, title: "Up to 84 months", body: "Spread a full well-water rebuild over up to 7 years at competitive fixed rates." },
-              { icon: ShieldCheck, title: "No prepayment penalty", body: "Pay off the balance anytime, no fees, no fine print." },
+              { icon: Sparkles, title: "Quoted up front", body: "A written number after testing — not a catalog price." },
+              { icon: Calendar, title: "Ask about terms", body: "If you want to spread the cost, ask us what options are available before you commit." },
+              { icon: ShieldCheck, title: "Terms in writing", body: "Whatever the arrangement, you get it in writing before anything is signed." },
             ].map((c) => (
               <Item key={c.title} variants={fadeUp} className="rounded-3xl bg-white p-8 ring-1 ring-ink-100">
                 <span className="inline-flex size-12 items-center justify-center rounded-2xl gradient-sun text-ink-900">
@@ -52,7 +52,7 @@ export default function FinancingPage() {
               <ol className="mt-8 space-y-5 text-ink-700">
                 <li className="flex gap-4">
                   <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white text-sm font-bold">1</span>
-                  <p>Get your water tested and receive a fixed-price quote.</p>
+                  <p>Get your water tested and receive a written quote.</p>
                 </li>
                 <li className="flex gap-4">
                   <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white text-sm font-bold">2</span>

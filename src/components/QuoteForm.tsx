@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./Button";
 import { CheckCircle2 } from "lucide-react";
 import { SERVICES } from "@/lib/site";
@@ -22,29 +21,18 @@ export function QuoteForm() {
 
   return (
     <div className="relative">
-      <AnimatePresence mode="wait">
         {submitted ? (
-          <motion.div
-            key="thanks"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="rounded-3xl bg-white p-10 text-center ring-1 ring-ink-100 shadow-xl"
-          >
+          <div className="rounded-3xl bg-white p-10 text-center ring-1 ring-ink-100 shadow-xl">
             <CheckCircle2 className="mx-auto size-14 text-brand-600" />
             <h3 className="mt-6 text-2xl font-bold tracking-tight text-ink-900">You're on the schedule.</h3>
             <p className="mt-3 text-ink-600">
-              We'll reach out within the hour during business hours. For after-hours emergencies, call
+              We'll reach out as soon as we can during business hours. For after-hours emergencies, call
               the number at the top of the page.
             </p>
-          </motion.div>
+          </div>
         ) : (
-          <motion.form
-            key="form"
+          <form
             onSubmit={onSubmit}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
             className="rounded-3xl bg-white p-7 sm:p-10 ring-1 ring-ink-100 shadow-xl"
           >
             <div className="grid gap-4 sm:grid-cols-2">
@@ -86,12 +74,11 @@ export function QuoteForm() {
                 We'll never share your info. You'll get a real call back from Ken or one of our techs — not a robocenter.
               </p>
               <Button type="submit" variant="primary" size="lg" arrow>
-                {loading ? "Sending…" : "Request my free test"}
+                {loading ? "Sending…" : "Send request"}
               </Button>
             </div>
-          </motion.form>
+          </form>
         )}
-      </AnimatePresence>
     </div>
   );
 }

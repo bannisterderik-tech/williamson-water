@@ -172,8 +172,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "emergency-service",
-    name: "24/7 Emergency Water Service",
-    short: "Same-day response across the Western Slope",
+    name: "Emergency Water Service",
+    short: "Emergency response across the Western Slope",
     blurb:
       "Burst pipes, failed softeners, leaking RO systems, bacteria advisories — when water goes sideways, we go on call. Real human, real fast.",
     icon: "Siren",

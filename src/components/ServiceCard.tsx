@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import type { Service } from "@/lib/site";
 import { ServiceIcon } from "./ServiceIcon";
@@ -9,7 +8,7 @@ import { fadeUp } from "@/lib/motion";
 
 export function ServiceCard({ service, index = 0 }: { service: Service; index?: number }) {
   return (
-    <motion.div variants={fadeUp} custom={index} className="h-full">
+    <div className="h-full">
       <Link
         href={`/services/${service.slug}`}
         className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white p-7 ring-1 ring-ink-100 transition-all duration-500 hover:ring-brand-300 hover:-translate-y-1 hover:shadow-[0_28px_60px_-24px_rgba(8,29,77,0.25)]"
@@ -41,6 +40,6 @@ export function ServiceCard({ service, index = 0 }: { service: Service; index?: 
           </span>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }

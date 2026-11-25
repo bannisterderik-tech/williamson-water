@@ -203,7 +203,7 @@ export const ARTICLES: Article[] = [
   <li>Water tastes flat for a week, then your palate resets</li>
 </ul>
 <h2>What it costs</h2>
-<p>$2,795 installed for a typical 9-inch system. Pairs with a downstream softener for full water-quality treatment.</p>
+<p>Priced per install once the water is tested. Pairs with a downstream softener for full water-quality treatment.</p>
 `,
   },
   {
@@ -224,7 +224,7 @@ export const ARTICLES: Article[] = [
 <h2>Why it matters</h2>
 <p>Chloramine in hot showers off-gases into the air and is absorbed by skin. People with sensitive skin notice the difference within days of installing whole-house carbon. Fish-keepers must remove it (chloramine is lethal to fish, regardless of dechlorination tablets that only neutralize chlorine).</p>
 <h2>The fix</h2>
-<p>Whole-house catalytic carbon. $2,395 installed. 5-7 year media life.</p>
+<p>Whole-house catalytic carbon. Priced per install. 5-7 year media life.</p>
 `,
   },
   {
@@ -264,7 +264,7 @@ export const ARTICLES: Article[] = [
 <h2>Is it dangerous?</h2>
 <p>Usually not — the sediment is mineral, not biological. It looks terrible and tastes earthy but isn't a health concern. If your utility issues a boil-water order, that's different — heed it.</p>
 <h2>The fix</h2>
-<p>A spin-down sediment separator and a 5-micron pleated cartridge at the point of entry catches the brown water before it reaches your fixtures, dishwasher, washing machine, and ice maker. Total cost: $695 installed. Cartridges change once a year (twice during heavy snowmelt years).</p>
+<p>A spin-down sediment separator and a 5-micron pleated cartridge at the point of entry catches the brown water before it reaches your fixtures, dishwasher, washing machine, and ice maker. Priced per install once we know your plumbing. Cartridges change once a year (twice during heavy snowmelt years).</p>
 <h2>What not to do</h2>
 <p>Don't run hot water during a brown-water event. Sediment gets pulled into your water heater and stays there. Wait for the cold to clear, then flush hot.</p>
 `,

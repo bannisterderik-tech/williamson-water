@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
-import { HeroDroplet } from "@/components/HeroDroplet";
 import { Reveal, Stagger, Item } from "@/components/Reveal";
 import { Eyebrow, H2, Lead, Section } from "@/components/Section";
 import { ServiceCard } from "@/components/ServiceCard";
@@ -10,8 +9,6 @@ import { StatBlock } from "@/components/StatBlock";
 import { ProcessSteps } from "@/components/ProcessSteps";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { CTASection } from "@/components/CTASection";
-import { Marquee } from "@/components/Marquee";
-import { WaveDivider } from "@/components/WaveDivider";
 import { fadeUp } from "@/lib/motion";
 import { BUSINESS, SERVICES, TOWNS } from "@/lib/site";
 import { IMAGES, townImage } from "@/lib/imagery";
@@ -30,11 +27,11 @@ export default function Home() {
           aria-hidden
         />
         <div className="absolute inset-0 grain" aria-hidden />
-        <Container className="relative grid lg:grid-cols-12 gap-12 pt-16 sm:pt-24 pb-24 sm:pb-32 items-center">
-          <div className="lg:col-span-7">
+        <Container className="relative pt-24 sm:pt-36 pb-28 sm:pb-40">
+          <div className="max-w-3xl">
             <Reveal>
               <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-sun-300 ring-1 ring-white/15">
-                <Sparkles className="size-3.5" /> Free in-home water test · 12-point report
+                <Sparkles className="size-3.5" /> In-home water testing · Montrose County & the Western Slope
               </span>
             </Reveal>
             <Reveal delay={0.08}>
@@ -76,7 +73,7 @@ export default function Home() {
             <Reveal delay={0.24}>
               <div className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <Button href="/quote" variant="sun" size="lg" arrow>
-                  Book my free water test
+                  Request a water test
                 </Button>
                 {BUSINESS.phone && (
                   <a
@@ -99,30 +96,8 @@ export default function Home() {
             </Reveal>
           </div>
 
-          <div className="lg:col-span-5">
-            <HeroDroplet />
-          </div>
         </Container>
-
-        <div className="relative">
-          <WaveDivider color="text-white" />
-        </div>
       </section>
-
-      {/* TRUST MARQUEE */}
-      <div className="py-10 border-y border-ink-100 bg-white">
-        <Marquee
-          items={[
-            "NSF/ANSI 58 Compliant",
-            "Master Plumber Licensed",
-            "Better Business Bureau A+",
-            "Project 7 Water Authority Familiar",
-            "Lifetime Workmanship Warranty",
-            "Same-Day Emergency Service",
-            "Veteran & Senior Discount",
-          ]}
-        />
-      </div>
 
       {/* PROBLEMS WE SOLVE */}
       <Section>
@@ -140,8 +115,8 @@ export default function Home() {
             <div className="lg:col-span-5">
               <Reveal delay={0.1}>
                 <Lead>
-                  After 15 years of testing Western Slope water — from Project 7 city lines to remote
-                  Uncompahgre wells — there isn't a problem we haven't fixed. Twice.
+                  Western Slope water runs the full range — from Project 7 city lines to remote
+                  Uncompahgre wells. We start by measuring yours, not by guessing.
                 </Lead>
               </Reveal>
             </div>
@@ -240,7 +215,7 @@ export default function Home() {
               <H2 className="mt-5">A water company that actually tests the water first.</H2>
               <Lead className="mt-5">
                 Most of our competitors quote a softener over the phone. We don't. Every recommendation starts
-                with a free, in-home, 12-point water test. Real instruments, not a strip and a guess.
+                with a in-home water test. Real instruments, not a strip and a guess.
               </Lead>
             </Reveal>
           </div>
@@ -292,8 +267,8 @@ export default function Home() {
                 <Eyebrow>Where we serve</Eyebrow>
                 <H2 className="mt-5">From Montrose to Telluride and everywhere in between.</H2>
                 <Lead className="mt-5">
-                  We know which streets have Project 7 water and which mesa is on a private well. We've
-                  pulled iron out of hundreds of homes in this valley — yours is next.
+                  Project 7 lines and private mesa wells behave nothing alike, and the fix differs
+                  street by street. We test yours before recommending anything.
                 </Lead>
                 <div className="mt-8">
                   <Button href="/service-areas" variant="primary" arrow>
@@ -341,8 +316,8 @@ export default function Home() {
             <FAQAccordion
               items={[
                 {
-                  q: "Is the water test really free?",
-                  a: "Yes — a tech comes to your home, runs a 12-point analysis (hardness, iron, pH, TDS, chlorine, alkalinity, nitrates, sulfur, hydrogen sulfide, bacteria indicator, lead screen, and a tap-sample taste/odor) and walks you through the report. No purchase required. If we don't think you need treatment, we'll tell you.",
+                  q: "What happens at the water test?",
+                  a: "A tech comes to your home, runs a water analysis (hardness, iron, pH, TDS, chlorine, alkalinity, nitrates, sulfur, hydrogen sulfide, bacteria indicator, lead screen, and a tap-sample taste/odor) and walks you through the report. No purchase required. If we don't think you need treatment, we'll tell you.",
                 },
                 {
                   q: "How are you different from the big national chains?",
@@ -358,11 +333,11 @@ export default function Home() {
                 },
                 {
                   q: "What kind of warranty comes with installs?",
-                  a: "Lifetime workmanship warranty on every install. Manufacturer warranties on tanks (10-year), heads (5-year), and electronics (3-year). We're the only call you make — we handle the manufacturer paperwork for you.",
+                  a: "Workmanship warranty on every install. Manufacturer warranties on tanks (10-year), heads (5-year), and electronics (3-year). We're the only call you make — we handle the manufacturer paperwork for you.",
                 },
                 {
                   q: "Do you service systems other companies installed?",
-                  a: "Absolutely. We do a $129 inherited-system inspection, replace the salt/media on schedule, and can usually rebuild a tired unit for less than half the cost of a new system.",
+                  a: "Yes. We will inspect what is already there, service it on schedule, and rebuild rather than replace wherever that is the better call.",
                 },
               ]}
             />

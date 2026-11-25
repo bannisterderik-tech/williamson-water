@@ -159,7 +159,7 @@ export default async function TownPage({
       </Section>
 
       <CTASection
-        title={`Free water test in ${t.name}, CO`}
+        title={`Request a water test in ${t.name}, CO`}
         subtitle="We come to you, test from the tap, and put a real number on a real solution."
       />
     </>

@@ -1,8 +1,7 @@
-"use client";
-
-import { motion, useInView, useMotionValue, useTransform, animate, useReducedMotion } from "framer-motion";
-import { useEffect, useRef } from "react";
-
+/**
+ * Static. This used to count up from zero on scroll with framer-motion;
+ * the animation was removed along with the rest of the site's motion.
+ */
 export function StatBlock({
   value,
   suffix = "",
@@ -16,27 +15,11 @@ export function StatBlock({
   label: string;
   description?: string;
 }) {
-  const ref = useRef<HTMLSpanElement | null>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-  const reduce = useReducedMotion();
-  const mv = useMotionValue(0);
-  const rounded = useTransform(mv, (v) => Math.round(v).toLocaleString());
-
-  useEffect(() => {
-    if (!inView) return;
-    if (reduce) {
-      mv.set(value);
-      return;
-    }
-    const controls = animate(mv, value, { duration: 1.6, ease: [0.16, 1, 0.3, 1] });
-    return () => controls.stop();
-  }, [inView, value, mv, reduce]);
-
   return (
     <div className="text-center sm:text-left">
-      <span ref={ref} className="block text-5xl sm:text-6xl font-bold tracking-tight text-white">
+      <span className="block text-5xl sm:text-6xl font-bold tracking-tight text-white">
         {prefix}
-        <motion.span>{rounded}</motion.span>
+        {value.toLocaleString()}
         {suffix}
       </span>
       <span className="mt-3 block text-sm font-semibold uppercase tracking-[0.18em] text-sun-300">{label}</span>

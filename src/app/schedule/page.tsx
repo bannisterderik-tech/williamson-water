@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 
 const TYPES = [
   { icon: Wrench, title: "Annual service", body: "Salt fill, filter swap, system inspection, and a fresh water test. Usually under an hour." },
-  { icon: Truck, title: "Inherited-system inspection", body: "Bought a home with mystery water gear? We diagnose and rebuild instead of replace whenever possible. $129 flat." },
+  { icon: Truck, title: "Inherited-system inspection", body: "Bought a home with mystery water gear? We diagnose and rebuild instead of replace whenever possible." },
   { icon: Calendar, title: "New install", body: "We schedule installs around your week. Most jobs are a single day. We confirm 48 hours out." },
-  { icon: Phone, title: "Emergency dispatch", body: "Active leak, no water, or contamination event — call the number above. Same-day in Montrose County." },
+  { icon: Phone, title: "Emergency dispatch", body: "Active leak, no water, or contamination event — call the number above and we will tell you the soonest we can get there." },
 ];
 
 export default function SchedulePage() {
@@ -47,7 +47,7 @@ export default function SchedulePage() {
               <Reveal>
                 <Eyebrow>What happens next</Eyebrow>
                 <H2 className="mt-5">Three steps.</H2>
-                <Lead className="mt-5">Fill out the form. Get a confirmation within the hour. We show up on the day we promised.</Lead>
+                <Lead className="mt-5">Fill out the form. We will confirm your appointment. We confirm the day before we come outd.</Lead>
               </Reveal>
             </div>
             <div className="lg:col-span-7">

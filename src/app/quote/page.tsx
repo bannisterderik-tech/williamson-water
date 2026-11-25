@@ -8,12 +8,12 @@ import { fadeUp } from "@/lib/motion";
 import { CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Free Water Test & Quote",
-  description: "Book your free in-home water test and fixed-price quote — Montrose, Delta, Ouray, San Miguel counties.",
+  title: "Water Test & Quote",
+  description: "Book your free in-home water test and written quote — Montrose, Delta, Ouray, San Miguel counties.",
 };
 
 const INCLUDED = [
-  "12-point in-home lab-grade water test",
+  "In-home water test",
   "Written report you keep",
   "Three-tier system recommendation (good / better / best)",
   "Fixed installed price on each option",
@@ -25,7 +25,7 @@ export default function QuotePage() {
   return (
     <>
       <PageHero
-        eyebrow="Free water test"
+        eyebrow="Water testing"
         title="Book your in-home water test."
         lead="A tech comes to you, tests from the tap (or well), and emails you a real report. If we don't think you need treatment, we'll tell you."
       />
@@ -51,7 +51,7 @@ export default function QuotePage() {
                   <Eyebrow dark>Heads up</Eyebrow>
                   <p className="mt-4 text-pretty text-ink-100 leading-relaxed">
                     During snowmelt season (Apr–Jun) we book about 10 days out. For confirmed emergencies we
-                    drop everything and roll same day. Call us — we'll triage.
+                    get to you as fast as we can. Call us — we'll triage.
                   </p>
                 </div>
               </Reveal>

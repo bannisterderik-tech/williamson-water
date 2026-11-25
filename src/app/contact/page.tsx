@@ -18,7 +18,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="A real human. On the other end. Today."
-        lead="Phone is fastest. Email gets a reply within the hour during business hours. After-hours emergencies — call the number below."
+        lead="Phone is fastest. Email gets a reply as soon as we can during business hours. After-hours emergencies — call the number below."
       />
 
       <Section>

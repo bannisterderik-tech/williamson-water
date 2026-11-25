@@ -52,7 +52,7 @@ export default async function ServicePage({
         image={serviceImage(service.slug)}
       >
         <div className="flex flex-col sm:flex-row gap-4">
-          <Button href="/quote" variant="sun" size="lg" arrow>Free water test</Button>
+          <Button href="/quote" variant="sun" size="lg" arrow>Request a water test</Button>
           {service.startingAt && (
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3.5 text-sm font-semibold text-white ring-1 ring-white/15">
               <Sparkles className="size-4 text-sun-400" />

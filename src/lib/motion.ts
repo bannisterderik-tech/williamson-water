@@ -1,35 +1,13 @@
-import type { Variants, Transition } from "framer-motion";
+// Motion was removed from this site in Nov 2026 — no scroll reveals, no
+// count-ups, no marquee, no animated illustrations. These exports remain only
+// so the ~24 pages that pass `variants={fadeUp}` keep compiling; nothing reads
+// them. Delete them when those call sites are cleaned up.
 
-export const easeOutExpo: Transition["ease"] = [0.16, 1, 0.3, 1];
+export type Variants = Record<string, unknown>;
 
-export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: easeOutExpo } },
-};
-
-export const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.8, ease: easeOutExpo } },
-};
-
-export const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.92 },
-  show: { opacity: 1, scale: 1, transition: { duration: 0.7, ease: easeOutExpo } },
-};
-
-export const staggerContainer = (stagger = 0.08, delay = 0): Variants => ({
-  hidden: {},
-  show: {
-    transition: { staggerChildren: stagger, delayChildren: delay },
-  },
-});
-
-export const slideRight: Variants = {
-  hidden: { opacity: 0, x: -32 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.7, ease: easeOutExpo } },
-};
-
-export const slideLeft: Variants = {
-  hidden: { opacity: 0, x: 32 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.7, ease: easeOutExpo } },
-};
+export const fadeUp: Variants = {};
+export const fadeIn: Variants = {};
+export const scaleIn: Variants = {};
+export const slideRight: Variants = {};
+export const slideLeft: Variants = {};
+export const staggerContainer = (_stagger = 0, _delay = 0): Variants => ({});

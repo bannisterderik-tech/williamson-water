@@ -21,7 +21,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
       { title: "City water tastes like a pool.", body: "Project 7 keeps chlorine residuals high to protect long supply lines. Great for safety, terrible for flavor and morning coffee." },
       { title: "TDS through the roof.", body: "Western Slope tap regularly tests 280–600 ppm TDS. The bar for 'great' water is under 50. RO closes that gap in seconds." },
       { title: "PFAS is in your county report.", body: "Trace PFOA and PFOS are now detectable across Colorado's water supply. NSF/ANSI 58 certified RO removes them. Pitchers don't." },
-      { title: "Bottled water is $1,200/year.", body: "Average four-person household burns through 12–18 cases a month. RO pays itself back in 14 months — then prints money." },
+      { title: "Bottled water is a standing expense.", body: "A household that buys drinking water by the case is paying for it again every month. A plumbed RO system replaces that with a filter change." },
     ],
     howItWorks: [
       { title: "Stage 1 — Sediment", body: "5-micron pleated pre-filter pulls silt, rust, and snowmelt turbidity off the line before they hit the membrane." },
@@ -44,7 +44,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
       "3.2-gallon pressurized storage tank",
       "Built-in TDS meter on dedicated faucet (optional)",
       "Filter-life monitor with phone reminders",
-      "Lifetime workmanship warranty",
+      "Workmanship warranty",
     ],
     caveats: "RO is for drinking water. It is not a whole-house solution. We typically pair RO with a softener for cooking water and a whole-house carbon for showers.",
     faq: [
@@ -96,7 +96,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     results: ["No more scale on glass shower doors", "Bright white whites in the laundry", "Glassware out of the dishwasher with zero spots", "Hot showers without the squeaky-skin fight", "Water heater that lives its full warranty"],
     goodFor: ["Any home on Western Slope water above 7 gpg", "Homes with hard-water scale on fixtures", "People with eczema or dry-skin complaints", "Anyone who's replaced a water heater early"],
-    features: ["1.0 to 2.0 cu-ft sizing", "Clack WS1 or Pentair Logix electronic control", "Bypass valve standard", "Salt-use meter and reminders", "10-year tank warranty / 5-year head"],
+    features: ["1.0 to 2.0 cu-ft sizing", "Electronic metered control valve", "Bypass valve standard", "Salt-use meter and reminders", "10-year tank warranty / 5-year head"],
     faq: [
       { q: "Will softened water taste salty?", a: "No. A softener adds about 30 mg of sodium per quart — about as much as a slice of bread. Even sodium-restricted diets are fine. If you're worried, we route a hard line to the kitchen sink." },
       { q: "How often does it regenerate?", a: "Most households regenerate once every 5-9 days. The system only fires when needed — not on a timer." },
@@ -124,9 +124,9 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     results: ["Clean, soft, odor-free water from every tap", "Stains gone — fixtures, toilets, laundry", "Showers without the smell", "Confident drinking water for kids, guests, and dogs"],
     goodFor: ["Any private well", "Homes after a positive bacteria test", "Buyers of a property with a 'mystery' well", "Properties on shared community wells"],
-    features: ["State-certified lab testing", "Custom multi-stage design", "Single-day install for most jobs", "Lifetime workmanship warranty", "Annual maintenance contracts available"],
+    features: ["Lab testing", "Custom multi-stage design", "Install scheduled around you", "Workmanship warranty", "Annual maintenance contracts available"],
     faq: [
-      { q: "How much will my well system cost?", a: "Honest answer: $3,500 to $9,000 for a full multi-stage build. We don't quote without testing first." },
+      { q: "How much will my well system cost?", a: "It depends on what your well actually contains, which is why we test before quoting. You get the number in writing once we know." },
       { q: "How long will it last?", a: "Tank-based media systems run 6–10 years. UV bulbs every 12 months. Membranes 3–5 years. We service all of it." },
       { q: "Will my well pump be OK?", a: "Part of the design. We measure your flow and pressure before specifying any system. If your pump is undersized for treatment, we'll tell you before you spend a dollar on filters." },
     ],
@@ -149,11 +149,11 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     results: ["Confident drinking water on a private well", "Peace of mind during boil-water orders", "No chemical residual, no taste change", "Insurance for vacation homes"],
     goodFor: ["Any private well", "Cisterns and seasonal supplies", "Restaurants and clinics on well water", "Pre-emptive disinfection on aging municipal lines"],
-    features: ["NSF Class A and Class B units", "Stainless steel chamber", "Audible & visual alarm on lamp failure", "Pre-filter housing included", "Lifetime workmanship warranty"],
+    features: ["NSF Class A and Class B units", "Stainless steel chamber", "Audible & visual alarm on lamp failure", "Pre-filter housing included", "Workmanship warranty"],
     faq: [
       { q: "Will UV remove iron, hardness, or chemicals?", a: "No. UV is a microbiological treatment only. We pair it with iron filters, softeners, and carbon as your water requires." },
       { q: "How often do bulbs change?", a: "Annually. Bulb intensity falls below dose spec at 9,000 hours. We send reminders and stock the bulbs." },
-      { q: "Does it use a lot of power?", a: "About 40 watts continuously — roughly $2/month at Colorado electric rates." },
+      { q: "Does it use a lot of power?", a: "A UV lamp draws very little — comparable to leaving a small LED fixture on." },
     ],
   },
 
@@ -174,7 +174,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     results: ["Zero orange or black staining", "No more rotten-egg smell from showers", "Cleaner laundry and brighter whites", "Longer-lived water heaters and dishwashers"],
     goodFor: ["Wells with iron above 0.3 ppm", "Wells with measurable H₂S or sulfur odor", "Homes with manganese staining", "Older wells with rust accumulation"],
-    features: ["No chemicals required", "5-10 year media life", "Self-cleaning via automatic backwash", "Compact 9\" or 10\" diameter tanks", "Lifetime workmanship warranty"],
+    features: ["No chemicals required", "5-10 year media life", "Self-cleaning via automatic backwash", "Compact 9\" or 10\" diameter tanks", "Workmanship warranty"],
     faq: [
       { q: "How is this different from a softener?", a: "A softener exchanges ions. It captures small amounts of iron incidentally — but at typical Western Slope iron levels (1–6 ppm) it will foul within months. Oxidation media is the right tool." },
       { q: "Will it remove all the smell?", a: "If the source is hydrogen sulfide in the cold water — yes, completely. If the smell only shows up in hot water, the issue may be your water heater anode and we may recommend a swap instead." },
@@ -247,7 +247,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     results: ["More than 99% reduction of common PFAS", "Documented before-and-after lab results", "Peace of mind for families with young kids", "Removal of co-contaminants (lead, nitrates, chlorine) at no extra cost"],
     goodFor: ["Any household concerned about PFAS in their CCR", "Homes near agricultural firefighting drill grounds", "Families with infants or expectant mothers", "Anyone tired of bottled water"],
-    features: ["NSF/ANSI 53 and 58 certified components only", "Pre/post lab testing included in install", "Filter-life monitor with phone reminders", "Custom faucet finishes", "Lifetime workmanship warranty"],
+    features: ["NSF/ANSI 53 and 58 certified components only", "Pre- and post-install lab testing", "Filter-life monitor with phone reminders", "Custom faucet finishes", "Workmanship warranty"],
     faq: [
       { q: "How do I know it's actually working?", a: "We pull a baseline sample before install and re-test 30 days after. You see the lab report. If you don't get the numbers we promised, we re-engineer." },
       { q: "Does the whole house need PFAS treatment?", a: "For drinking, cooking, and ice — yes. For showering — current science doesn't show significant dermal/inhalation risk for typical PFAS levels, so we generally recommend point-of-use only for cost reasons." },
@@ -286,7 +286,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     longBlurb:
       "If your office, gym, or shop still has 5-gallon jugs being delivered — you're paying for water you could be making. A bottleless cooler plumbs directly into your existing water line, filters and chills (and optionally heats and sparkles) on demand, and removes the storage, lifting, and delivery costs forever. We install and service bottleless coolers across Montrose County and beyond, including office, retail, gym, and break-room environments.",
     problem: [
-      { title: "Jug delivery is expensive.", body: "Average bottled service for a 20-person office runs $200–$400/month. A bottleless cooler is $59/month all-in." },
+      { title: "Jug delivery is expensive.", body: "Jug delivery is a recurring invoice that never stops, plus storage space and the lifting. A plumbed cooler replaces all of it with a filter change." },
       { title: "Empty jugs everywhere.", body: "5-gallon jugs take up storage. Empty jugs are heavier than they look. Lifting is a workplace-injury cause." },
       { title: "Plastic waste.", body: "Even with deposit-and-return, the carbon footprint of bottled coolers is multiples of plumbed alternatives." },
     ],
@@ -298,10 +298,10 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     results: ["No more jug deliveries", "Predictable monthly cost", "Cleaner break room", "Bigger ROI than you'd guess"],
     goodFor: ["Offices and clinics", "Gyms and yoga studios", "Hair salons and barber shops", "Retail showrooms and dealerships", "Break rooms and shop floors"],
-    features: ["Lease or buy options", "Free install on month-to-month plans", "Cold, hot, and sparkling configurations", "Stainless or ABS cabinet", "Monthly filter service included"],
+    features: ["Lease or buy options", "Lease or purchase, your call", "Cold, hot, and sparkling configurations", "Stainless or ABS cabinet", "Monthly filter service included"],
     faq: [
-      { q: "Can we lease instead of buy?", a: "Yes — most clients lease at $59/month all-in, including filter changes and sanitization. Cheaper than the bottled service it replaces." },
-      { q: "What if we move locations?", a: "We move the cooler for free for lease clients within our service area. Pay-and-own clients we move for a flat $149." },
+      { q: "Can we lease instead of buy?", a: "Yes — leasing is available, with filter changes and sanitization included. Ask us for current lease and purchase terms." },
+      { q: "What if we move locations?", a: "Talk to us and we will sort the move out with you." },
       { q: "How loud is it?", a: "Quieter than a refrigerator. The compressor cycles a few times an hour." },
     ],
   },
@@ -317,7 +317,7 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     ],
     howItWorks: [
       { title: "Phone call to triage", body: "Real human on the line. We talk you through shut-offs and damage control before we hit the road." },
-      { title: "Same-day dispatch", body: "Montrose County: same day, period. Outside Montrose County: 24 hours guaranteed." },
+      { title: "Emergency dispatch", body: "Call and we will tell you honestly how soon we can be there." },
       { title: "Repair or stabilize", body: "We fix what we can on the spot. What we can't, we make safe and schedule a permanent fix." },
       { title: "Documentation for insurance", body: "We provide a full report with photos for your homeowner claim if applicable." },
     ],
@@ -325,8 +325,8 @@ export const SERVICE_CONTENT: Record<ServiceSlug, ServiceContent> = {
     goodFor: ["Burst pipes", "Failed softeners and RO units", "Boil-water orders", "Frozen and broken well-pump situations", "Suspected contamination events"],
     features: ["24-hour line", "Stocked emergency truck", "Insurance-ready documentation", "A written diagnosis on every emergency call", "No 'after-hours surprise pricing' on existing clients"],
     faq: [
-      { q: "What's the response time?", a: "Same-day in Montrose County during business hours. After-hours and outside-county within 24 hours. We never leave you in the dark on timing." },
-      { q: "How does pricing work?", a: "Existing clients pay our standard rates. New clients pay a flat $189 emergency dispatch plus repair time and parts — credited against a future system install." },
+      { q: "What's the response time?", a: "Call us and we will tell you honestly how soon we can get there. We would rather give you a real time than a promise we cannot keep." },
+      { q: "How does pricing work?", a: "Call and we will tell you the dispatch and labour rates before we come out, so there is no surprise on the invoice." },
       { q: "Do you handle frozen pipes?", a: "Yes — within our scope. Frozen water lines we thaw and inspect for damage. Frozen drain lines we refer to a partner specialist." },
     ],
   },

@@ -13,7 +13,7 @@ import { Award, Heart, ShieldCheck, Users } from "lucide-react";
 export const metadata: Metadata = {
   title: "About Ken & the team",
   description:
-    "Pure Tap Water Co. is a water purification, testing, and RO installation company in Montrose, CO — serving the Western Slope since 2009.",
+    "Pure Tap Water Co. is a water purification, testing, and RO installation company in Montrose, CO — serving the Western Slope.",
 };
 
 const VALUES = [
@@ -68,7 +68,7 @@ export default function AboutPage() {
                   aria-label="Ken Williamson"
                 >
                   <div className="absolute inset-x-0 bottom-0 p-7 text-white">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-sun-300">Owner & Master Plumber</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-sun-300">Owner</span>
                     <h3 className="mt-2 text-3xl font-bold tracking-tight">Ken Williamson</h3>
                     <p className="mt-2 text-sm text-ink-200">
                       Montrose, Colorado
@@ -146,7 +146,7 @@ export default function AboutPage() {
           </div>
           <Stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {[
-              { name: "Ken Williamson", role: "Owner & Master Plumber", seed: "ken-1" },
+              { name: "Ken Williamson", role: "Owner", seed: "ken-1" },
               { name: "Daniel R.", role: "Lead Install Tech", seed: "daniel-2" },
               { name: "Marisol V.", role: "Operations & Scheduling", seed: "marisol-3" },
               { name: "Caleb H.", role: "Service & Maintenance", seed: "caleb-4" },

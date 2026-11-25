@@ -25,7 +25,7 @@ const TIERS = [
       "Lead-free brass faucet",
       "3.2 gal storage tank",
       "Annual filter swap reminder",
-      "Lifetime workmanship warranty",
+      "Workmanship warranty",
     ],
     cta: "Quote my RO",
   },
@@ -52,19 +52,19 @@ const TIERS = [
       "Sediment + spin-down",
       "1.5 cu-ft softener",
       "NSF Class B UV sterilizer",
-      "Annual service contract included Year 1",
+      "Annual service contract available",
     ],
     cta: "Quote my well",
   },
 ];
 
 const ADD_ONS = [
-  { name: "Drinking-water remineralization", price: "$129" },
-  { name: "Sparkling water cooler upgrade", price: "$249" },
-  { name: "Whole-house UV sterilizer", price: "$895" },
-  { name: "Acid neutralizer", price: "$1,895" },
-  { name: "PFAS-certified membrane upgrade", price: "$199" },
-  { name: "Annual service contract", price: "from $189/yr" },
+  { name: "Drinking-water remineralization", price: "Quoted" },
+  { name: "Sparkling water cooler upgrade", price: "Quoted" },
+  { name: "Whole-house UV sterilizer", price: "Quoted" },
+  { name: "Acid neutralizer", price: "Quoted" },
+  { name: "PFAS membrane upgrade", price: "Quoted" },
+  { name: "Annual service contract", price: "Quoted" },
 ];
 
 export default function PricingPage() {
@@ -72,8 +72,8 @@ export default function PricingPage() {
     <>
       <PageHero
         eyebrow="Pricing"
-        title="Real numbers. Posted out loud."
-        lead="We publish starting prices because we're proud of them. Every quote is fixed — no surprises, no change orders, no 'consultant' coming back with a higher number after the test."
+        title="Priced from your own water test."
+        lead="What a system costs depends on your water and your house, so we test first and then put a written quote in your hands. No number here is a placeholder for that."
       />
 
       <Section>

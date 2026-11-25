@@ -10,7 +10,7 @@ import { CTASection } from "@/components/CTASection";
 export const metadata: Metadata = {
   title: "Our Process — Test, Design, Install, Support",
   description:
-    "How Pure Tap Water Co. designs and installs water purification systems on the Western Slope: 12-point test, custom design, single-day install, lifetime support.",
+    "How Pure Tap Water Co. designs and installs water purification systems on the Western Slope: water test, custom design, single-day install, follow-up support.",
 };
 
 const DETAILS = [
@@ -18,7 +18,7 @@ const DETAILS = [
     n: "01",
     title: "Free, in-home water test",
     body:
-      "We come to your home, run a 12-point lab-grade water test, and walk you through every number on the report. Hardness, iron, pH, TDS, chlorine, alkalinity, sulfur, nitrates, lead screen, bacteria indicator, and a taste/odor panel. Takes 45 minutes. Costs $0.",
+      "We come to your home, run a water test, and walk you through every number on the report. Hardness, iron, pH, TDS, chlorine, alkalinity, sulfur, nitrates, lead screen, bacteria indicator, and a taste/odor panel. Takes about three quarters of an hour.",
     bullets: [
       "Tech comes to you — no kit to ship",
       "Lab-grade meters, not strips",
@@ -33,8 +33,8 @@ const DETAILS = [
       "We blueprint the system based on your test results, household size, peak demand, and your existing plumbing. We bring three options — good, better, best — and quote each at a fixed installed price.",
     bullets: [
       "Three quote tiers, every time",
-      "Fixed-price guarantee — no change orders",
-      "Brand-agnostic — Clack, Pentair, Kinetico, others",
+      "Written quote before any work starts",
+      "Specified to your water, not to one brand",
       "Financing options included on every quote",
     ],
   },
@@ -52,13 +52,13 @@ const DETAILS = [
   },
   {
     n: "04",
-    title: "30-day re-test & lifetime support",
+    title: "Re-test after install",
     body:
       "Thirty days after install we come back, re-test the water, verify everything performs to spec, and set you up on a maintenance cadence that fits your usage. Ken's cell is on every invoice.",
     bullets: [
-      "30-day post-install re-test",
+      "Post-install re-test",
       "Annual maintenance contracts available",
-      "Lifetime workmanship warranty",
+      "Workmanship warranty",
       "Direct line to a real human",
     ],
   },

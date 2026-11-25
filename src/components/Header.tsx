@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { BUSINESS, NAV } from "@/lib/site";
 import { Logo } from "./Logo";
@@ -30,7 +29,7 @@ export function Header() {
           <span className="tracking-wide">Serving Montrose County & the Western Slope</span>
           <div className="flex items-center gap-6">
             <Link href="/financing" className="hover:text-white transition-colors">Payment options</Link>
-            <Link href="/quote" className="hover:text-white transition-colors">Free water test</Link>
+            <Link href="/quote" className="hover:text-white transition-colors">Request a water test</Link>
             <a href={BUSINESS.phoneHref ?? undefined} className="inline-flex items-center gap-1.5 text-sun-300 hover:text-sun-200 transition-colors">
               <Phone className="size-3.5" /> {BUSINESS.phone}
             </a>
@@ -38,15 +37,11 @@ export function Header() {
         </Container>
       </div>
 
-      <motion.header
-        initial={false}
-        animate={{
-          backgroundColor: scrolled ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,1)",
-          backdropFilter: scrolled ? "blur(12px)" : "blur(0px)",
-          boxShadow: scrolled ? "0 8px 24px -16px rgba(8,29,77,0.18)" : "0 0px 0px rgba(0,0,0,0)",
-        }}
-        transition={{ duration: 0.3 }}
-        className="sticky top-0 z-50 border-b border-ink-100/60"
+      <header
+        className={cn(
+          "sticky top-0 z-50 border-b border-ink-100/60",
+          scrolled ? "bg-white/92 backdrop-blur-md shadow-[0_8px_24px_-16px_rgba(8,29,77,0.18)]" : "bg-white"
+        )}
       >
         <Container className="flex h-18 items-center justify-between py-3">
           <Link href="/" aria-label="Pure Tap Water Co. home">
@@ -72,15 +67,8 @@ export function Header() {
                     />
                   )}
                 </Link>
-                <AnimatePresence>
-                  {item.children && openIdx === i && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
-                      transition={{ duration: 0.18 }}
-                      className="absolute left-0 top-full pt-2 w-[300px]"
-                    >
+                {item.children && openIdx === i && (
+                  <div className="absolute left-0 top-full pt-2 w-[300px]">
                       <div className="rounded-2xl bg-white p-2 shadow-xl ring-1 ring-ink-100">
                         {item.children.map((c) => (
                           <Link
@@ -92,16 +80,15 @@ export function Header() {
                           </Link>
                         ))}
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  </div>
+                )}
               </div>
             ))}
           </nav>
 
           <div className="flex items-center gap-2">
             <Button href="/quote" variant="primary" size="sm" arrow className="hidden sm:inline-flex">
-              Free water test
+              Request a water test
             </Button>
             <button
               className="lg:hidden inline-flex size-10 items-center justify-center rounded-full ring-1 ring-ink-200 text-ink-700"
@@ -112,26 +99,18 @@ export function Header() {
             </button>
           </div>
         </Container>
-      </motion.header>
+      </header>
 
       {/* Mobile drawer */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-ink-950/60 backdrop-blur-sm lg:hidden"
-            onClick={() => setOpen(false)}
+      {open && (
+        <div
+          className="fixed inset-0 z-[60] bg-ink-950/60 backdrop-blur-sm lg:hidden"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="absolute right-0 top-0 h-full w-[88%] max-w-sm bg-white p-6 overflow-y-auto"
           >
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 26, stiffness: 220 }}
-              onClick={(e) => e.stopPropagation()}
-              className="absolute right-0 top-0 h-full w-[88%] max-w-sm bg-white p-6 overflow-y-auto"
-            >
               <div className="flex items-center justify-between">
                 <Logo />
                 <button
@@ -171,7 +150,7 @@ export function Header() {
               </nav>
               <div className="mt-8 space-y-3">
                 <Button href="/quote" variant="primary" size="lg" className="w-full" arrow>
-                  Get a free water test
+                  Request a water test
                 </Button>
                 <a
                   href={BUSINESS.phoneHref ?? undefined}
@@ -180,10 +159,9 @@ export function Header() {
                   <Phone className="size-4" /> {BUSINESS.phone}
                 </a>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </>
   );
 }

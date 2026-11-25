@@ -22,7 +22,7 @@ export default function ServicesIndex() {
         title="Twelve services. One fixed price. Zero pressure."
         lead="We install and service every category of residential and light-commercial water treatment on the Western Slope. Pick the symptom — or call us and we'll match the system to your test results."
       >
-        <Button href="/quote" variant="sun" size="lg" arrow>Free water test</Button>
+        <Button href="/quote" variant="sun" size="lg" arrow>Request a water test</Button>
       </PageHero>
 
       <Section>
