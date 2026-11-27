@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer | Pure Tap Water Co.</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var id = WWLink.q("id");
+  var c  = id ? WW.get("customers", id) : null;
+
+  var ses = WWShell.mount({
+    page: "customer",
+    title: c ? c.name : "Customer",
+    sub: c ? ((c.city || "") + (c.source_type ? " · " + (c.source_type === "well" ? "Private well" : "Municipal") : "")) : "Not found",
+    actions: "<a class='btn btn-outline btn-sm' href='customers.html'>← All customers</a>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  if (!c) {
+    $page.innerHTML = "<div class='panel'><div class='panel-body'><div class='wwui-empty'>" +
+      "No customer with that id. It may have been deleted." +
+      "</div><p style='margin-top:1rem'><a class='btn btn-primary btn-sm' href='customers.html'>Back to customers</a></p></div></div>";
+    return;
+  }
+
+  var canSell  = ses.role === "admin" || ses.role === "sales";
+  var canMoney = canSell;
+
+  function render() {
+    c = WW.get("customers", id) || c;
+
+    var tests   = WW.list("water_tests").filter(function (t) { return String(t.customer_id) === String(id); })
+                    .sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
+    var latest  = tests[0] || null;
+    var equip   = WW.list("equipment").filter(function (e) { return String(e.customer_id) === String(id); });
+    var props   = WW.list("proposals").filter(function (p) { return String(p.customer_id) === String(id); });
+    var invs    = WW.list("invoices").filter(function (v) { return String(v.customer_id) === String(id); });
+    var jobs    = WW.list("jobs").filter(function (j) { return String(j.customer_id) === String(id); });
+    var visits  = WW.list("visits").filter(function (v) { return String(v.customer_id) === String(id); });
+    var plan    = WW.list("plans").filter(function (p) { return String(p.customer_id) === String(id); })
+                    .sort(function (a, b) { return (b.active ? 1 : 0) - (a.active ? 1 : 0); })[0] || null;
+    var fromLead = c.from_lead_id ? WW.get("leads", c.from_lead_id) : null;
+
+    var owed = invs.filter(function (v) { return v.kind === "invoice" && v.status !== "paid"; })
+                   .reduce(function (a, v) { return a + Number(v.amount || 0); }, 0);
+    var paid = invs.filter(function (v) { return v.status === "paid"; })
+                   .reduce(function (a, v) { return a + Number(v.amount || 0); }, 0);
+
+    /* ---- action rail: every next step this record can start ---- */
+    var acts = [];
+    acts.push("<button class='btn btn-primary btn-sm' data-act='test'>Log a water test</button>");
+    if (canSell) acts.push("<button class='btn btn-sun btn-sm' data-act='proposal'" +
+      (latest ? "" : " disabled title='Log a water test first — a proposal should be backed by readings'") +
+      ">Build a proposal</button>");
+    acts.push("<button class='btn btn-outline btn-sm' data-act='equipment'>Add equipment</button>");
+    acts.push("<button class='btn btn-outline btn-sm' data-act='visit'>Schedule a visit</button>");
+    if (canMoney) acts.push("<button class='btn btn-outline btn-sm' data-act='invoice'>New invoice</button>");
+    if (ses.role === "admin") acts.push("<button class='btn btn-outline btn-sm' data-act='plan'>" + (plan ? "Change plan" : "Start a plan") + "</button>");
+    acts.push("<span style='flex:1'></span>");
+    if (canSell) acts.push("<button class='btn btn-ghost btn-sm' data-act='edit'>Edit</button>");
+    if (ses.role === "admin") acts.push("<button class='btn btn-ghost btn-sm' data-act='delete'>Delete</button>");
+
+    /* ---- stat strip ---- */
+    var strip =
+      "<div class='stat-row ww-strip'>" +
+        "<div class='stat'><div class='stat-label'>Water tests</div><div class='stat-num'>" + tests.length + "</div>" +
+          "<div class='stat-sub'>" + (latest ? "latest " + WW.fmtDate(latest.date) : "none yet") + "</div></div>" +
+        "<div class='stat'><div class='stat-label'>Equipment</div><div class='stat-num'>" + equip.length + "</div>" +
+          "<div class='stat-sub'>" + (equip.filter(function (e) { return e.next_service && e.next_service <= WW.today(); }).length || 0) + " due</div></div>" +
+        "<div class='stat'><div class='stat-label'>Outstanding</div><div class='stat-num'>" + WW.money(owed) + "</div>" +
+          "<div class='stat-sub'>" + WW.money(paid) + " paid to date</div></div>" +
+        "<div class='stat'><div class='stat-label'>Service plan</div><div class='stat-num' style='font-size:1.35rem'>" +
+          (plan ? WWUI.esc((plan.tier || "—")) : "None") + "</div>" +
+          "<div class='stat-sub'>" + (plan ? WW.money(plan.price_mo) + "/mo" : "not enrolled") + "</div></div>" +
+      "</div>";
+
+    var recs = latest ? WW.recommend(latest) : [];
+
+    $page.innerHTML =
+      (fromLead
+        ? "<div class='callout ww-trace'>Converted from the lead <a class='ww-rec' href='" + WWLink.to("lead", fromLead.id) + "'>" +
+          WWUI.esc(fromLead.name) + "</a>" + (fromLead.source ? " · came in via " + WWUI.esc(fromLead.source) : "") + ".</div>"
+        : "") +
+      strip +
+      "<div class='ww-actions' id='acts'>" + acts.join("") + "</div>" +
+      "<div class='ww-grid'>" +
+
+        "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Contact", WWUI.kv([
+            ["Phone", c.phone ? "<a href='tel:" + WWUI.esc(c.phone) + "'>" + WWUI.esc(c.phone) + "</a>" : "", "raw"],
+            ["Email", c.email ? "<a href='mailto:" + WWUI.esc(c.email) + "'>" + WWUI.esc(c.email) + "</a>" : "", "raw"],
+            ["Address", c.address], ["Town", c.city]
+          ])) +
+          WWUI.section("Water supply", WWUI.kv([
+            ["Source", c.source_type === "well" ? "Private well" : c.source_type === "municipal" ? "Municipal" : ""],
+            ["System ID", c.pwsid], ["Well depth", c.well_depth_ft ? c.well_depth_ft + " ft" : ""]
+          ])) +
+          (c.notes ? WWUI.section("Notes", "<p style='margin:0;white-space:pre-wrap'>" + WWUI.esc(c.notes) + "</p>") : "") +
+        "</div></div>" +
+
+        "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Latest water test",
+            latest ? WWUI.testGrid(latest) +
+              "<p style='margin:.75rem 0 0'><a class='btn btn-ghost btn-xs' href='tests.html?open=" + encodeURIComponent(latest.id) + "'>Open the full test</a></p>"
+                   : "<div class='wwui-empty'>No test on file. This is the step that sizes the equipment.</div>") +
+          (latest ? WWUI.section("What the numbers support",
+            WWUI.list(recs.map(function (r) { return { main: r.service, sub: r.why }; }),
+                      "Nothing over its screening level."), recs.length) : "") +
+        "</div></div>" +
+
+        "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Equipment", WWUI.list(equip.map(function (e) {
+            var due = e.next_service && e.next_service <= WW.today();
+            return {
+              main: (e.type || "System") + (e.brand ? " · " + e.brand : ""),
+              sub: [e.model, e.serial ? "s/n " + e.serial : "", e.installed ? "installed " + WW.fmtDate(e.installed) : ""].filter(Boolean).join(" · "),
+              rightRaw: e.next_service
+                ? "<span class='badge" + (due ? " over" : "") + "'>" + (due ? "service due" : WW.fmtDate(e.next_service)) + "</span>"
+                : ""
+            };
+          }), "Nothing installed yet."), equip.length) +
+        "</div></div>" +
+
+        "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Water test history", WWUI.list(tests.map(function (t) {
+            var n = (WW.recommend(t) || []).length;
+            return {
+              main: WW.fmtDate(t.date),
+              sub: (t.source_type === "well" ? "Private well" : "Municipal") + (t.tech ? " · " + t.tech : ""),
+              rightRaw: "<span class='badge" + (n ? " watch" : "") + "'>" + (n ? n + " flagged" : "clear") + "</span>",
+              href: "tests.html?open=" + encodeURIComponent(t.id)
+            };
+          }), "No tests logged."), tests.length) +
+        "</div></div>" +
+
+        (canSell ? "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Proposals", WWUI.list(props.map(function (p) {
+            return { main: p.title, sub: WW.fmtDate(p.created) + (p.test_id ? " · backed by a water test" : ""),
+                     rightRaw: "<b>" + WW.money(p.amount) + "</b> <span class='badge'>" + WWUI.esc(p.status) + "</span>",
+                     href: "proposals.html?open=" + encodeURIComponent(p.id) };
+          }), "No proposals yet."), props.length) +
+        "</div></div>" : "") +
+
+        (canMoney ? "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Invoices", WWUI.list(invs.map(function (v) {
+            return { main: (v.label || v.kind), sub: WW.fmtDate(v.date || v.created_at),
+                     rightRaw: "<b>" + WW.money(v.amount) + "</b> <span class='badge" + (v.status === "paid" ? "" : " watch") + "'>" + WWUI.esc(v.status) + "</span>",
+                     href: "invoices.html?open=" + encodeURIComponent(v.id) };
+          }), "Nothing billed."), invs.length) +
+        "</div></div>" : "") +
+
+        "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Installs", WWUI.list(jobs.map(function (j) {
+            return { main: j.title || "Install", sub: [j.start ? WW.fmtDate(j.start) : "", j.tech ? WW.techName(j.tech) : ""].filter(Boolean).join(" · "),
+                     rightRaw: "<span class='badge'>" + WWUI.esc(j.status) + "</span>",
+                     href: "jobs.html?open=" + encodeURIComponent(j.id) };
+          }), "No installs."), jobs.length) +
+          WWUI.section("Visits", WWUI.list(visits.map(function (v) {
+            return { main: v.type || "Visit", sub: [v.date ? WW.fmtDate(v.date) : "", v.summary].filter(Boolean).join(" · "),
+                     rightRaw: v.done ? "<span class='badge'>done</span>" : "<span class='badge watch'>open</span>" };
+          }), "No visits."), visits.length) +
+        "</div></div>" +
+
+      "</div>";
+
+    /* ---- wire the rail ---- */
+    document.getElementById("acts").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-act]");
+      if (!b || b.disabled) return;
+      var a = b.dataset.act;
+      if (a === "test")      location.href = "tests.html?customer=" + encodeURIComponent(id);
+      if (a === "proposal")  location.href = "proposals.html?test=" + encodeURIComponent(latest.id);
+      if (a === "equipment") location.href = "equipment.html?customer=" + encodeURIComponent(id);
+      if (a === "visit")     location.href = "schedule.html?customer=" + encodeURIComponent(id);
+      if (a === "invoice")   location.href = "invoices.html?customer=" + encodeURIComponent(id);
+      if (a === "plan")      location.href = "plans.html?customer=" + encodeURIComponent(id);
+      if (a === "edit")      location.href = "customers.html?edit=" + encodeURIComponent(id);
+      if (a === "delete") {
+        WWUI.confirmDelete("this customer and everything filed under them", function () {
+          WW.remove("customers", id);
+          WWUI.toast("Customer deleted");
+          location.href = "customers.html";
+        });
+      }
+    });
+  }
+
+  render();
+});
+</script>
+</body>
+</html>

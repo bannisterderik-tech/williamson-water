@@ -17,6 +17,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/app-data.js"></script>
 <script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
 <script src="../js/app-shell.js"></script>
 <script>
 WW.ready.then(function () {
@@ -101,11 +102,17 @@ WW.ready.then(function () {
       subtitle: WW.customerName(p.customer_id) + " · " + WW.money(p.amount),
       bodyHTML:
         WWUI.section("Details", WWUI.kv([
-          ["Customer", WW.customerName(p.customer_id)],
+          ["Customer", WWLink.name("customer", p.customer_id, WW.customerName(p.customer_id)), "raw"],
           ["Amount", WW.money(p.amount)],
           ["Created", WW.fmtDate(p.created)],
           ["Status", (STATUS.filter(function (s) { return s.key === p.status; })[0] || {}).label || p.status]
         ])) +
+        /* The scope frozen onto the proposal when it was built. Deliberately
+           NOT recomputed from the linked test: editing a reading later must not
+           silently rewrite what the customer was quoted. */
+        (p.scope
+          ? WWUI.section("Scope as quoted", "<p style='margin:0;white-space:pre-wrap'>" + WWUI.esc(p.scope) + "</p>")
+          : "") +
         (test
           ? WWUI.section("Backed by this water test", WWUI.testGrid(test)) +
             WWUI.section("What the numbers support",
@@ -116,41 +123,154 @@ WW.ready.then(function () {
       actions: STATUS.filter(function (s) { return s.key !== p.status; }).slice(0, 3).map(function (s) {
         return { label: "Mark " + s.label.toLowerCase(), kind: s.key === "accepted" ? "primary" : "outline",
                  onClick: function () { WW.update("proposals", p.id, { status: s.key }); WWUI.close(); render(); WWUI.toast("Marked " + s.label.toLowerCase()); } };
-      }).concat([
-        { label: "Delete", kind: "danger", onClick: function () {
+      }).concat(
+        /* An accepted proposal has exactly one sensible next step. */
+        (p.status === "accepted" || p.status === "sent")
+          ? [{ label: "Invoice this", kind: "primary", onClick: function () {
+                location.href = "invoices.html?proposal=" + encodeURIComponent(p.id);
+            } }]
+          : [],
+        test ? [{ label: "Open the water test", onClick: function () {
+                location.href = "tests.html?open=" + encodeURIComponent(test.id);
+            } }] : [],
+        [{ label: "Delete", kind: "danger", onClick: function () {
             WWUI.confirmDelete("this proposal", function () { WW.remove("proposals", p.id); WWUI.close(); render(); WWUI.toast("Deleted"); });
-        } }
-      ])
+        } }]
+      )
     });
   }
 
-  document.getElementById("new-prop").addEventListener("click", function () {
-    var cust = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
-    var tests = WW.list("water_tests").map(function (t) {
-      var who = t.customer_id ? WW.customerName(t.customer_id) : (WW.get("leads", t.lead_id) || {}).name;
-      return "<option value='" + WWUI.esc(t.id) + "'>" + WW.fmtDate(t.date) + " — " + WWUI.esc(who || "—") + "</option>";
-    }).join("");
+  /* pre: {customer_id, test_id} carried in from a water test or a customer
+     record. Title and scope are DERIVED from the test's recommendations, never
+     invented, and the amount is always left blank — no price in this codebase
+     is ours to guess. */
+  function openPropForm(pre) {
+    pre = pre || {};
+    var test = pre.test_id ? WW.get("water_tests", pre.test_id) : null;
+    var recs = test ? (WW.recommend(test) || []) : [];
+
+    var cust  = WWLink.options(WW.list("customers"), pre.customer_id, function (c) { return c.name; });
+    var tests = WWLink.options(WW.list("water_tests"), pre.test_id, function (t) {
+      var o = WWLink.testOwner(t);
+      return WW.fmtDate(t.date) + " — " + ((o && o.name) || "—");
+    });
+
+    var banner = "";
+    if (test) {
+      var owner = WWLink.testOwner(test);
+      banner = WWLink.ctx({
+        eyebrow: "Built from a water test",
+        title: (owner && owner.name) || "—",
+        sub: "Tested " + WW.fmtDate(test.date) + " · " +
+             (recs.length ? recs.length + " recommendation" + (recs.length > 1 ? "s" : "") + " carried into the scope"
+                          : "nothing measured over its screening level"),
+        lines: [
+          ["Supply", test.source_type === "well" ? "Private well" : "Municipal"],
+          ["Hardness", test.hardness_gpg != null && test.hardness_gpg !== "" ? test.hardness_gpg + " gpg" : "—"],
+          ["Tested by", test.tech || "—"]
+        ]
+      }) + "<div style='height:.9rem'></div>";
+    }
+
     WWUI.modal({
-      title: "New proposal", wide: true,
-      bodyHTML:
-        "<div><label>Title</label><input name='title' placeholder='Whole-house carbon + softener'></div>" +
+      title: test ? "Proposal from the water test" : "New proposal", wide: true,
+      bodyHTML: banner +
+        "<div><label>Title</label><input name='title' value='" + WWUI.esc(test ? WWLink.titleFromTest(test) : "") + "' placeholder='Whole-house carbon + softener'></div>" +
         "<div class='form-row' style='margin-top:.85rem'>" +
           "<div><label>Customer</label><select name='customer_id'>" + cust + "</select></div>" +
-          "<div><label>Amount</label><input name='amount' type='number' step='any'></div>" +
+          "<div><label>Amount</label><input name='amount' type='number' step='any' placeholder='you set this'></div>" +
         "</div>" +
-        "<div><label>Backed by water test</label><select name='test_id'><option value=''>— none —</option>" + tests + "</select></div>" +
+        "<div style='margin-top:.85rem'><label>Backed by water test</label><select name='test_id'>" +
+          "<option value=''" + (pre.test_id ? "" : " selected") + ">— none —</option>" + tests + "</select></div>" +
+        "<div style='margin-top:.85rem'><label>Scope</label>" +
+          "<textarea name='scope' rows='" + (recs.length ? Math.min(3 + recs.length * 2, 12) : 4) + "' " +
+          "placeholder='What this proposal covers'>" + WWUI.esc(test ? WWLink.scopeFromTest(test) : "") + "</textarea></div>" +
         "<p class='t-sub'>Link a test wherever one exists. Every performance claim needs substantiation independent " +
         "of the testimonial carrying it (16 CFR 255.2(a)) — a measured result is that substantiation.</p>",
       okLabel: "Create",
       onOk: function (f) {
         if (!f.title) { WWUI.toast("Title is required", "err"); return false; }
+        if (!f.customer_id) { WWUI.toast("Pick a customer", "err"); return false; }
         f.status = "draft"; f.created = WW.today();
-        WW.add("proposals", f); render(); WWUI.toast("Proposal created");
+        var p = WW.add("proposals", f);
+        render();
+        WWLink.clear();
+        WWUI.toast("Proposal created");
+        return true;
       }
     });
-  });
+  }
+
+  document.getElementById("new-prop").addEventListener("click", function () { openPropForm(); });
+
+  /* Deep links.
+       ?test=<id>      -> build a proposal from that test
+       ?customer=<id>  -> build a proposal for that customer
+       ?open=<id>      -> open an existing proposal
+
+     A test taken against a LEAD cannot become a proposal directly: proposals
+     are filed against a customer by foreign key. Rather than fail, convert. */
+  function deepLink() {
+    var testId = WWLink.q("test"), custId = WWLink.q("customer"), openId = WWLink.q("open");
+
+    if (openId) {
+      var p = WW.get("proposals", openId);
+      if (p) openProp(p); else WWUI.toast("That proposal no longer exists", "err");
+      WWLink.clear();
+      return;
+    }
+
+    if (custId && !testId) {
+      if (!WW.get("customers", custId)) { WWUI.toast("That customer no longer exists", "err"); WWLink.clear(); return; }
+      openPropForm({ customer_id: custId });
+      return;
+    }
+
+    if (!testId) return;
+
+    var t = WW.get("water_tests", testId);
+    if (!t) { WWUI.toast("That water test no longer exists", "err"); WWLink.clear(); return; }
+
+    if (t.customer_id) { openPropForm({ test_id: testId, customer_id: t.customer_id }); return; }
+
+    /* lead-owned test */
+    var lead = t.lead_id ? WW.get("leads", t.lead_id) : null;
+    if (!lead) {
+      WWUI.toast("That test has no customer or lead attached", "err");
+      WWLink.clear();
+      return;
+    }
+    var already = WW.leadCustomer(lead.id);
+    if (already) { openPropForm({ test_id: testId, customer_id: already.id }); return; }
+
+    WWUI.modal({
+      title: "Convert the lead first",
+      bodyHTML:
+        WWLink.ctx({
+          eyebrow: "This test belongs to a lead",
+          title: lead.name,
+          sub: "A proposal is filed against a customer, so the lead has to become one.",
+          lines: [["Phone", lead.phone || "—"], ["Email", lead.email || "—"], ["Town", lead.city || "—"]]
+        }) +
+        "<p style='margin:.9rem 0 0'>Converting copies these details onto a new customer, moves this water test " +
+        "across with it, and marks the lead <b>Won</b>. Then the proposal opens pre-filled.</p>",
+      okLabel: "Convert and continue",
+      cancelLabel: "Cancel",
+      onOk: function () {
+        WW.convertLead(lead.id).then(function (r) {
+          WWUI.toast("Converted — " + r.customer.name + " is now a customer");
+          render();
+          openPropForm({ test_id: testId, customer_id: r.customer.id });
+        }).catch(function (e) {
+          WWUI.toast((e && e.message) || "Could not convert the lead", "err");
+        });
+        return true;
+      }
+    });
+  }
 
   render();
+  deepLink();
 
 });
 </script>

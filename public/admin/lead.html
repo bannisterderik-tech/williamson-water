@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lead | Pure Tap Water Co.</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081d4d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+<!-- config.js is gitignored and only exists once Supabase is wired. Absent = demo mode. -->
+<script src="../js/config.js"></script>
+<script src="../js/app-data.js"></script>
+<script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
+<script src="../js/app-shell.js"></script>
+<script>
+WW.ready.then(function () {
+  var id = WWLink.q("id");
+  var l  = id ? WW.get("leads", id) : null;
+
+  var ses = WWShell.mount({
+    page: "lead",
+    title: l ? l.name : "Lead",
+    sub: l ? ((l.city || "") + (l.service ? " · " + l.service : "")) : "Not found",
+    actions: "<a class='btn btn-outline btn-sm' href='leads.html'>← Pipeline</a>"
+  });
+  if (!ses) return;
+  var $page = WWShell.page();
+
+  if (!l) {
+    $page.innerHTML = "<div class='panel'><div class='panel-body'><div class='wwui-empty'>" +
+      "No lead with that id. It may have been deleted or already converted." +
+      "</div><p style='margin-top:1rem'><a class='btn btn-primary btn-sm' href='leads.html'>Back to the pipeline</a></p></div></div>";
+    return;
+  }
+
+  function stageLabel(k) {
+    var s = WW.LEAD_STAGES.filter(function (x) { return x.key === k; })[0];
+    return s ? s.label : (k || "new");
+  }
+
+  /* Build a proposal from this lead's test. A proposal is filed against a
+     customer (proposals.customer_id is a foreign key), so a lead has to be
+     converted first — we offer that rather than dead-ending the button. */
+  function toProposal(testId) {
+    var existing = WW.leadCustomer(id);
+    if (existing) { location.href = "proposals.html?test=" + encodeURIComponent(testId); return; }
+    WWUI.modal({
+      title: "Convert to customer first?",
+      bodyHTML:
+        WWLink.ctx({
+          eyebrow: "This lead", title: l.name,
+          lines: [["Phone", l.phone || "—"], ["Email", l.email || "—"], ["Town", l.city || "—"]]
+        }) +
+        "<p style='margin:.9rem 0 0'>A proposal is filed against a customer, not a lead. Converting copies " +
+        "the contact details onto a new customer record, moves this lead's water test" +
+        " across with it, and marks the lead won.</p>",
+      okLabel: "Convert and build the proposal",
+      onOk: function () {
+        WW.convertLead(id).then(function (r) {
+          WWUI.toast("Converted — " + r.customer.name + " is now a customer");
+          location.href = "proposals.html?test=" + encodeURIComponent(testId);
+        }).catch(function (e) {
+          WWUI.toast((e && e.message) || "Could not convert the lead", "err");
+        });
+        return true;
+      }
+    });
+  }
+
+  function convert() {
+    var existing = WW.leadCustomer(id);
+    if (existing) { WWLink.go("customer", existing.id); return; }
+    var tests = WW.list("water_tests").filter(function (t) { return String(t.lead_id) === String(id); });
+    WWUI.modal({
+      title: "Convert to customer",
+      bodyHTML:
+        WWLink.ctx({
+          eyebrow: "Carried over", title: l.name,
+          sub: "Nothing is invented — these are the lead's own values.",
+          lines: [
+            ["Name", l.name], ["Phone", l.phone || "—"], ["Email", l.email || "—"],
+            ["Town", l.city || "—"], ["Note", l.note || "—"]
+          ]
+        }) +
+        "<p style='margin:.9rem 0 0'>" +
+          (tests.length
+            ? "<b>" + tests.length + " water test" + (tests.length > 1 ? "s" : "") + "</b> will move onto the customer record."
+            : "No water test on this lead yet, so nothing else moves.") +
+          " The lead stays in the pipeline marked <b>Won</b> so the history is intact." +
+        "</p>",
+      okLabel: "Convert",
+      onOk: function () {
+        WW.convertLead(id).then(function (r) {
+          WWUI.toast("Converted" + (r.tests ? " — " + r.tests + " test moved" : ""));
+          WWLink.go("customer", r.customer.id);
+        }).catch(function (e) {
+          WWUI.toast((e && e.message) || "Could not convert the lead", "err");
+        });
+        return true;
+      }
+    });
+  }
+
+  function render() {
+    l = WW.get("leads", id) || l;
+    var tests  = WW.list("water_tests").filter(function (t) { return String(t.lead_id) === String(id); })
+                   .sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
+    var latest = tests[0] || null;
+    var recs   = latest ? WW.recommend(latest) : [];
+    var became = WW.leadCustomer(id);
+
+    /* stage rail */
+    var idx = WW.LEAD_STAGES.map(function (s) { return s.key; }).indexOf(l.stage || "new");
+    var track = "<div class='ww-track'>" + WW.LEAD_STAGES.filter(function (s) { return s.key !== "lost"; })
+      .map(function (s, i) {
+        var on = i <= idx;
+        return "<button class='ww-step" + (on ? " on" : "") + (s.key === (l.stage || "new") ? " now" : "") +
+               "' data-stage='" + s.key + "' title='Move this lead to " + WWUI.esc(s.label) + "'>" +
+               "<span></span>" + WWUI.esc(s.label) + "</button>";
+      }).join("") + "</div>";
+
+    var acts = [];
+    acts.push("<button class='btn btn-primary btn-sm' data-act='test'>Log a water test</button>");
+    if (latest) acts.push("<button class='btn btn-sun btn-sm' data-act='proposal'>Build a proposal</button>");
+    acts.push("<button class='btn " + (became ? "btn-outline" : "btn-outline") + " btn-sm' data-act='convert'>" +
+              (became ? "Open the customer" : "Convert to customer") + "</button>");
+    acts.push("<span style='flex:1'></span>");
+    acts.push("<button class='btn btn-ghost btn-sm' data-act='edit'>Edit</button>");
+    if (ses.role === "admin") acts.push("<button class='btn btn-ghost btn-sm' data-act='delete'>Delete</button>");
+
+    $page.innerHTML =
+      (became
+        ? "<div class='callout ww-trace'>Won — now the customer <a class='ww-rec' href='" + WWLink.to("customer", became.id) + "'>" +
+          WWUI.esc(became.name) + "</a>.</div>"
+        : "") +
+      track +
+      "<div class='ww-actions' id='acts'>" + acts.join("") + "</div>" +
+      "<div class='ww-grid'>" +
+        "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Contact", WWUI.kv([
+            ["Phone", l.phone ? "<a href='tel:" + WWUI.esc(l.phone) + "'>" + WWUI.esc(l.phone) + "</a>" : "", "raw"],
+            ["Email", l.email ? "<a href='mailto:" + WWUI.esc(l.email) + "'>" + WWUI.esc(l.email) + "</a>" : "", "raw"],
+            ["Town", l.city], ["Interested in", l.service], ["Came from", l.source],
+            ["Created", WW.fmtDate(l.created)], ["Stage", stageLabel(l.stage)]
+          ])) +
+          (l.note ? WWUI.section("Note", "<p style='margin:0;white-space:pre-wrap'>" + WWUI.esc(l.note) + "</p>") : "") +
+        "</div></div>" +
+
+        "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Latest water test",
+            latest ? WWUI.testGrid(latest)
+                   : "<div class='wwui-empty'>No test yet — this is the step that closes the deal.</div>") +
+          (latest ? WWUI.section("What the numbers support",
+            WWUI.list(recs.map(function (r) { return { main: r.service, sub: r.why }; }),
+                      "Nothing over its screening level."), recs.length) : "") +
+        "</div></div>" +
+
+        (tests.length > 1 ? "<div class='panel'><div class='panel-body'>" +
+          WWUI.section("Test history", WWUI.list(tests.map(function (t) {
+            return { main: WW.fmtDate(t.date),
+                     sub: (t.source_type === "well" ? "Private well" : "Municipal") + (t.tech ? " · " + t.tech : ""),
+                     href: "tests.html?open=" + encodeURIComponent(t.id) };
+          }), ""), tests.length) +
+        "</div></div>" : "") +
+      "</div>";
+
+    document.querySelector(".ww-track").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-stage]");
+      if (!b) return;
+      WW.update("leads", id, { stage: b.dataset.stage });
+      WWUI.toast("Moved to " + stageLabel(b.dataset.stage));
+      render();
+    });
+
+    document.getElementById("acts").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-act]");
+      if (!b) return;
+      var a = b.dataset.act;
+      if (a === "test")     location.href = "tests.html?lead=" + encodeURIComponent(id);
+      if (a === "proposal") toProposal(latest.id);
+      if (a === "convert")  convert();
+      if (a === "edit")     location.href = "leads.html?edit=" + encodeURIComponent(id);
+      if (a === "delete") {
+        WWUI.confirmDelete("this lead", function () {
+          WW.remove("leads", id);
+          WWUI.toast("Lead deleted");
+          location.href = "leads.html";
+        });
+      }
+    });
+  }
+
+  render();
+});
+</script>
+</body>
+</html>

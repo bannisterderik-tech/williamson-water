@@ -17,6 +17,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/app-data.js"></script>
 <script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
 <script src="../js/app-shell.js"></script>
 <script>
 WW.ready.then(function () {
@@ -78,7 +79,9 @@ WW.ready.then(function () {
           e.dataTransfer.setData("text/plain", l.id);
         });
         card.addEventListener("dragend", function () { card.classList.remove("dragging"); });
-        card.addEventListener("click", function () { openLead(l); });
+        /* The lead detail is a page now, not a drawer: deep-linkable, and it
+           has room for the whole record plus every next step. */
+        card.addEventListener("click", function () { WWLink.go("lead", l.id); });
         col.appendChild(card);
       });
 
@@ -159,6 +162,15 @@ WW.ready.then(function () {
   });
 
   render();
+
+  /* ?edit=<id> — the record page sends editing back here, where the form lives. */
+  (function () {
+    var ed = WWLink.q("edit");
+    if (!ed) return;
+    var l = WW.get("leads", ed);
+    WWLink.clear();
+    if (l) editLead(l); else WWUI.toast("That lead no longer exists", "err");
+  })();
 
 });
 </script>

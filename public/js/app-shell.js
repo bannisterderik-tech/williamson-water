@@ -56,12 +56,26 @@
     ["settings",  "Settings",      "settings",  "Reference"]
   ];
 
+  /* Record pages. Reached by deep link from a list or a related record, never
+     from the sidebar, so they are deliberately absent from NAV — but they still
+     have to appear in ROLE_PAGES or mount() bounces the user to the dashboard. */
+  var DETAIL = { customer: ["admin", "sales", "field"], lead: ["admin", "sales"] };
+  function withDetail(role, pages) {
+    Object.keys(DETAIL).forEach(function (p) {
+      if (DETAIL[p].indexOf(role) !== -1) pages.push(p);
+    });
+    return pages;
+  }
+
   /* Which pages each role may open. Field techs get the day's work, nothing else. */
   var ROLE_PAGES = {
-    admin: NAV.map(function (n) { return n[0]; }),
-    sales: ["index", "leads", "tests", "proposals", "customers", "equipment", "plans", "jobs", "schedule", "invoices", "water", "reviews"],
-    field: ["index", "tests", "jobs", "schedule", "equipment", "inventory", "customers", "water"]
+    admin: withDetail("admin", NAV.map(function (n) { return n[0]; })),
+    sales: withDetail("sales", ["index", "leads", "tests", "proposals", "customers", "equipment", "plans", "jobs", "schedule", "invoices", "water", "reviews"]),
+    field: withDetail("field", ["index", "tests", "jobs", "schedule", "equipment", "inventory", "customers", "water"])
   };
+
+  /* A record page highlights its list in the sidebar. */
+  var NAV_PARENT = { customer: "customers", lead: "leads" };
 
   function logoSVG() {
     return '<svg viewBox="0 0 210 40" role="img" aria-label="Pure Tap Water Co.">' +
@@ -101,7 +115,8 @@
     NAV.forEach(function (n) {
       if (allowed.indexOf(n[0]) === -1) return;
       if (n[3] !== lastGroup) { navHTML += "<div class='nav-group'>" + n[3] + "</div>"; lastGroup = n[3]; }
-      navHTML += "<a href='" + n[0] + ".html'" + (n[0] === opts.page ? " aria-current='page'" : "") + ">" +
+      var cur = n[0] === opts.page || n[0] === NAV_PARENT[opts.page];
+      navHTML += "<a href='" + n[0] + ".html'" + (cur ? " aria-current='page'" : "") + ">" +
                  icon(n[2]) + "<span>" + n[1] + "</span></a>";
     });
     navHTML += "<a href='../index.html' class='nav-sep'>← View site</a>" +

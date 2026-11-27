@@ -17,6 +17,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/app-data.js"></script>
 <script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
 <script src="../js/app-shell.js"></script>
 <script>
 WW.ready.then(function () {
@@ -95,6 +96,11 @@ WW.ready.then(function () {
       title: who(t),
       subtitle: (t.source_type === "well" ? "Private well" : "Municipal") + (t.tech ? " · " + t.tech : ""),
       bodyHTML:
+        WWUI.section("On file for", WWUI.kv([
+          ["Record", WWLink.ownerLink(t), "raw"],
+          ["Tested", WW.fmtDate(t.date)],
+          ["Supply", t.source_type === "well" ? "Private well" : "Municipal"]
+        ])) +
         WWUI.section("Results", WWUI.testGrid(t)) +
         WWUI.section("What these numbers support",
           WWUI.list(recs.map(function (r) { return { main: r.service, sub: r.why }; }),
@@ -112,19 +118,24 @@ WW.ready.then(function () {
     });
   }
 
-  function testForm() {
-    var custOpts = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
-    var leadOpts = WW.list("leads").map(function (l) { return "<option value='" + WWUI.esc(l.id) + "'>" + WWUI.esc(l.name) + " (lead)</option>"; }).join("");
+  /* pre: {customer_id, lead_id, source_type} carried in from a record page via
+     the query string. The selects honour it instead of making the tech re-pick
+     the customer the app already knows about. */
+  function testForm(pre) {
+    pre = pre || {};
+    var custOpts = WWLink.options(WW.list("customers"), pre.customer_id, function (c) { return c.name; });
+    var leadOpts = WWLink.options(WW.list("leads"), pre.lead_id, function (l) { return l.name + " (lead)"; });
     var fields = WW.ANALYTES.map(function (a) {
       return "<div><label>" + WWUI.esc(a.label) + (a.unit ? " <span class='t-sub'>(" + WWUI.esc(a.unit) + ")</span>" : "") + "</label>" +
              "<input name='" + a.key + "' type='number' step='any' placeholder='—'></div>";
     }).join("");
     return "<div class='form-row'>" +
-        "<div><label>Customer</label><select name='customer_id'><option value=''>—</option>" + custOpts + "</select></div>" +
-        "<div><label>…or lead</label><select name='lead_id'><option value=''>—</option>" + leadOpts + "</select></div>" +
+        "<div><label>Customer</label><select name='customer_id'><option value=''" + (pre.customer_id ? "" : " selected") + ">—</option>" + custOpts + "</select></div>" +
+        "<div><label>…or lead</label><select name='lead_id'><option value=''" + (pre.lead_id ? "" : " selected") + ">—</option>" + leadOpts + "</select></div>" +
       "</div><div class='form-row'>" +
         "<div><label>Date</label><input name='date' type='date' value='" + WW.today() + "'></div>" +
-        "<div><label>Source</label><select name='source_type'><option value='well'>Private well</option><option value='municipal'>Municipal</option></select></div>" +
+        "<div><label>Source</label><select name='source_type'>" +
+          WWLink.pick([["well", "Private well"], ["municipal", "Municipal"]], pre.source_type || "well") + "</select></div>" +
         "<div><label>Disinfectant</label><select name='disinfectant'><option value=''>—</option><option value='chloramine'>Chloramine</option><option value='free chlorine'>Free chlorine</option></select></div>" +
       "</div>" +
       "<h4 style='margin:1.1rem 0 .5rem;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)'>Readings</h4>" +
@@ -138,21 +149,104 @@ WW.ready.then(function () {
       "<div><label>Field notes</label><textarea name='notes'></textarea></div>";
   }
 
-  document.getElementById("new-test").addEventListener("click", function () {
+  /* One opener for both the toolbar button and the ?lead=/?customer= deep link,
+     so a pre-filled test cannot drift from a hand-started one. */
+  function openTestForm(pre) {
+    pre = pre || {};
+    var owner = pre.lead_id ? WW.get("leads", pre.lead_id)
+              : pre.customer_id ? WW.get("customers", pre.customer_id) : null;
+    var banner = "";
+    if (owner) {
+      banner = WWLink.ctx({
+        eyebrow: pre.lead_id ? "Logging against this lead" : "Logging against this customer",
+        title: owner.name,
+        sub: "Pre-selected below — change it if this test is for someone else.",
+        lines: [
+          ["Town", owner.city || "—"],
+          ["Phone", owner.phone || "—"],
+          pre.lead_id ? ["Interested in", owner.service || "—"]
+                      : ["Supply", owner.source_type === "well" ? "Private well"
+                               : owner.source_type === "municipal" ? "Municipal" : "unknown"]
+        ]
+      }) + "<div style='height:.9rem'></div>";
+    }
     WWUI.modal({
-      title: "Log a water test", wide: true, bodyHTML: testForm(), okLabel: "Save test",
+      title: "Log a water test", wide: true,
+      bodyHTML: banner + testForm(pre),
+      okLabel: "Save test",
       onOk: function (f) {
         if (!f.customer_id && !f.lead_id) { WWUI.toast("Pick a customer or a lead", "err"); return false; }
+        if (f.customer_id && f.lead_id) { WWUI.toast("Pick a customer or a lead, not both", "err"); return false; }
         WW.ANALYTES.forEach(function (a) { if (f[a.key] === "") f[a.key] = null; });
-        WW.add("water_tests", f); render(); WWUI.toast("Test saved");
+        var t = WW.add("water_tests", f);
+
+        /* A logged test moves the lead down the pipeline — the whole point of
+           the stage list is that it reflects reality without being re-keyed. */
+        if (f.lead_id) {
+          var l = WW.get("leads", f.lead_id);
+          var order = WW.LEAD_STAGES.map(function (x) { return x.key; });
+          if (l && order.indexOf(l.stage || "new") < order.indexOf("tested")) {
+            WW.update("leads", f.lead_id, { stage: "tested" });
+          }
+        }
+        render();
+        WWLink.clear();
+        offerProposal(t);
       }
     });
-  });
+  }
 
-  /* Deep link: tests.html?lead=<id> opens the form with that lead preselected */
+  /* The readings are in — the next step is always the proposal, so say so here
+     rather than making someone navigate back out and find the test again. */
+  function offerProposal(t) {
+    var recs = WW.recommend(t) || [];
+    var canSell = ses.role === "admin" || ses.role === "sales";
+    if (!recs.length || !canSell) { WWUI.toast("Test saved"); return; }
+    WWUI.modal({
+      title: "Test saved",
+      bodyHTML:
+        "<p style='margin:0 0 .85rem'>These readings support " +
+          "<b>" + recs.length + " recommendation" + (recs.length > 1 ? "s" : "") + "</b>:</p>" +
+        WWUI.list(recs.map(function (r) { return { main: r.service, sub: r.why }; })) +
+        "<p class='t-sub' style='margin:.85rem 0 0'>Building the proposal now carries the customer and these " +
+        "recommendations across. You still set the price.</p>",
+      okLabel: "Build the proposal",
+      cancelLabel: "Not now",
+      onOk: function () {
+        location.href = "proposals.html?test=" + encodeURIComponent(t.id);
+        return true;
+      }
+    });
+  }
+
+  document.getElementById("new-test").addEventListener("click", function () { openTestForm(); });
+
   render();
-  var qs = new URLSearchParams(location.search);
-  if (qs.get("lead") || qs.get("customer")) document.getElementById("new-test").click();
+
+  /* Deep links.
+       ?lead=<id> / ?customer=<id>  -> open the form with that owner preselected
+       ?open=<testId>               -> open that test's detail (from a record page) */
+  (function deepLink() {
+    var leadId = WWLink.q("lead"), custId = WWLink.q("customer"), openId = WWLink.q("open");
+
+    if (openId) {
+      var t = WW.get("water_tests", openId);
+      if (t) { openTest(t); } else { WWUI.toast("That test no longer exists", "err"); }
+      WWLink.clear();
+      return;
+    }
+    if (!leadId && !custId) return;
+
+    if (leadId && !WW.get("leads", leadId)) { WWUI.toast("That lead no longer exists", "err"); WWLink.clear(); return; }
+    if (custId && !WW.get("customers", custId)) { WWUI.toast("That customer no longer exists", "err"); WWLink.clear(); return; }
+
+    var cust = custId ? WW.get("customers", custId) : null;
+    openTestForm({
+      lead_id: leadId || "",
+      customer_id: custId || "",
+      source_type: cust && cust.source_type ? cust.source_type : "well"
+    });
+  })();
 
 });
 </script>

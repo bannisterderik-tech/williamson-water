@@ -17,6 +17,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/app-data.js"></script>
 <script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
 <script src="../js/app-shell.js"></script>
 <script>
 WW.ready.then(function () {
@@ -149,6 +150,21 @@ WW.ready.then(function () {
   });
 
   render();
+
+  /* ?customer=<id> — add equipment straight onto a customer record. */
+  (function () {
+    var cid = WWLink.q("customer");
+    if (!cid) return;
+    var c = WW.get("customers", cid);
+    WWLink.clear();
+    if (!c) { WWUI.toast("That customer no longer exists", "err"); return; }
+    WWUI.modal({ title: "Add equipment for " + c.name, wide: true,
+      bodyHTML: eqForm({ customer_id: cid }), okLabel: "Add",
+      onOk: function (f) {
+        if (!f.customer_id || !f.type) { WWUI.toast("Customer and system type are required", "err"); return false; }
+        WW.add("equipment", f); render(); WWUI.toast("Equipment added");
+      } });
+  })();
 
 });
 </script>

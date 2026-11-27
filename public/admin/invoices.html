@@ -17,6 +17,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/app-data.js"></script>
 <script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
 <script src="../js/app-shell.js"></script>
 <script>
 WW.ready.then(function () {
@@ -108,28 +109,71 @@ WW.ready.then(function () {
     });
   }
 
-  document.getElementById("new-inv").addEventListener("click", function () {
-    var cust = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+  /* pre.customer_id arrives from a customer record page, so the customer is
+     already chosen and nobody re-picks what the app knows. */
+  function openForm(pre) {
+    pre = pre || {};
+    var cust = WWLink.options(WW.list("customers"), pre.customer_id, function (c) { return c.name; });
+    var prop = pre.proposal_id ? WW.get("proposals", pre.proposal_id) : null;
+    var banner = prop ? WWLink.ctx({
+      eyebrow: "Billing an accepted proposal",
+      title: prop.title,
+      sub: "Amount and customer come straight off the proposal.",
+      lines: [
+        ["Customer", WW.customerName(prop.customer_id)],
+        ["Quoted", WW.money(prop.amount)],
+        ["Dated", WW.fmtDate(prop.created)]
+      ]
+    }) + "<div style='height:.9rem'></div>" : "";
     WWUI.modal({
-      title: "New invoice or estimate",
-      bodyHTML:
-        "<div><label>Reference / description</label><input name='label' placeholder='INV-1044 · RO membrane'></div>" +
+      title: prop ? "Invoice from the proposal" : "New invoice or estimate",
+      bodyHTML: banner +
+        "<div><label>Reference / description</label><input name='label' value='" + WWUI.esc(pre.label || "") + "' placeholder='INV-1044 · RO membrane'></div>" +
         "<div class='form-row' style='margin-top:.85rem'>" +
           "<div><label>Customer</label><select name='customer_id'>" + cust + "</select></div>" +
           "<div><label>Kind</label><select name='kind'><option value='invoice'>Invoice</option><option value='estimate'>Estimate</option></select></div>" +
         "</div><div class='form-row'>" +
-          "<div><label>Amount</label><input name='amount' type='number' step='any'></div>" +
+          "<div><label>Amount</label><input name='amount' type='number' step='any' value='" + WWUI.esc(pre.amount != null ? pre.amount : "") + "'></div>" +
           "<div><label>Date</label><input name='date' type='date' value='" + WW.today() + "'></div>" +
         "</div>",
       okLabel: "Create",
       onOk: function (f) {
         if (!f.label) { WWUI.toast("Reference is required", "err"); return false; }
-        f.status = "draft"; WW.add("invoices", f); render(); WWUI.toast("Created");
+        f.status = "draft"; WW.add("invoices", f); render(); WWLink.clear(); WWUI.toast("Created");
       }
     });
-  });
+  }
+
+  document.getElementById("new-inv").addEventListener("click", function () { openForm(); });
 
   render();
+
+  /* ?proposal=<id> bill a proposal · ?customer=<id> new invoice · ?open=<id> open one. */
+  (function () {
+    var openId = WWLink.q("open"), propId = WWLink.q("proposal"), cid = WWLink.q("customer");
+
+    if (openId) {
+      var i = WW.get("invoices", openId);
+      WWLink.clear();
+      if (i) openInv(i); else WWUI.toast("That invoice no longer exists", "err");
+      return;
+    }
+    if (propId) {
+      var p = WW.get("proposals", propId);
+      if (!p) { WWLink.clear(); WWUI.toast("That proposal no longer exists", "err"); return; }
+      openForm({
+        proposal_id: p.id,
+        customer_id: p.customer_id,
+        label: p.title,
+        amount: p.amount
+      });
+      return;
+    }
+    if (!cid) return;
+    WWLink.clear();
+    if (!WW.get("customers", cid)) { WWUI.toast("That customer no longer exists", "err"); return; }
+    openForm({ customer_id: cid });
+  })();
 
 });
 </script>

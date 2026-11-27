@@ -17,6 +17,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/app-data.js"></script>
 <script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
 <script src="../js/app-shell.js"></script>
 <script>
 WW.ready.then(function () {
@@ -66,7 +67,7 @@ WW.ready.then(function () {
       { cell: function (c) { return c.plan ? "<span class='badge green'>" + WWUI.esc(c.plan) + "</span>" : "<span class='t-sub'>—</span>"; } },
       { cell: function (c) { return String(WW.list("equipment").filter(function (e) { return e.customer_id === c.id; }).length); } },
       { cell: function (c) { var t = WW.latestTest({ customerId: c.id }); return t ? WW.fmtDate(t.date) : "<span class='t-sub'>never</span>"; } }
-    ], { empty: "No customers yet.", onRow: openCust });
+    ], { empty: "No customers yet.", onRow: function (c) { WWLink.go("customer", c.id); } });
   }
 
   function openCust(c) {
@@ -144,6 +145,15 @@ WW.ready.then(function () {
   });
 
   render();
+
+  /* ?edit=<id> — the record page sends editing back here, where the form lives. */
+  (function () {
+    var ed = WWLink.q("edit");
+    if (!ed) return;
+    var c = WW.get("customers", ed);
+    WWLink.clear();
+    if (c) editCust(c); else WWUI.toast("That customer no longer exists", "err");
+  })();
 
 });
 </script>

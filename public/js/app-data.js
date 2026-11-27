@@ -438,5 +438,58 @@
     { key: "lost",              label: "Lost" }
   ];
 
+  /* ---------- lead -> customer ----------
+     A proposal needs customer_id (FK to customers), but a water test can hang
+     off lead_id, so without this the lead->test->proposal chain dead-ends at
+     the proposal. Converting moves the lead's contact details onto a new
+     customer, re-points that lead's water tests at it, and marks the lead won.
+
+     Ordering matters in supabase mode: water_tests.customer_id is a foreign key,
+     so the customer row has to be committed before any test can point at it.
+     WW.add assigns .id synchronously and exposes ._saved, which is what we wait
+     on. Idempotent: converting twice returns the customer made the first time. */
+  WW.convertLead = function (leadId) {
+    var l = WW.get("leads", leadId);
+    if (!l) return Promise.reject(new Error("Lead not found"));
+
+    var already = WW.list("customers").filter(function (c) {
+      return String(c.from_lead_id) === String(leadId);
+    })[0];
+    if (already) return Promise.resolve({ customer: already, created: false, tests: 0 });
+
+    var cust = WW.add("customers", {
+      name:         l.name,
+      phone:        l.phone || null,
+      email:        l.email || null,
+      city:         l.city  || null,
+      town:         l.town  || null,
+      notes:        l.note  || null,
+      from_lead_id: leadId
+    });
+
+    return Promise.resolve(cust._saved || cust).then(function () {
+      var tests = WW.list("water_tests").filter(function (t) {
+        return String(t.lead_id) === String(leadId);
+      });
+      tests.forEach(function (t) {
+        WW.update("water_tests", t.id, { customer_id: cust.id, lead_id: null });
+      });
+      WW.update("leads", leadId, { stage: "won" });
+
+      var waits = tests.map(function (t) { return (WW.get("water_tests", t.id) || {})._saved; });
+      waits.push((WW.get("leads", leadId) || {})._saved);
+      return Promise.all(waits.filter(Boolean)).then(function () {
+        return { customer: cust, created: true, tests: tests.length };
+      });
+    });
+  };
+
+  /* The customer a lead became, if it was converted. */
+  WW.leadCustomer = function (leadId) {
+    return WW.list("customers").filter(function (c) {
+      return String(c.from_lead_id) === String(leadId);
+    })[0] || null;
+  };
+
   window.WW = WW;
 })();

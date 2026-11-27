@@ -168,3 +168,96 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: .93rem; }
   .panel-head, .panel-body { padding-left: 1rem; padding-right: 1rem; }
   .modal { padding: 1.15rem; }
 }
+
+/* ===========================================================================
+   Record pages (customer.html, lead.html)
+
+   A lead and a customer are the two records everything else hangs off, so they
+   get a real page instead of a slide-out panel: deep-linkable, shareable, and
+   with room for every related record plus the action that starts the next step.
+   =========================================================================== */
+
+/* --- action rail: the next steps this record can start --- */
+.ww-actions {
+  display: flex; flex-wrap: wrap; gap: .5rem; align-items: center;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-soft);
+  padding: .7rem .8rem; margin-bottom: 1.5rem;
+  position: sticky; top: .5rem; z-index: 5;
+}
+.ww-actions .btn[disabled] { opacity: .45; cursor: not-allowed; }
+@media (max-width: 40rem) {
+  .ww-actions { position: static; }
+  .ww-actions span[style] { display: none; }
+}
+
+/* --- related-record grid. Panels carry their own bottom margin, so the grid
+       zeroes it and owns the spacing to keep the columns aligned. --- */
+.ww-grid {
+  display: grid; gap: 1.25rem; align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(min(23rem, 100%), 1fr));
+}
+.ww-grid > .panel { margin-bottom: 0; }
+.ww-grid .wwui-sec + .wwui-sec { margin-top: 1.35rem; }
+
+.ww-strip { margin-bottom: 1.25rem; }
+
+/* --- a link that opens another record --- */
+a.ww-rec {
+  color: var(--brand-700); font-weight: 700; text-decoration: none;
+  border-bottom: 1px solid var(--brand-200);
+}
+a.ww-rec:hover { color: var(--brand-800); border-bottom-color: var(--brand-500); }
+
+/* --- provenance note: "converted from", "now the customer" --- */
+.callout.ww-trace { margin-bottom: 1.25rem; border-left-color: var(--brand-500); background: var(--brand-50); }
+
+/* --- context banner inside a pre-filled form ---
+       A form that fills itself in must say where the values came from, or
+       someone saves a record against the wrong customer without noticing. */
+.ww-ctx {
+  background: var(--brand-50); border: 1px solid var(--brand-100);
+  border-radius: var(--radius); padding: .85rem .95rem;
+}
+.ww-ctx-head { display: flex; flex-direction: column; gap: .1rem; }
+.ww-ctx-eyebrow {
+  font-size: .66rem; font-weight: 800; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--brand-700);
+}
+.ww-ctx-head strong { font-size: 1.02rem; color: var(--ink-900); line-height: 1.25; }
+.ww-ctx-head .t-sub { font-size: .82rem; }
+.ww-ctx-grid {
+  display: grid; gap: .3rem .9rem; margin-top: .7rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
+  border-top: 1px solid var(--brand-100); padding-top: .65rem;
+}
+.ww-ctx-line { display: flex; flex-direction: column; min-width: 0; }
+.ww-ctx-line span {
+  font-size: .66rem; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.ww-ctx-line b { font-size: .88rem; color: var(--ink-900); overflow-wrap: anywhere; }
+
+/* --- lead stage tracker. Clicking a step moves the lead there. --- */
+.ww-track {
+  display: flex; gap: 0; flex-wrap: wrap; margin-bottom: 1.1rem;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-soft);
+  padding: .55rem .6rem; overflow-x: auto;
+}
+.ww-step {
+  appearance: none; background: none; border: 0; cursor: pointer;
+  display: flex; align-items: center; gap: .4rem; flex: 1 0 auto;
+  padding: .4rem .7rem; border-radius: 999px;
+  font: inherit; font-size: .78rem; font-weight: 700; white-space: nowrap;
+  color: var(--ink-400); transition: color .15s, background .15s;
+}
+.ww-step span {
+  width: .55rem; height: .55rem; border-radius: 999px; flex: none;
+  background: var(--ink-200); transition: background .15s, box-shadow .15s;
+}
+.ww-step:hover { background: var(--ink-50); color: var(--ink-700); }
+.ww-step.on { color: var(--brand-700); }
+.ww-step.on span { background: var(--brand-500); }
+.ww-step.now { background: var(--brand-50); color: var(--brand-800); }
+.ww-step.now span { background: var(--brand-600); box-shadow: 0 0 0 3px var(--brand-100); }

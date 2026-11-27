@@ -17,6 +17,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/app-data.js"></script>
 <script src="../js/app-ui.js"></script>
+<script src="../js/app-link.js"></script>
 <script src="../js/app-shell.js"></script>
 <script>
 WW.ready.then(function () {
@@ -112,8 +113,11 @@ WW.ready.then(function () {
     });
   }
 
-  document.getElementById("new-plan").addEventListener("click", function () {
-    var opts = WW.list("customers").map(function (c) { return "<option value='" + WWUI.esc(c.id) + "'>" + WWUI.esc(c.name) + "</option>"; }).join("");
+  /* pre.customer_id arrives from a customer record page, so the customer is
+     already chosen and nobody re-picks what the app knows. */
+  function openForm(pre) {
+    pre = pre || {};
+    var opts = WWLink.options(WW.list("customers"), pre.customer_id, function (c) { return c.name; });
     WWUI.modal({
       title: "Enroll a customer",
       bodyHTML:
@@ -134,9 +138,20 @@ WW.ready.then(function () {
         render(); WWUI.toast("Enrolled");
       }
     });
-  });
+  }
+
+  document.getElementById("new-plan").addEventListener("click", function () { openForm(); });
 
   render();
+
+  /* ?customer=<id> — start or change a plan from a customer record. */
+  (function () {
+    var cid = WWLink.q("customer");
+    if (!cid) return;
+    WWLink.clear();
+    if (!WW.get("customers", cid)) { WWUI.toast("That customer no longer exists", "err"); return; }
+    openForm({ customer_id: cid });
+  })();
 
 });
 </script>
