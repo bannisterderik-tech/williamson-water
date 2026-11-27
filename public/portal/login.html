@@ -70,19 +70,36 @@ WW.ready.then(function () {
     });
   });
 
+  /* Guarded against a double submit. Two /otp posts in the same second both try
+     to create the auth user; one wins and sends the mail, the other trips the
+     users_email_partial_key unique constraint and returns 500
+     "unexpected_failure" — which this page used to surface as a bare database
+     error even though the email had in fact gone out. */
+  var sending = false;
   document.getElementById("magic").addEventListener("submit", function (e) {
     e.preventDefault();
+    if (sending) return;
     var email = document.getElementById("email").value.trim();
     if (!email) return;
+    var btn = this.querySelector("button[type=submit]");
+    var label = btn ? btn.textContent : "";
+    sending = true;
+    if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
+    function done() { sending = false; if (btn) { btn.disabled = false; btn.textContent = label; } }
     /* Absolute, not derived from location.pathname: the login page is also
        served at /login (vercel.json rewrite), where the old relative
        calculation produced /loginadmin/index.html. public/ is the site root,
        so these paths are correct both at /login and at /portal/login.html. */
     var back = location.origin + (tab === "staff" ? "/admin/index.html" : "/portal/index.html");
     WW.auth.sendMagicLink(email, back).then(function (r) {
-      if (r && r.demo) { WWUI.toast("Demo mode — use the role buttons below"); return; }
-      if (r && r.error) { WWUI.toast(r.error.message, "err"); return; }
+      if (r && r.demo) { done(); WWUI.toast("Demo mode — use the role buttons below"); return; }
+      if (r && r.error) { done(); WWUI.toast(r.error.message, "err"); return; }
       WWUI.toast("Check your email for the link");
+      sending = false;
+      if (btn) btn.textContent = "Link sent";
+    }).catch(function (err) {
+      done();
+      WWUI.toast((err && err.message) || "Could not send the link", "err");
     });
   });
 
