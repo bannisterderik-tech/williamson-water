@@ -103,30 +103,30 @@ WW.ready.then(function () {
       "<div class='ww-grid'>" +
 
         "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Contact", WWUI.kv([
+          WWLink.sec("Contact", WWUI.kv([
             ["Phone", c.phone ? "<a href='tel:" + WWUI.esc(c.phone) + "'>" + WWUI.esc(c.phone) + "</a>" : "", "raw"],
             ["Email", c.email ? "<a href='mailto:" + WWUI.esc(c.email) + "'>" + WWUI.esc(c.email) + "</a>" : "", "raw"],
             ["Address", c.address], ["Town", c.city]
           ])) +
-          WWUI.section("Water supply", WWUI.kv([
+          WWLink.sec("Water supply", WWUI.kv([
             ["Source", c.source_type === "well" ? "Private well" : c.source_type === "municipal" ? "Municipal" : ""],
             ["System ID", c.pwsid], ["Well depth", c.well_depth_ft ? c.well_depth_ft + " ft" : ""]
           ])) +
-          (c.notes ? WWUI.section("Notes", "<p style='margin:0;white-space:pre-wrap'>" + WWUI.esc(c.notes) + "</p>") : "") +
+          (c.notes ? WWLink.sec("Notes", "<p style='margin:0;white-space:pre-wrap'>" + WWUI.esc(c.notes) + "</p>") : "") +
         "</div></div>" +
 
         "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Latest water test",
+          WWLink.sec("Latest water test",
             latest ? WWUI.testGrid(latest) +
               "<p style='margin:.75rem 0 0'><a class='btn btn-ghost btn-xs' href='tests.html?open=" + encodeURIComponent(latest.id) + "'>Open the full test</a></p>"
                    : "<div class='wwui-empty'>No test on file. This is the step that sizes the equipment.</div>") +
-          (latest ? WWUI.section("What the numbers support",
+          (latest ? WWLink.sec("What the numbers support",
             WWUI.list(recs.map(function (r) { return { main: r.service, sub: r.why }; }),
                       "Nothing over its screening level."), recs.length) : "") +
         "</div></div>" +
 
         "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Equipment", WWUI.list(equip.map(function (e) {
+          WWLink.sec("Equipment", WWUI.list(equip.map(function (e) {
             var due = e.next_service && e.next_service <= WW.today();
             return {
               main: (e.type || "System") + (e.brand ? " · " + e.brand : ""),
@@ -139,7 +139,7 @@ WW.ready.then(function () {
         "</div></div>" +
 
         "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Water test history", WWUI.list(tests.map(function (t) {
+          WWLink.sec("Water test history", WWUI.list(tests.map(function (t) {
             var n = (WW.recommend(t) || []).length;
             return {
               main: WW.fmtDate(t.date),
@@ -151,7 +151,7 @@ WW.ready.then(function () {
         "</div></div>" +
 
         (canSell ? "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Proposals", WWUI.list(props.map(function (p) {
+          WWLink.sec("Proposals", WWUI.list(props.map(function (p) {
             return { main: p.title, sub: WW.fmtDate(p.created) + (p.test_id ? " · backed by a water test" : ""),
                      rightRaw: "<b>" + WW.money(p.amount) + "</b> <span class='badge'>" + WWUI.esc(p.status) + "</span>",
                      href: "proposals.html?open=" + encodeURIComponent(p.id) };
@@ -159,7 +159,7 @@ WW.ready.then(function () {
         "</div></div>" : "") +
 
         (canMoney ? "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Invoices", WWUI.list(invs.map(function (v) {
+          WWLink.sec("Invoices", WWUI.list(invs.map(function (v) {
             return { main: (v.label || v.kind), sub: WW.fmtDate(v.date || v.created_at),
                      rightRaw: "<b>" + WW.money(v.amount) + "</b> <span class='badge" + (v.status === "paid" ? "" : " watch") + "'>" + WWUI.esc(v.status) + "</span>",
                      href: "invoices.html?open=" + encodeURIComponent(v.id) };
@@ -167,12 +167,12 @@ WW.ready.then(function () {
         "</div></div>" : "") +
 
         "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Installs", WWUI.list(jobs.map(function (j) {
+          WWLink.sec("Installs", WWUI.list(jobs.map(function (j) {
             return { main: j.title || "Install", sub: [j.start ? WW.fmtDate(j.start) : "", j.tech ? WW.techName(j.tech) : ""].filter(Boolean).join(" · "),
                      rightRaw: "<span class='badge'>" + WWUI.esc(j.status) + "</span>",
                      href: "jobs.html?open=" + encodeURIComponent(j.id) };
           }), "No installs."), jobs.length) +
-          WWUI.section("Visits", WWUI.list(visits.map(function (v) {
+          WWLink.sec("Visits", WWUI.list(visits.map(function (v) {
             return { main: v.type || "Visit", sub: [v.date ? WW.fmtDate(v.date) : "", v.summary].filter(Boolean).join(" · "),
                      rightRaw: v.done ? "<span class='badge'>done</span>" : "<span class='badge watch'>open</span>" };
           }), "No visits."), visits.length) +

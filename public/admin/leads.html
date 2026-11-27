@@ -98,36 +98,6 @@ WW.ready.then(function () {
     });
   }
 
-  function openLead(l) {
-    var test = WW.latestTest({ leadId: l.id });
-    WWUI.open({
-      eyebrow: "Lead",
-      title: l.name,
-      subtitle: (l.city || "") + (l.service ? " · " + l.service : ""),
-      bodyHTML:
-        WWUI.section("Contact", WWUI.kv([
-          ["Phone", l.phone ? "<a href='tel:" + WWUI.esc(l.phone) + "'>" + WWUI.esc(l.phone) + "</a>" : "", "raw"],
-          ["Email", l.email ? "<a href='mailto:" + WWUI.esc(l.email) + "'>" + WWUI.esc(l.email) + "</a>" : "", "raw"],
-          ["Town", l.city], ["Source", l.source], ["Created", WW.fmtDate(l.created)],
-          ["Stage", (WW.LEAD_STAGES.filter(function (s) { return s.key === l.stage; })[0] || {}).label || l.stage]
-        ])) +
-        (l.note ? WWUI.section("Note", "<p style='margin:0'>" + WWUI.esc(l.note) + "</p>") : "") +
-        WWUI.section("Latest water test", test
-          ? WWUI.testGrid(test)
-          : "<div class='wwui-empty'>No test yet — this is the step that closes the deal.</div>") +
-        (test ? WWUI.section("What the numbers support",
-          WWUI.list(WW.recommend(test).map(function (r) { return { main: r.service, sub: r.why }; }),
-                    "Nothing over its screening level.")) : ""),
-      actions: [
-        { label: "Log a water test", kind: "primary", onClick: function () { location.href = "tests.html?lead=" + encodeURIComponent(l.id); } },
-        { label: "Edit", onClick: function () { editLead(l); } },
-        { label: "Delete", kind: "danger", onClick: function () {
-            WWUI.confirmDelete("this lead", function () { WW.remove("leads", l.id); WWUI.close(); render(); WWUI.toast("Lead deleted"); });
-        } }
-      ]
-    });
-  }
-
   function leadForm(l) {
     l = l || {};
     return "<div class='form-row'>" +

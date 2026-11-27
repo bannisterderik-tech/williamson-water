@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "ken-williamson-water",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "3311"],
-      "port": 3311
+      "name": "crm-demo",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8777", "--directory", "/private/tmp/claude-502/-Users-derikbannister9-Ken-Williamson/fce3f2d3-0e84-4f3f-b8b0-e33a9fdec7c7/scratchpad/testsite"],
+      "port": 8777
     }
   ]
 }

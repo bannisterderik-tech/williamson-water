@@ -110,11 +110,17 @@ WW.ready.then(function () {
 
   function render() {
     l = WW.get("leads", id) || l;
-    var tests  = WW.list("water_tests").filter(function (t) { return String(t.lead_id) === String(id); })
-                   .sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
+    var became = WW.leadCustomer(id);
+
+    /* Conversion re-points this lead's tests at the new customer, so after it
+       the lead owns none by lead_id. Reading them back off the customer keeps
+       the history visible here instead of the page claiming "no test yet". */
+    var tests  = WW.list("water_tests").filter(function (t) {
+                   return String(t.lead_id) === String(id) ||
+                          (became && String(t.customer_id) === String(became.id));
+                 }).sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
     var latest = tests[0] || null;
     var recs   = latest ? WW.recommend(latest) : [];
-    var became = WW.leadCustomer(id);
 
     /* stage rail */
     var idx = WW.LEAD_STAGES.map(function (s) { return s.key; }).indexOf(l.stage || "new");
@@ -127,6 +133,8 @@ WW.ready.then(function () {
       }).join("") + "</div>";
 
     var acts = [];
+    /* Once converted, new work belongs to the customer — logging another test
+       against the lead would orphan it from the account. */
     acts.push("<button class='btn btn-primary btn-sm' data-act='test'>Log a water test</button>");
     if (latest) acts.push("<button class='btn btn-sun btn-sm' data-act='proposal'>Build a proposal</button>");
     acts.push("<button class='btn " + (became ? "btn-outline" : "btn-outline") + " btn-sm' data-act='convert'>" +
@@ -144,26 +152,28 @@ WW.ready.then(function () {
       "<div class='ww-actions' id='acts'>" + acts.join("") + "</div>" +
       "<div class='ww-grid'>" +
         "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Contact", WWUI.kv([
+          WWLink.sec("Contact", WWUI.kv([
             ["Phone", l.phone ? "<a href='tel:" + WWUI.esc(l.phone) + "'>" + WWUI.esc(l.phone) + "</a>" : "", "raw"],
             ["Email", l.email ? "<a href='mailto:" + WWUI.esc(l.email) + "'>" + WWUI.esc(l.email) + "</a>" : "", "raw"],
             ["Town", l.city], ["Interested in", l.service], ["Came from", l.source],
             ["Created", WW.fmtDate(l.created)], ["Stage", stageLabel(l.stage)]
           ])) +
-          (l.note ? WWUI.section("Note", "<p style='margin:0;white-space:pre-wrap'>" + WWUI.esc(l.note) + "</p>") : "") +
+          (l.note ? WWLink.sec("Note", "<p style='margin:0;white-space:pre-wrap'>" + WWUI.esc(l.note) + "</p>") : "") +
         "</div></div>" +
 
         "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Latest water test",
+          WWLink.sec(became ? "Water test (now on the customer)" : "Latest water test",
             latest ? WWUI.testGrid(latest)
-                   : "<div class='wwui-empty'>No test yet — this is the step that closes the deal.</div>") +
-          (latest ? WWUI.section("What the numbers support",
+                   : "<div class='wwui-empty'>" + (became
+                       ? "No test was ever logged for this lead."
+                       : "No test yet — this is the step that closes the deal.") + "</div>") +
+          (latest ? WWLink.sec("What the numbers support",
             WWUI.list(recs.map(function (r) { return { main: r.service, sub: r.why }; }),
                       "Nothing over its screening level."), recs.length) : "") +
         "</div></div>" +
 
         (tests.length > 1 ? "<div class='panel'><div class='panel-body'>" +
-          WWUI.section("Test history", WWUI.list(tests.map(function (t) {
+          WWLink.sec("Test history", WWUI.list(tests.map(function (t) {
             return { main: WW.fmtDate(t.date),
                      sub: (t.source_type === "well" ? "Private well" : "Municipal") + (t.tech ? " · " + t.tech : ""),
                      href: "tests.html?open=" + encodeURIComponent(t.id) };
@@ -183,7 +193,11 @@ WW.ready.then(function () {
       var b = e.target.closest("[data-act]");
       if (!b) return;
       var a = b.dataset.act;
-      if (a === "test")     location.href = "tests.html?lead=" + encodeURIComponent(id);
+      if (a === "test") {
+        location.href = became
+          ? "tests.html?customer=" + encodeURIComponent(became.id)
+          : "tests.html?lead=" + encodeURIComponent(id);
+      }
       if (a === "proposal") toProposal(latest.id);
       if (a === "convert")  convert();
       if (a === "edit")     location.href = "leads.html?edit=" + encodeURIComponent(id);

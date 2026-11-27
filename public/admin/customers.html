@@ -70,49 +70,6 @@ WW.ready.then(function () {
     ], { empty: "No customers yet.", onRow: function (c) { WWLink.go("customer", c.id); } });
   }
 
-  function openCust(c) {
-    var test = WW.latestTest({ customerId: c.id });
-    var equip = WW.list("equipment").filter(function (e) { return e.customer_id === c.id; });
-    var jobs  = WW.list("jobs").filter(function (j) { return j.customer_id === c.id; });
-    var invs  = WW.list("invoices").filter(function (i) { return i.customer_id === c.id; });
-
-    WWUI.open({
-      eyebrow: "Customer",
-      title: c.name,
-      subtitle: [c.address, c.city].filter(Boolean).join(", "),
-      bodyHTML:
-        WWUI.section("Contact", WWUI.kv([
-          ["Phone", c.phone ? "<a href='tel:" + WWUI.esc(c.phone) + "'>" + WWUI.esc(c.phone) + "</a>" : "", "raw"],
-          ["Email", c.email ? "<a href='mailto:" + WWUI.esc(c.email) + "'>" + WWUI.esc(c.email) + "</a>" : "", "raw"],
-          ["Address", [c.address, c.city].filter(Boolean).join(", ")],
-          ["Water source", c.source_type === "well" ? "Private well" + (c.well_depth_ft ? " · " + c.well_depth_ft + " ft" : "") : "Municipal"],
-          ["System ID", c.pwsid],
-          ["Service plan", c.plan || "None"]
-        ])) +
-        (c.notes ? WWUI.section("Notes", "<p style='margin:0'>" + WWUI.esc(c.notes) + "</p>") : "") +
-        WWUI.section("Latest water test", test ? WWUI.testGrid(test) : "<div class='wwui-empty'>No test on file.</div>") +
-        WWUI.section("Installed equipment", WWUI.list(equip.map(function (e) {
-          var n = WW.daysFrom(e.next_service);
-          return { main: e.type + " — " + (e.brand || "") + " " + (e.model || ""),
-                   sub: "Serial " + (e.serial || "—") + " · installed " + WW.fmtDate(e.installed),
-                   rightRaw: n == null ? "" : "<span class='badge " + (n < 0 ? "red" : n < 30 ? "amber" : "gray") + "'>" + (n < 0 ? Math.abs(n) + "d late" : "in " + n + "d") + "</span>" };
-        }), "Nothing installed yet."), equip.length) +
-        WWUI.section("Installs", WWUI.list(jobs.map(function (j) {
-          return { main: j.title, sub: WW.fmtDate(j.start) + " · " + j.status, right: WW.money(j.value) };
-        }), "No installs yet."), jobs.length) +
-        WWUI.section("Invoices", WWUI.list(invs.map(function (i) {
-          return { main: i.label, sub: WW.fmtDate(i.date), rightRaw: "<span class='badge " + (i.status === "paid" ? "green" : "amber") + "'>" + WW.money(i.amount) + "</span>" };
-        }), "No invoices."), invs.length),
-      actions: [
-        { label: "Log a water test", kind: "primary", onClick: function () { location.href = "tests.html?customer=" + encodeURIComponent(c.id); } },
-        { label: "Edit", onClick: function () { editCust(c); } },
-        { label: "Delete", kind: "danger", onClick: function () {
-            WWUI.confirmDelete("this customer", function () { WW.remove("customers", c.id); WWUI.close(); render(); WWUI.toast("Customer deleted"); });
-        } }
-      ]
-    });
-  }
-
   function custForm(c) {
     c = c || {};
     return "<div class='form-row'>" +

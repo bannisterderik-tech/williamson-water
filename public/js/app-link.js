@@ -96,6 +96,16 @@
     }).join("");
   };
 
+  /* A section that disappears when it has nothing to say. WWUI.kv() drops
+     blank rows but still returns an empty <dl>, so WWUI.section() would render
+     a bare heading over nothing — which is exactly what a converted lead's
+     "Water supply" block did before this existed. */
+  L.sec = function (title, inner, count) {
+    if (!inner) return "";
+    if (!String(inner).replace(/<[^>]*>/g, "").trim()) return "";
+    return WWUI.section(title, inner, count);
+  };
+
   /* ---------- context banner for pre-filled forms ---------- */
   L.ctx = function (o) {
     o = o || {};

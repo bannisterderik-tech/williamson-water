@@ -457,20 +457,26 @@
     })[0];
     if (already) return Promise.resolve({ customer: already, created: false, tests: 0 });
 
+    var tests = WW.list("water_tests").filter(function (t) {
+      return String(t.lead_id) === String(leadId);
+    }).sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
+
+    /* The lead record has no supply type, but its water test does — carry it
+       across rather than leaving the customer's supply blank. */
+    var supply = (tests.filter(function (t) { return t.source_type; })[0] || {}).source_type || null;
+
     var cust = WW.add("customers", {
       name:         l.name,
       phone:        l.phone || null,
       email:        l.email || null,
       city:         l.city  || null,
       town:         l.town  || null,
+      source_type:  supply,
       notes:        l.note  || null,
       from_lead_id: leadId
     });
 
     return Promise.resolve(cust._saved || cust).then(function () {
-      var tests = WW.list("water_tests").filter(function (t) {
-        return String(t.lead_id) === String(leadId);
-      });
       tests.forEach(function (t) {
         WW.update("water_tests", t.id, { customer_id: cust.id, lead_id: null });
       });
